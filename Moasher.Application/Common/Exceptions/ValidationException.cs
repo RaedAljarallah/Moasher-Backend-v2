@@ -28,7 +28,7 @@ public class ValidationException : Exception
         };
     }
 
-    public ValidationException(IReadOnlyDictionary<string, string[]> failures)
+    public ValidationException(IDictionary<string, string[]> failures)
     {
         Errors = failures.ToDictionary(e => e.Key, e => e.Value);
     }

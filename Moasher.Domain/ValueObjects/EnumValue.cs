@@ -4,9 +4,10 @@ namespace Moasher.Domain.ValueObjects;
 
 public class EnumValue : ValueObject
 {
-    public string Name { get; }
-    public string Style { get; }
+    public string Name { get; } = default!;
+    public string Style { get; } = default!;
 
+    public EnumValue(){}
     public EnumValue(string name, string style)
     {
         Name = name;

@@ -6,7 +6,7 @@ namespace Moasher.Domain.Entities.InitiativeEntities;
 
 public class Initiative : AuditableDbEntity<Guid>
 {
-    private EnumType? _statusEnum;
+    private EnumType _statusEnum = default!;
     private EnumType _fundStatusEnum = default!;
     private Entity _entity = default!;
     private Portfolio? _portfolio;
@@ -22,15 +22,15 @@ public class Initiative : AuditableDbEntity<Guid>
     public string? Scope { get; set; }
     public string? TargetSegment { get; set; }
     public string? ContributionOnStrategicObjective { get; set; }
-    public EnumValue? Status { get; private set; }
+    public EnumValue Status { get; private set; } = default!;
 
-    public EnumType? StatusEnum
+    public EnumType StatusEnum
     {
         get => _statusEnum;
         set
         {
             _statusEnum = value;
-            Status = value != null ? new EnumValue(value.Name, value.Style) : null;
+            Status = new EnumValue(value.Name, value.Style);
         }
     }
 

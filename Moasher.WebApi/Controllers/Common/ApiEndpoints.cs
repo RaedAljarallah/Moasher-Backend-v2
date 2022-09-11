@@ -11,4 +11,34 @@ public struct ApiEndpoints
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
     }
+    
+    public struct Entities
+    {
+        private const string Base = "entities";
+        public const string All = Base;
+        public const string Details = $"{Base}/{{id}}";
+        public const string Create = Base;
+        public const string Update = $"{Base}/{{id}}";
+        public const string Delete = $"{Base}/{{id}}";
+    }
+    
+    public struct Programs
+    {
+        private const string Base = "programs";
+        public const string All = Base;
+        public const string Details = $"{Base}/{{id}}";
+        public const string Create = Base;
+        public const string Update = $"{Base}/{{id}}";
+        public const string Delete = $"{Base}/{{id}}";
+    }
+    
+    public struct StrategicObjectives
+    {
+        private const string Base = "strategic-objectives";
+        public const string All = Base;
+        public const string Details = $"{Base}/{{id}}";
+        public const string Create = Base;
+        public const string Update = $"{Base}/{{id}}";
+        public const string Delete = $"{Base}/{{id}}";
+    }
 }

@@ -12,6 +12,6 @@ public class InitiativesController : ApiControllerBase
     [OkResponseType]
     public async Task<IActionResult> All([FromQuery] GetInitiativesQuery query, CancellationToken cancellationToken)
     {
-        return Ok(await Sender.Send(query, cancellationToken));
+        return List(await Sender.Send(query, cancellationToken));
     }
 }

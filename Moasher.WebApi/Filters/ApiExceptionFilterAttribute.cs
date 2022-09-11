@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Moasher.Application.Common.Exceptions;
+using Moasher.Application.Common.Extensions;
 
 namespace Moasher.WebApi.Filters;
 
@@ -48,8 +49,8 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     private static void HandleValidationException(ExceptionContext context)
     {
         var exception = (ValidationException)context.Exception;
-
-        var details = new ValidationProblemDetails(exception.Errors)
+        var errorList = exception.Errors.ToDictionary(kvp => kvp.Key.ToCamelCase(), kvp => kvp.Value);
+        var details = new ValidationProblemDetails(errorList)
         {
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
         };

@@ -1,4 +1,6 @@
-﻿using FluentValidation.AspNetCore;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Moasher.WebApi.Filters;
 
@@ -10,10 +12,12 @@ public static class Startup
     {
         services.AddControllers(options =>
         {
-            if (!env.IsDevelopment())
-            {
-                options.Filters.Add<ApiExceptionFilterAttribute>();
-            }
+            options.ReturnHttpNotAcceptable = true;
+            options.Filters.Add<ApiExceptionFilterAttribute>();
+        })
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
 
         services.AddFluentValidationClientsideAdapters();

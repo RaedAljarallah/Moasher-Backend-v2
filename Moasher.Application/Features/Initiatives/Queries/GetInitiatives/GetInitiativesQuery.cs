@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Abstracts;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Application.Common.Types;
 
 namespace Moasher.Application.Features.Initiatives.Queries.GetInitiatives;
 
-public record GetInitiativesQuery : QueryParameterBase, IRequest<IEnumerable<InitiativeDto>>
+public record GetInitiativesQuery : QueryParameterBase, IRequest<PaginatedList<InitiativeDto>>
 {
     public string? Name { get; set; }
     public string? Code { get; set; }
@@ -35,7 +36,7 @@ public record GetInitiativesQuery : QueryParameterBase, IRequest<IEnumerable<Ini
     public Guid? RiskId { get; set; }
 }
 
-public class GetInitiativesQueryHandler : IRequestHandler<GetInitiativesQuery, IEnumerable<InitiativeDto>>
+public class GetInitiativesQueryHandler : IRequestHandler<GetInitiativesQuery, PaginatedList<InitiativeDto>>
 {
     private readonly IMoasherDbContext _context;
     private readonly IMapper _mapper;
@@ -46,12 +47,12 @@ public class GetInitiativesQueryHandler : IRequestHandler<GetInitiativesQuery, I
         _mapper = mapper;
     }
     
-    public async Task<IEnumerable<InitiativeDto>> Handle(GetInitiativesQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedList<InitiativeDto>> Handle(GetInitiativesQuery request, CancellationToken cancellationToken)
     {
         return await _context.Initiatives
             .AsNoTracking()
             .WithinParameters(new GetInitiativesQueryParameter(request))
             .ProjectTo<InitiativeDto>(_mapper.ConfigurationProvider)
-            .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
+            .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken);
     }
 }

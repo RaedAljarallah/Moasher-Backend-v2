@@ -1,5 +1,4 @@
-﻿
-using System.Linq.Dynamic.Core;
+﻿using System.Linq.Dynamic.Core;
 using Moasher.Application.Common.Abstracts;
 using Moasher.Application.Common.Extensions;
 using Moasher.Domain.Entities.InitiativeEntities;

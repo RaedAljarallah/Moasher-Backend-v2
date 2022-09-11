@@ -10,8 +10,8 @@ public abstract class ValidatorBase<TCommand> : AbstractValidator<TCommand>
         await SetUpFiltersAsync(context, cancellation);
         return await base.ValidateAsync(context, cancellation);
     }
-    
-    protected virtual Task SetUpFiltersAsync(ValidationContext<TCommand> context, CancellationToken cancellationToken)
+
+    protected virtual Task SetUpFiltersAsync(ValidationContext<TCommand> validationContext, CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }

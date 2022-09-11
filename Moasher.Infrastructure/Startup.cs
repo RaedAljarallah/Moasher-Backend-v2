@@ -8,6 +8,6 @@ public static class Startup
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
-        services.AddIdentityServer(config);
+        //services.AddIdentityServer(config);
     }
 }

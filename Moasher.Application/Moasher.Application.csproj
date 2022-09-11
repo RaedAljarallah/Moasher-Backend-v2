@@ -8,6 +8,8 @@
 
     <ItemGroup>
       <Folder Include="Features\Initiatives\Commands" />
+      <Folder Include="Features\StrategicObjectives\Commands\DeleteStrategicObjective" />
+      <Folder Include="Features\StrategicObjectives\Commands\UpdateStrategicObjective" />
     </ItemGroup>
 
     <ItemGroup>
