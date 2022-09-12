@@ -27,7 +27,7 @@ public class EntitiesController : ApiControllerBase
     public async Task<IActionResult> Create(CreateEntityCommand command, CancellationToken cancellationToken)
     {
         var result = await Sender.Send(command, cancellationToken);
-        return Created($"{ApiEndpoints.Entities.All}/{result}", result);
+        return Created($"{ApiEndpoints.Entities.All}/{result.Id}", result);
     }
     
     [HttpPut(ApiEndpoints.Entities.Update)]

@@ -10,6 +10,7 @@ public class InitiativesController : ApiControllerBase
     [HttpGet(ApiEndpoints.Initiatives.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
+    [Produces("application/json")]
     public async Task<IActionResult> All([FromQuery] GetInitiativesQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));

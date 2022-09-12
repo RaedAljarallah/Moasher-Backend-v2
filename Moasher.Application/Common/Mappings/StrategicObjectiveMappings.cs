@@ -3,6 +3,7 @@ using Moasher.Application.Common.Abstracts;
 using Moasher.Application.Common.Services;
 using Moasher.Application.Features.StrategicObjectives;
 using Moasher.Application.Features.StrategicObjectives.Commands.CreateStrategicObjective;
+using Moasher.Application.Features.StrategicObjectives.Commands.UpdateStrategicObjective;
 using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities.StrategicObjectiveEntities;
 
@@ -35,8 +36,8 @@ public class StrategicObjectiveMappings : Profile
         CreateMap<CreateStrategicObjectiveCommand, StrategicObjective>()
             .ForMember(o => o.HierarchyId, opt => opt.MapFrom(o => HierarchyIdService.Parse(o.HierarchyId)));
         
-        // CreateMap<UpdateStrategicObjectiveCommand, StrategicObjective>()
-        //     .ForMember(c => c.Id, opt => opt.Ignore())
-        //     .ForMember(o => o.HierarchyId, opt => opt.MapFrom(o => HierarchyIdService.Parse(o.HierarchyId)));
+        CreateMap<UpdateStrategicObjectiveCommand, StrategicObjective>()
+            .ForMember(c => c.Id, opt => opt.Ignore())
+            .ForMember(o => o.HierarchyId, opt => opt.MapFrom(o => HierarchyIdService.Parse(o.HierarchyId)));
     }
 }

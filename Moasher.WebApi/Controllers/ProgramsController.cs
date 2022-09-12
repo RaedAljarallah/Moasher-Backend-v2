@@ -27,7 +27,7 @@ public class ProgramsController : ApiControllerBase
     public async Task<IActionResult> Create(CreateProgramCommand command, CancellationToken cancellationToken)
     {
         var result = await Sender.Send(command, cancellationToken);
-        return Created($"{ApiEndpoints.Programs.All}/{result}", result);
+        return Created($"{ApiEndpoints.Programs.All}/{result.Id}", result);
     }
     
     [HttpPut(ApiEndpoints.Programs.Update)]

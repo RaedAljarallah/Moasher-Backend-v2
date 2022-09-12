@@ -7,9 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Folder Include="Features\EnumTypes\Commands\CreateEnumType" />
+      <Folder Include="Features\EnumTypes\Commands\DeleteEnumType" />
+      <Folder Include="Features\EnumTypes\Commands\UpdateEnumType" />
       <Folder Include="Features\Initiatives\Commands" />
-      <Folder Include="Features\StrategicObjectives\Commands\DeleteStrategicObjective" />
-      <Folder Include="Features\StrategicObjectives\Commands\UpdateStrategicObjective" />
     </ItemGroup>
 
     <ItemGroup>

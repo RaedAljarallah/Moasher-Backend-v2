@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Abstracts;
@@ -57,13 +58,17 @@ public class GetStrategicObjectivesQueryHandler : IRequestHandler<GetStrategicOb
         strategicObjectives = request.Level switch
         {
             1 => await GenerateLevelOneQuery(strategicObjectivesQuery)
-                .ToPaginatedListAsync(o => _mapper.Map<StrategicObjectiveLevelOneDto>(o), request.Pn, request.Ps, cancellationToken),
+                .ProjectTo<StrategicObjectiveLevelOneDto>(_mapper.ConfigurationProvider)
+                .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken),
             2 => await GenerateLevelTwoQuery(strategicObjectivesQuery)
-                .ToPaginatedListAsync(o => _mapper.Map<StrategicObjectiveLevelTwoDto>(o), request.Pn, request.Ps, cancellationToken),
+                .ProjectTo<StrategicObjectiveLevelTwoDto>(_mapper.ConfigurationProvider)
+                .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken),
             3 => await GenerateLevelThreeQuery(strategicObjectivesQuery)
-                .ToPaginatedListAsync(o => _mapper.Map<StrategicObjectiveLevelThreeDto>(o), request.Pn, request.Ps, cancellationToken),
+                .ProjectTo<StrategicObjectiveLevelThreeDto>(_mapper.ConfigurationProvider)
+                .ToPaginatedListAsync( request.Pn, request.Ps, cancellationToken),
             4 => await GenerateLevelFourQuery(strategicObjectivesQuery)
-                .ToPaginatedListAsync(o => _mapper.Map<StrategicObjectiveLevelFourDto>(o), request.Pn, request.Ps, cancellationToken),
+                .ProjectTo<StrategicObjectiveLevelFourDto>(_mapper.ConfigurationProvider)
+                .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken),
             _ => strategicObjectives
         };
 

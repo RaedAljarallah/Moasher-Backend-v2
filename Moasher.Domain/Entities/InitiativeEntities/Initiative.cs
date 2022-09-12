@@ -22,6 +22,7 @@ public class Initiative : AuditableDbEntity<Guid>
     public string? Scope { get; set; }
     public string? TargetSegment { get; set; }
     public string? ContributionOnStrategicObjective { get; set; }
+    // TODO: Make status nullable
     public EnumValue Status { get; private set; } = default!;
 
     public EnumType StatusEnum
@@ -157,4 +158,45 @@ public class Initiative : AuditableDbEntity<Guid>
     public Guid? LevelFourStrategicObjectiveId { get; private set; }
     public float? PlannedProgress { get; set; }
     public float? ActualProgress { get; set; }
+    // public ICollection<InitiativeMilestone> Milestones { get; set; }
+    //     = new HashSet<InitiativeMilestone>();
+    // public ICollection<InitiativeDeliverable> Deliverables { get; set; }
+    //     = new HashSet<InitiativeDeliverable>();
+    // public decimal? ApprovedCost { get; set; }
+    // public ICollection<InitiativeApprovedCost> ApprovedCosts { get; set; }
+    //     = new HashSet<InitiativeApprovedCost>();
+    // public decimal? CurrentYearBudget { get; set; }
+    // public decimal? TotalBudget { get; set; }
+    // public ICollection<InitiativeBudget> Budgets { get; set; }
+    //     = new HashSet<InitiativeBudget>();
+    // public decimal? ContractsAmount { get; set; }
+    // public ICollection<InitiativeContract> Contracts { get; set; }
+    //     = new HashSet<InitiativeContract>();
+    // public decimal? TotalExpenditure { get; set; }
+    // public decimal? CurrentYearExpenditure { get; set; }
+    // public string LatestAnalytics { get; private set; }
+    // public DateTimeOffset? LatestAnalyticsDate { get; private set; }
+    //
+    // public Analytic LatestAnalyticsModel
+    // {
+    //     get => latestAnalyticsModel;
+    //     set
+    //     {
+    //         latestAnalyticsModel = value;
+    //         LatestAnalytics = value?.Description;
+    //         LatestAnalyticsDate = value?.AnalyzedAt;
+    //     }
+    // }
+    //
+    // public ICollection<Analytic> Analytics { get; set; }
+    //     = new HashSet<Analytic>();
+    //
+    // public ICollection<InitiativeImpact> Impacts { get; set; }
+    //     = new HashSet<InitiativeImpact>();
+    // public ICollection<InitiativeTeam> Teams { get; set; }
+    //     = new HashSet<InitiativeTeam>();
+    // public ICollection<InitiativeIssue> Issues { get; set; }
+    //     = new HashSet<InitiativeIssue>();
+    // public ICollection<InitiativeRisk> Risks { get; set; }
+    //     = new HashSet<InitiativeRisk>();
 }
