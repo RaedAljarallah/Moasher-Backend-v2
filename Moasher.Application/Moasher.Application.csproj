@@ -7,9 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Features\EnumTypes\Commands\CreateEnumType" />
-      <Folder Include="Features\EnumTypes\Commands\DeleteEnumType" />
-      <Folder Include="Features\EnumTypes\Commands\UpdateEnumType" />
       <Folder Include="Features\Initiatives\Commands" />
     </ItemGroup>
 
