@@ -20,17 +20,19 @@ public class StrategicObjectiveDomainValidator : DomainValidator, IDomainValidat
     
     public IDictionary<string, string[]> Validate()
     {
-        if (_strategicObjectives.Any(e => e.Name == _name))
+        foreach (var strategicObjective in _strategicObjectives)
         {
-            Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("اسم الهدف الإستراتيجي")};
+            if (strategicObjective.Name == _name)
+            {
+                Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("اسم الهدف الإستراتيجي")};
+            }
+
+            if (strategicObjective.Code == _code)
+            {
+                Errors["Code"] = new[] {DomainValidationErrorMessages.Duplicated("رمز الهدف الإستراتيجي")};
+            }
         }
 
-        if (_strategicObjectives.Any(e => e.Code == _code))
-        {
-            Errors["Code"] = new[] {DomainValidationErrorMessages.Duplicated("رمز الهدف الإستراتيجي")};
-        }
-
-        
         return Errors;
     }
 }

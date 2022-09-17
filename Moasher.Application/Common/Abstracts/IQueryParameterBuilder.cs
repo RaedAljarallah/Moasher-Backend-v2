@@ -2,7 +2,7 @@
 
 namespace Moasher.Application.Common.Abstracts;
 
-public interface IQueryParameterBuilder<TEntity> where TEntity : DbEntity<Guid>
+public interface IQueryParameterBuilder<TEntity> where TEntity : DbEntity
 {
     public IQueryable<TEntity> Build(IQueryable<TEntity> query);
 }

@@ -20,14 +20,17 @@ public class ProgramDomainValidator : DomainValidator, IDomainValidator
     
     public IDictionary<string, string[]> Validate()
     {
-        if (_programs.Any(e => e.Name == _name))
+        foreach (var program in _programs)
         {
-            Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("اسم البرنامج")};
-        }
+            if (program.Name == _name)
+            {
+                Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("اسم البرنامج")};
+            }
 
-        if (_programs.Any(e => e.Code == _code))
-        {
-            Errors["Code"] = new[] {DomainValidationErrorMessages.Duplicated("رمز البرنامج")};
+            if (program.Code == _code)
+            {
+                Errors["Code"] = new[] {DomainValidationErrorMessages.Duplicated("رمز البرنامج")};
+            }
         }
 
         return Errors;

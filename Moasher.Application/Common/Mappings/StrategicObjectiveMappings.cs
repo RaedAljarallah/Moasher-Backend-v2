@@ -14,23 +14,23 @@ public class StrategicObjectiveMappings : Profile
     public StrategicObjectiveMappings()
     {
         CreateMap<StrategicObjective, StrategicObjectiveDtoBase>()
-            .IncludeBase<AuditableDbEntity<Guid>, DtoBase>()
+            .IncludeBase<AuditableDbEntity, DtoBase>()
             .ForMember(o => o.Level, opt => opt.MapFrom(o => o.HierarchyId.GetLevel()));
 
         CreateMap<StrategicObjectiveLevelOne, StrategicObjectiveLevelOneDto>()
-            .IncludeBase<AuditableDbEntity<Guid>, DtoBase>()
+            .IncludeBase<AuditableDbEntity, DtoBase>()
             .ForMember(o => o.Level, opt => opt.MapFrom(o => o.HierarchyId.GetLevel()));
 
         CreateMap<StrategicObjectiveLevelTwo, StrategicObjectiveLevelTwoDto>()
-            .IncludeBase<AuditableDbEntity<Guid>, DtoBase>()
+            .IncludeBase<AuditableDbEntity, DtoBase>()
             .ForMember(o => o.Level, opt => opt.MapFrom(o => o.HierarchyId.GetLevel()));
 
         CreateMap<StrategicObjectiveLevelThree, StrategicObjectiveLevelThreeDto>()
-            .IncludeBase<AuditableDbEntity<Guid>, DtoBase>()
+            .IncludeBase<AuditableDbEntity, DtoBase>()
             .ForMember(o => o.Level, opt => opt.MapFrom(o => o.HierarchyId.GetLevel()));
 
         CreateMap<StrategicObjectiveLevelFour, StrategicObjectiveLevelFourDto>()
-            .IncludeBase<AuditableDbEntity<Guid>, DtoBase>()
+            .IncludeBase<AuditableDbEntity, DtoBase>()
             .ForMember(o => o.Level, opt => opt.MapFrom(o => o.HierarchyId.GetLevel()));
         
         CreateMap<CreateStrategicObjectiveCommand, StrategicObjective>()

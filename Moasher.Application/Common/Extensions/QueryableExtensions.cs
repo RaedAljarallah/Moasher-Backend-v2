@@ -10,13 +10,13 @@ namespace Moasher.Application.Common.Extensions;
 public static class QueryableExtensions
 {
     public static IQueryable<TEntity> WithinParameters<TEntity>(this IQueryable<TEntity> query, IQueryParameterBuilder<TEntity> parameters)
-        where TEntity : DbEntity<Guid>
+        where TEntity : DbEntity
     {
         return parameters.Build(query);
     }
 
     public static IQueryable<TEntity> Like<TEntity>(this IQueryable<TEntity> query, string searchQuery,
-        params string[] fields) where TEntity : DbEntity<Guid>
+        params string[] fields) where TEntity : DbEntity
     {
         var predicate = fields.Aggregate(string.Empty, (current, field) => !string.IsNullOrEmpty(current)
             ? $"{current} || {field}.Contains(@0)"

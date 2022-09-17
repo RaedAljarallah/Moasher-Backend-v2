@@ -1,9 +1,10 @@
-﻿using Moasher.Domain.Common.Abstracts;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities.InitiativeEntities;
 
 namespace Moasher.Domain.Entities;
 
-public class Entity : AuditableDbEntity<Guid>
+public class Entity : AuditableDbEntity
 {
     public string Code { get; set; } = default!;
     public string Name { get; set; } = default!;

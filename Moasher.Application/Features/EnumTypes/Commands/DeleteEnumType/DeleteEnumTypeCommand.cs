@@ -23,11 +23,16 @@ public class DeleteEnumTypeCommandHandler : IRequestHandler<DeleteEnumTypeComman
     public async Task<Unit> Handle(DeleteEnumTypeCommand request, CancellationToken cancellationToken)
     {
         var enumType = await _context.EnumTypes.FirstOrDefaultAsync(e => e.Id == request.Id, cancellationToken);
-        if (enumType is null)
+         if (enumType is null)
         {
             throw new NotFoundException();
         }
 
+        if (enumType.CanBeDeleted is false)
+        {
+            throw new ValidationException("لا يمكن حذف هذا المدخل");
+        }
+        
         _context.EnumTypes.Remove(enumType);
         await _context.SaveChangesAsync(cancellationToken);
         

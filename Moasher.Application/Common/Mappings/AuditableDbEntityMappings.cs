@@ -8,7 +8,7 @@ public class AuditableDbEntityMappings : Profile
 {
     public AuditableDbEntityMappings()
     {
-        CreateMap<AuditableDbEntity<Guid>, DtoBase>()
+        CreateMap<AuditableDbEntity, DtoBase>()
             .ForMember(e => e.Audit, opt => opt.MapFrom(e => new AuditDto
             {
                 CreatedBy = e.CreatedBy,

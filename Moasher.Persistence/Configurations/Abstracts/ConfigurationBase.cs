@@ -5,7 +5,7 @@ using Moasher.Domain.Common.Abstracts;
 namespace Moasher.Persistence.Configurations.Abstracts;
 
 public abstract class ConfigurationBase<TEntity> : IEntityTypeConfiguration<TEntity>
-    where TEntity : AuditableDbEntity<Guid>
+    where TEntity : AuditableDbEntity
 {
     public virtual void Configure(EntityTypeBuilder<TEntity> builder)
     {

@@ -13,7 +13,7 @@ public class EnumTypeMappings : Profile
     public EnumTypeMappings()
     {
         CreateMap<EnumType, EnumTypeDto>()
-            .IncludeBase<AuditableDbEntity<Guid>, DtoBase>();
+            .IncludeBase<AuditableDbEntity, DtoBase>();
         
         CreateMap<CreateEnumTypeCommand, EnumType>();
 

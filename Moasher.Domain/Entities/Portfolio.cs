@@ -3,7 +3,7 @@ using Moasher.Domain.Entities.InitiativeEntities;
 
 namespace Moasher.Domain.Entities;
 
-public class Portfolio : AuditableDbEntity<Guid>
+public class Portfolio : AuditableDbEntity
 {
     public string Code { get; set; } = default!;
     public string Name { get; set; } = default!;

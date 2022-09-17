@@ -20,14 +20,17 @@ public class EntityDomainValidator : DomainValidator, IDomainValidator
     
     public IDictionary<string, string[]> Validate()
     {
-        if (_entities.Any(e => e.Name == _name))
+        foreach (var entity in _entities)
         {
-            Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("اسم الجهة")};
-        }
+            if (entity.Name == _name)
+            {
+                Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("اسم الجهة")};
+            }
 
-        if (_entities.Any(e => e.Code == _code))
-        {
-            Errors["Code"] = new[] {DomainValidationErrorMessages.Duplicated("رمز الجهة")};
+            if (entity.Code == _code)
+            {
+                Errors["Code"] = new[] {DomainValidationErrorMessages.Duplicated("رمز الجهة")};
+            }
         }
 
         return Errors;

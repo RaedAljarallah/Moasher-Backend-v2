@@ -1,12 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace Moasher.Domain.Common.Abstracts;
 
-namespace Moasher.Domain.Common.Abstracts;
-
-public class AuditableDbEntity<TKey> : DbEntity<TKey> where TKey : IEquatable<TKey>
+public abstract class AuditableDbEntity : DbEntity
 {
-    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow.AddHours(3);
-    // TODO: Replace dummy value
-    public string CreatedBy { get; set; } = "Raed@Raed.com";
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
+    public string CreatedBy { get; set; } = "Raed";
     public DateTimeOffset? LastModified { get; set; }
     public string? LastModifiedBy { get; set; }
 }

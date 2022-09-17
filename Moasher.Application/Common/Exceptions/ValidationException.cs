@@ -5,6 +5,7 @@ namespace Moasher.Application.Common.Exceptions;
 public class ValidationException : Exception
 {
     public IDictionary<string, string[]> Errors { get; }
+
     public ValidationException()
         : base("One or more validation failures have occurred.")
     {
@@ -29,7 +30,17 @@ public class ValidationException : Exception
     }
 
     public ValidationException(IDictionary<string, string[]> failures)
+        : this()
     {
         Errors = failures.ToDictionary(e => e.Key, e => e.Value);
+    }
+
+    public ValidationException(string key, string failure)
+        : this()
+    {
+        Errors = new Dictionary<string, string[]>
+        {
+            {key, new[] {failure}}
+        };
     }
 }

@@ -196,6 +196,9 @@ namespace Moasher.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("CanBeDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Category")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -408,7 +411,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Portfolio");
+                    b.ToTable("Portfolios");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.Program", b =>

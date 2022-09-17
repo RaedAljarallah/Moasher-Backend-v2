@@ -1,6 +1,7 @@
 ﻿namespace Moasher.Domain.Common.Abstracts;
 
-public abstract class DbEntity<TKey> where TKey : IEquatable<TKey>
+public abstract class DbEntity
 {
-    public TKey Id { get; set; } = default!;
+    public Guid Id { get; set; }
+    
 }

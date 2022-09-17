@@ -3,7 +3,7 @@ using Moasher.Domain.Entities.InitiativeEntities;
 
 namespace Moasher.Domain.Entities;
 
-public class Program : AuditableDbEntity<Guid>
+public class Program : AuditableDbEntity
 {
     public string Code { get; set; } = default!;
     public string Name { get; set; } = default!;

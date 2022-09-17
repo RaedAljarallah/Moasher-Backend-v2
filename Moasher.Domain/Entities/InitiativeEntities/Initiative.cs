@@ -4,9 +4,9 @@ using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
 
-public class Initiative : AuditableDbEntity<Guid>
+public class Initiative : AuditableDbEntity
 {
-    private EnumType _statusEnum = default!;
+    private EnumType? _statusEnum;
     private EnumType _fundStatusEnum = default!;
     private Entity _entity = default!;
     private Portfolio? _portfolio;
@@ -22,19 +22,16 @@ public class Initiative : AuditableDbEntity<Guid>
     public string? Scope { get; set; }
     public string? TargetSegment { get; set; }
     public string? ContributionOnStrategicObjective { get; set; }
-    // TODO: Make status nullable
     public EnumValue Status { get; private set; } = default!;
-
-    public EnumType StatusEnum
+    public EnumType? StatusEnum
     {
         get => _statusEnum;
         set
         {
             _statusEnum = value;
-            Status = new EnumValue(value.Name, value.Style);
+            Status = value != null ? new EnumValue(value.Name, value.Style) : new EnumValue();
         }
     }
-
     public Guid? StatusEnumId { get; set; }
     public EnumValue FundStatus { get; private set; } = default!;
 

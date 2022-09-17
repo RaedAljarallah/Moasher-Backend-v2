@@ -13,7 +13,7 @@ public class EntityMappings : Profile
     public EntityMappings()
     {
         CreateMap<Entity, EntityDto>()
-            .IncludeBase<AuditableDbEntity<Guid>, DtoBase>()
+            .IncludeBase<AuditableDbEntity, DtoBase>()
             .ForMember(e => e.InitiativesCount, opt => opt.MapFrom(e => e.Initiatives.Count));
         // .ForMember(e => e.KPIsCount, opt => opt.MapFrom(e => e.KPIs.Count))
         // .ForMember(e => e.StrategicObjectivesCount, opt => opt.MapFrom(e => e.GetStrategicObjectives().Count()));

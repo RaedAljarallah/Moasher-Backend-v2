@@ -13,7 +13,7 @@ public class ProgramMappings : Profile
     public ProgramMappings()
     {
         CreateMap<Program, ProgramDto>()
-            .IncludeBase<AuditableDbEntity<Guid>, DtoBase>()
+            .IncludeBase<AuditableDbEntity, DtoBase>()
             .ForMember(p => p.InitiativesCount, opt => opt.MapFrom(p => p.Initiatives.Count));
         // .ForMember(p => p.KPIsCount, opt => opt.MapFrom(p => p.GetKPIs().Count()))
         // .ForMember(p => p.StrategicObjectivesCount, opt => opt.MapFrom(p => p.GetStrategicObjectives().Count()))
