@@ -36,12 +36,13 @@ public class UpdateEntityCommandHandler : IRequestHandler<UpdateEntityCommand, E
         
         request.ValidateAndThrow(new EntityDomainValidator(entities.Where(e => e.Id != request.Id).ToList(), request.Name, request.Code));
 
-        if (request.Name != entity.Name)
+        var hasEvent = request.Name != entity.Name;
+        
+        _mapper.Map(request, entity);
+        if (hasEvent)
         {
             entity.AddDomainEvent(new EntityUpdatedEvent(entity));
         }
-        
-        _mapper.Map(request, entity);
         _context.Entities.Update(entity);
         await _context.SaveChangesAsync(cancellationToken);
         

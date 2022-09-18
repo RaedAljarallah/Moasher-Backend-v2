@@ -14,7 +14,7 @@ public class GetProgramsQueryParameter : IQueryParameterBuilder<Program>
     {
         _parameter = parameter;
     }
-    
+
     public IQueryable<Program> Build(IQueryable<Program> query)
     {
         query = query.OrderBy(_parameter.OrderBy);
@@ -37,17 +37,18 @@ public class GetProgramsQueryParameter : IQueryParameterBuilder<Program>
         {
             query = query.Where(e => e.Id == _parameter.Id);
         }
-        
+
         if (_parameter.WithInitiatives)
         {
             query = query.Include(e => e.Initiatives);
         }
-        
-        // if (parameter.WithKPIs)
-        // {
-        //     query = query.Include(p => p.Initiatives)
-        //         .ThenInclude(i => i.LevelThreeStrategicObjective)
-        //         .ThenInclude(o => o.KPIs);
+
+        if (_parameter.WithKPIs)
+        {
+            query = query.Include(p => p.Initiatives)
+                .ThenInclude(i => i.LevelThreeStrategicObjective)
+                .ThenInclude(o => o.KPIs);
+        }
 
 
         return query;

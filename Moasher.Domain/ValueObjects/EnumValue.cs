@@ -4,10 +4,10 @@ namespace Moasher.Domain.ValueObjects;
 
 public class EnumValue : ValueObject
 {
-    public string Name { get; } = default!;
-    public string Style { get; } = default!;
+    public string? Name { get; private set; }
+    public string? Style { get; private set; }
 
-    public EnumValue(){}
+    public EnumValue() { }
     public EnumValue(string name, string style)
     {
         Name = name;
@@ -16,7 +16,7 @@ public class EnumValue : ValueObject
     
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return Name;
-        yield return Style;
+        yield return Name ?? string.Empty;
+        yield return Style ?? string.Empty;
     }
 }

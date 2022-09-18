@@ -6,6 +6,7 @@ using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Common.Services;
 using Moasher.Application.Features.StrategicObjectives.Queries.GetStrategicObjectives;
+using Moasher.Domain.Events.StrategicObjectives;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.StrategicObjectives.Commands.UpdateStrategicObjective;
@@ -43,8 +44,29 @@ public class UpdateStrategicObjectiveCommandHandler : IRequestHandler<UpdateStra
 
         request.ValidateAndThrow(new StrategicObjectiveDomainValidator(
             strategicObjectives.Where(o => o.Id != request.Id).ToList(), request.Name, request.Code));
+
+        var hasEvent = request.Name != strategicObjective.Name;
         
         _mapper.Map(request, strategicObjective);
+        if (hasEvent)
+        {
+            switch (request.Level)
+            {
+                case 1:
+                    strategicObjective.AddDomainEvent(new LevelOneStrategicObjectiveUpdatedEvent(strategicObjective));
+                    break;
+                case 2:
+                    strategicObjective.AddDomainEvent(new LevelTwoStrategicObjectiveUpdatedEvent(strategicObjective));
+                    break;
+                case 3:
+                    strategicObjective.AddDomainEvent(new LevelThreeStrategicObjectiveUpdatedEvent(strategicObjective));
+                    break;
+                case 4:
+                    strategicObjective.AddDomainEvent(new LevelFourStrategicObjectiveUpdatedEvent(strategicObjective));
+                    break;
+            }
+        }
+
         _context.StrategicObjectives.Update(strategicObjective);
         await _context.SaveChangesAsync(cancellationToken);
         

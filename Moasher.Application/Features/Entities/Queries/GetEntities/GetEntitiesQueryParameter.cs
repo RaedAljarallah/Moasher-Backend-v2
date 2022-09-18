@@ -48,35 +48,38 @@ public class GetEntitiesQueryParameter : IQueryParameterBuilder<Entity>
             query = query.Include(e => e.Initiatives);
         }
 
-        // if (_parameter.WithKPIs)
-        // {
-        //     query = query.Include(e => e.KPIs);
-        // }
+        if (_parameter.WithKPIs)
+        {
+            query = query.Include(e => e.KPIs);
+        }
 
-        // if (_parameter.L1Id.HasValue)
-        // {
-        //     query = query.Where(e =>
-        //         e.Initiatives.Select(i => i.LevelOneStrategicObjectiveId).Contains(_parameter.L1Id.Value)
-        //         || e.KPIs.Select(k => k.LevelOneStrategicObjectiveId).Contains(_parameter.L1Id.Value));
-        // }
+        if (_parameter.L1Id.HasValue)
+        {
+            query = query.Where(e =>
+                e.Initiatives.Select(i => i.LevelOneStrategicObjectiveId).Contains(_parameter.L1Id.Value)
+                || e.KPIs.Select(k => k.LevelOneStrategicObjectiveId).Contains(_parameter.L1Id.Value));
+        }
 
-        // if (_parameter.L2Id.HasValue)
-        // {
-        //     query = query.Where(e => e.Initiatives.Select(i => i.LevelTwoStrategicObjectiveId).Contains(_parameter.L2Id.Value)
-        //                              || e.KPIs.Select(k => k.LevelTwoStrategicObjectiveId).Contains(_parameter.L2Id.Value));
-        // }
-        //
-        // if (_parameter.L3Id.HasValue)
-        // {
-        //     query = query.Where(e => e.Initiatives.Select(i => i.LevelThreeStrategicObjectiveId).Contains(_parameter.L3Id.Value)
-        //                              || e.KPIs.Select(k => k.LevelThreeStrategicObjectiveId).Contains(_parameter.L3Id.Value));
-        // }
-        //
-        // if (_parameter.L4Id.HasValue)
-        // {
-        //     query = query.Where(e => e.Initiatives.Select(i => i.LevelFourStrategicObjectiveId).Contains(_parameter.L4Id.Value)
-        //                              || e.KPIs.Select(k => k.LevelFourStrategicObjectiveId).Contains(_parameter.L4Id.Value));
-        // }
+        if (_parameter.L2Id.HasValue)
+        {
+            query = query.Where(e =>
+                e.Initiatives.Select(i => i.LevelTwoStrategicObjectiveId).Contains(_parameter.L2Id.Value)
+                || e.KPIs.Select(k => k.LevelTwoStrategicObjectiveId).Contains(_parameter.L2Id.Value));
+        }
+
+        if (_parameter.L3Id.HasValue)
+        {
+            query = query.Where(e =>
+                e.Initiatives.Select(i => i.LevelThreeStrategicObjectiveId).Contains(_parameter.L3Id.Value)
+                || e.KPIs.Select(k => k.LevelThreeStrategicObjectiveId).Contains(_parameter.L3Id.Value));
+        }
+
+        if (_parameter.L4Id.HasValue)
+        {
+            query = query.Where(e =>
+                e.Initiatives.Select(i => i.LevelFourStrategicObjectiveId).Contains(_parameter.L4Id.Value)
+                || e.KPIs.Select(k => k.LevelFourStrategicObjectiveId).Contains(_parameter.L4Id.Value));
+        }
         
         return query;
     }

@@ -6,6 +6,7 @@ using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Features.Initiatives.Commands.Common;
 using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.Events.Initiatives;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Initiatives.Commands.UpdateInitiative;
@@ -67,14 +68,14 @@ public class UpdateInitiativeCommandHandler : IRequestHandler<UpdateInitiativeCo
             }
 
             // calculate the status the statusEnum is null
-            // if (statusEnum is null)
-            // {
-            //     backgroundJobService.Once(new InitiativeStatusSetterJob(context), initiative.Id, cancellationToken);
-            // } 
-            // else
-            // {
-            //     initiative.StatusEnum = statusEnum;
-            // }
+            if (statusEnum is null)
+            {
+                initiative.AddDomainEvent(new InitiativeStatusUpdateEvent(initiative));
+            } 
+            else
+            {
+                initiative.StatusEnum = statusEnum;
+            }
 
             initiative.FundStatusEnum = fundStatusEnum;
         }
@@ -164,8 +165,14 @@ public class UpdateInitiativeCommandHandler : IRequestHandler<UpdateInitiativeCo
             }
             initiative.Portfolio = portfolio;
         }
-        
+
+        var hasEvent = request.Name != initiative.Name || request.EntityId != initiative.EntityId;
+
         _mapper.Map(request, initiative);
+        if (hasEvent)
+        {
+            initiative.AddDomainEvent(new InitiativeUpdatedEvent(initiative));
+        }
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<InitiativeDto>(initiative);

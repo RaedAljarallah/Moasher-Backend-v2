@@ -68,8 +68,9 @@ public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
+        var result = await base.SaveChangesAsync(cancellationToken);
         await DispatchEvents();
-        return await base.SaveChangesAsync(cancellationToken);
+        return result;
     }
 
     private async Task DispatchEvents()

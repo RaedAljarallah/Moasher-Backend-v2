@@ -44,12 +44,12 @@ public class GetStrategicObjectivesQueryParameter : IQueryParameterBuilder<Strat
             query = query.Where(o => o.Id == _parameter.Id);
         }
         
-        // if (_parameter.EntityId.HasValue)
-        // {
-        //     query = query.Where(o =>
-        //         o.Initiatives.Select(i => i.EntityId).Contains(_parameter.EntityId.Value)
-        //         || o.KPIs.Select(k => k.EntityId).Contains(_parameter.EntityId.Value));
-        // }
+        if (_parameter.EntityId.HasValue)
+        {
+            query = query.Where(o =>
+                o.Initiatives.Select(i => i.EntityId).Contains(_parameter.EntityId.Value)
+                || o.KPIs.Select(k => k.EntityId).Contains(_parameter.EntityId.Value));
+        }
         
         if (_parameter.ProgramId.HasValue)
         {

@@ -2,6 +2,7 @@
 using Moasher.Application.Features.Initiatives.Commands.CreateInitiative;
 using Moasher.Application.Features.Initiatives.Commands.DeleteInitiative;
 using Moasher.Application.Features.Initiatives.Commands.UpdateInitiative;
+using Moasher.Application.Features.Initiatives.Queries.EditInitiative;
 using Moasher.Application.Features.Initiatives.Queries.GetInitiatives;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -29,7 +30,22 @@ public class InitiativesController : ApiControllerBase
         var result = await Sender.Send(command, cancellationToken);
         return Created($"{ApiEndpoints.Initiatives.All}/{result.Id}", result);
     }
-    
+
+    [HttpGet(ApiEndpoints.Initiatives.Edit)]
+    [UnauthorizedResponseType]
+    [NotFoundResponseType]
+    [OkResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> Edit(Guid id, [FromRoute] EditInitiativeQuery query, CancellationToken cancellationToken)
+    {
+        if (!id.Equals(query.Id))
+        {
+            return NotFound();
+        }
+        
+        return Ok(await Sender.Send(query, cancellationToken));
+    }
+
     [HttpPut(ApiEndpoints.Initiatives.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]

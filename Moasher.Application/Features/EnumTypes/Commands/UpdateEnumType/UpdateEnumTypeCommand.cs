@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Domain.Events.EnumTypes;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.EnumTypes.Commands.UpdateEnumType;
@@ -37,10 +38,16 @@ public class UpdateEnumTypeCommandHandler : IRequestHandler<UpdateEnumTypeComman
         }
         
         request.ValidateAndThrow(new EnumTypeDomainValidator(enumTypes.Where(e => e.Id != request.Id).ToList(), request.Name, request.Category));
+        var hasEvent = request.Name != enumType.Name || request.Style != enumType.Style;
         
         _mapper.Map(request, enumType);
         enumType.Metadata = request.Metadata;
+        
         _context.EnumTypes.Update(enumType);
+        if (hasEvent)
+        {
+            enumType.AddDomainEvent(new EnumTypeUpdatedEvent(enumType));
+        }
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<EnumTypeDto>(enumType);

@@ -136,15 +136,15 @@ public class GetInitiativesQueryParameter : IQueryParameterBuilder<Initiative>
             query = query.Where(i => i.FundStatusEnumId == _parameter.FstId);
         }
         
-        // if (_parameter.IssueId.HasValue)
-        // {
-        //     query = query.Where(i => i.Issues.Any(i => i.StatusEnumId == _parameter.IssueId));
-        // }
-        //
-        // if (_parameter.RiskId.HasValue)
-        // {
-        //     query = query.Where(i => i.Risks.Any(r => r.ImpactEnumId == _parameter.RiskId));
-        // }
+        if (_parameter.IssueId.HasValue)
+        {
+            query = query.Where(i => i.Issues.Any(isu => isu.StatusEnumId == _parameter.IssueId));
+        }
+        
+        if (_parameter.RiskId.HasValue)
+        {
+            query = query.Where(i => i.Risks.Any(r => r.ImpactEnumId == _parameter.RiskId));
+        }
         
         return query;
     }

@@ -34,13 +34,14 @@ public class UpdateProgramCommandHandler : IRequestHandler<UpdateProgramCommand,
         }
         
         request.ValidateAndThrow(new ProgramDomainValidator(programs.Where(e => e.Id != request.Id).ToList(), request.Name, request.Code));
-
-        if (request.Name != program.Name)
+        var hasEvent = request.Name != program.Name;
+        
+        
+        _mapper.Map(request, program);
+        if (hasEvent)
         {
             program.AddDomainEvent(new ProgramUpdatedEvent(program));
         }
-        
-        _mapper.Map(request, program);
         _context.Programs.Update(program);
         await _context.SaveChangesAsync(cancellationToken);
         
