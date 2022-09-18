@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Domain.Events.StrategicObjectives;
 
 namespace Moasher.Application.Features.StrategicObjectives.Commands.DeleteStrategicObjective;
 
@@ -36,6 +37,11 @@ public class DeleteStrategicObjectiveCommandHandler : IRequestHandler<DeleteStra
         else
         {
             _context.StrategicObjectives.Remove(strategicObjective);
+        }
+
+        if (strategicObjective.HierarchyId.GetLevel() == 4)
+        {
+            strategicObjective.AddDomainEvent(new LevelFourStrategicObjectiveDeletedEvent(strategicObjective));
         }
         
         await _context.SaveChangesAsync(cancellationToken);

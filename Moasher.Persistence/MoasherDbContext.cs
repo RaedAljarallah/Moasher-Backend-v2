@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.Entities.KPIEntities;
 using Moasher.Domain.Entities.StrategicObjectiveEntities;
 using Moasher.Persistence.Interceptors;
 
@@ -12,20 +15,37 @@ namespace Moasher.Persistence;
 public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IMoasherDbContext
 {
     private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
+    private readonly IPublisher _publisher;
+    private readonly IBackgroundQueue _queue;
 
     public MoasherDbContext(DbContextOptions<MoasherDbContext> options,
-        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(options)
+        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor, IPublisher publisher,
+        IBackgroundQueue queue) : base(options)
     {
         _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
+        _publisher = publisher;
+        _queue = queue;
     }
 
     public DbSet<Initiative> Initiatives => Set<Initiative>();
+    public DbSet<InitiativeApprovedCost> InitiativeApprovedCosts => Set<InitiativeApprovedCost>();
+    public DbSet<InitiativeBudget> InitiativeBudgets => Set<InitiativeBudget>();
+    public DbSet<InitiativeContract> InitiativeContracts => Set<InitiativeContract>();
+    public DbSet<InitiativeContractExpenditure> InitiativeContractExpenditures => Set<InitiativeContractExpenditure>();
+    public DbSet<InitiativeDeliverable> InitiativeDeliverables => Set<InitiativeDeliverable>();
+    public DbSet<InitiativeImpact> InitiativeImpacts => Set<InitiativeImpact>();
+    public DbSet<InitiativeIssue> InitiativeIssues => Set<InitiativeIssue>();
+    public DbSet<InitiativeMilestone> InitiativeMilestones => Set<InitiativeMilestone>();
+    public DbSet<InitiativeRisk> InitiativeRisks => Set<InitiativeRisk>();
+    public DbSet<InitiativeTeam> InitiativeTeams => Set<InitiativeTeam>();
     public DbSet<Entity> Entities => Set<Entity>();
     public DbSet<EnumType> EnumTypes => Set<EnumType>();
     public DbSet<Portfolio> Portfolios => Set<Portfolio>();
     public DbSet<Program> Programs => Set<Program>();
     public DbSet<StrategicObjective> StrategicObjectives => Set<StrategicObjective>();
-
+    public DbSet<KPI> KPIs => Set<KPI>();
+    public DbSet<KPIValue> KPIValues => Set<KPIValue>();
+    public DbSet<Analytic> Analytics => Set<Analytic>();
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -46,4 +66,28 @@ public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
         optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
     }
 
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        await DispatchEvents();
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task DispatchEvents()
+    {
+        var entities = ChangeTracker
+            .Entries<DbEntity>()
+            .Where(e => e.Entity.DomainEvents.Any())
+            .Select(e => e.Entity).ToList();
+
+        var domainEvents = entities
+            .SelectMany(e => e.DomainEvents)
+            .ToList();
+
+        entities.ForEach(e => e.ClearDomainEvents());
+
+        foreach (var domainEvent in domainEvents)
+        {
+            await _queue.QueueTask(ct => _publisher.Publish(domainEvent, ct));
+        }
+    }
 }

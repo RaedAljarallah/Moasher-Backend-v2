@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
-using Moasher.Application.Features.Entities.BackgroundJobs;
 using Moasher.Domain.Events.Entities;
 using Moasher.Domain.Validators;
 
@@ -19,15 +18,11 @@ public class UpdateEntityCommandHandler : IRequestHandler<UpdateEntityCommand, E
 {
     private readonly IMoasherDbContext _context;
     private readonly IMapper _mapper;
-    private readonly IBackgroundQueue _queue;
-    private readonly IEntityUpdatedJob _entityUpdatedJob;
 
-    public UpdateEntityCommandHandler(IMoasherDbContext context, IMapper mapper, IBackgroundQueue queue, IEntityUpdatedJob entityUpdatedJob)
+    public UpdateEntityCommandHandler(IMoasherDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
-        _queue = queue;
-        _entityUpdatedJob = entityUpdatedJob;
     }
     
     public async Task<EntityDto> Handle(UpdateEntityCommand request, CancellationToken cancellationToken)
@@ -40,18 +35,15 @@ public class UpdateEntityCommandHandler : IRequestHandler<UpdateEntityCommand, E
         }
         
         request.ValidateAndThrow(new EntityDomainValidator(entities.Where(e => e.Id != request.Id).ToList(), request.Name, request.Code));
-        
-        var runBackgroundJob = (request.Name != entity.Name);
+
+        if (request.Name != entity.Name)
+        {
+            entity.AddDomainEvent(new EntityUpdatedEvent(entity));
+        }
         
         _mapper.Map(request, entity);
-        // entity.DomainEvents.Add(new EntityUpdatedEvent(entity));
         _context.Entities.Update(entity);
         await _context.SaveChangesAsync(cancellationToken);
-
-        // if (runBackgroundJob)
-        // {
-        //     await _queue.QueueTask(ct => _entityUpdatedJob.ExecuteAsync(entity.Id, ct));
-        // }
         
         return _mapper.Map<EntityDto>(entity);
     }

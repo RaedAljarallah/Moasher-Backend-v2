@@ -1,7 +1,9 @@
-﻿namespace Moasher.Domain.Common.Abstracts;
+﻿using MediatR;
 
-public abstract class DomainEvent
+namespace Moasher.Domain.Common.Abstracts;
+
+public abstract class DomainEvent : INotification
 {
-    public bool IsPublished { get; set; }
-    public DateTimeOffset DateOccurred { get; protected set; } = DateTimeOffset.UtcNow.AddHours(3);
+    // public bool IsPublished { get; set; }
+    // public DateTimeOffset DateOccurred { get; protected set; } = DateTimeOffset.UtcNow.AddHours(3);
 }

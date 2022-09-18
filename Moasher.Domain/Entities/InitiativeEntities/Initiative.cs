@@ -15,7 +15,8 @@ public class Initiative : AuditableDbEntity
     private StrategicObjective _levelTwoStrategicObjective = default!;
     private StrategicObjective _levelThreeStrategicObjective = default!;
     private StrategicObjective? _levelFourStrategicObjective;
-
+    private Analytic? _latestAnalyticsModel;
+    
     public string UnifiedCode { get; set; } = default!;
     public string? CodeByProgram { get; set; }
     public string Name { get; set; } = default!;
@@ -45,7 +46,7 @@ public class Initiative : AuditableDbEntity
         }
     }
 
-    public Guid FundStatusEnumId { get; set; }
+    public Guid? FundStatusEnumId { get; set; }
     public DateTimeOffset PlannedStart { get; set; }
     public DateTimeOffset PlannedFinish { get; set; }
     public DateTimeOffset? ActualStart { get; set; }
@@ -155,45 +156,52 @@ public class Initiative : AuditableDbEntity
     public Guid? LevelFourStrategicObjectiveId { get; private set; }
     public float? PlannedProgress { get; set; }
     public float? ActualProgress { get; set; }
-    // public ICollection<InitiativeMilestone> Milestones { get; set; }
-    //     = new HashSet<InitiativeMilestone>();
-    // public ICollection<InitiativeDeliverable> Deliverables { get; set; }
-    //     = new HashSet<InitiativeDeliverable>();
-    // public decimal? ApprovedCost { get; set; }
-    // public ICollection<InitiativeApprovedCost> ApprovedCosts { get; set; }
-    //     = new HashSet<InitiativeApprovedCost>();
-    // public decimal? CurrentYearBudget { get; set; }
-    // public decimal? TotalBudget { get; set; }
-    // public ICollection<InitiativeBudget> Budgets { get; set; }
-    //     = new HashSet<InitiativeBudget>();
+    
+    public ICollection<InitiativeMilestone> Milestones { get; set; }
+        = new HashSet<InitiativeMilestone>();
+    
+    public ICollection<InitiativeDeliverable> Deliverables { get; set; }
+        = new HashSet<InitiativeDeliverable>();
+    
+    public decimal? ApprovedCost { get; set; }
+    public ICollection<InitiativeApprovedCost> ApprovedCosts { get; set; }
+        = new HashSet<InitiativeApprovedCost>();
+    
+    public decimal? CurrentYearBudget { get; set; }
+    public decimal? TotalBudget { get; set; }
+    public ICollection<InitiativeBudget> Budgets { get; set; }
+        = new HashSet<InitiativeBudget>();
+    
+    
+    public ICollection<InitiativeImpact> Impacts { get; set; }
+        = new HashSet<InitiativeImpact>();
+    
+    public ICollection<InitiativeTeam> Teams { get; set; }
+        = new HashSet<InitiativeTeam>();
+    
+    public ICollection<InitiativeIssue> Issues { get; set; }
+        = new HashSet<InitiativeIssue>();
+
+    public ICollection<InitiativeRisk> Risks { get; set; }
+        = new HashSet<InitiativeRisk>();
+    
     // public decimal? ContractsAmount { get; set; }
     // public ICollection<InitiativeContract> Contracts { get; set; }
     //     = new HashSet<InitiativeContract>();
     // public decimal? TotalExpenditure { get; set; }
     // public decimal? CurrentYearExpenditure { get; set; }
-    // public string LatestAnalytics { get; private set; }
-    // public DateTimeOffset? LatestAnalyticsDate { get; private set; }
-    //
-    // public Analytic LatestAnalyticsModel
-    // {
-    //     get => latestAnalyticsModel;
-    //     set
-    //     {
-    //         latestAnalyticsModel = value;
-    //         LatestAnalytics = value?.Description;
-    //         LatestAnalyticsDate = value?.AnalyzedAt;
-    //     }
-    // }
-    //
-    // public ICollection<Analytic> Analytics { get; set; }
-    //     = new HashSet<Analytic>();
-    //
-    // public ICollection<InitiativeImpact> Impacts { get; set; }
-    //     = new HashSet<InitiativeImpact>();
-    // public ICollection<InitiativeTeam> Teams { get; set; }
-    //     = new HashSet<InitiativeTeam>();
-    // public ICollection<InitiativeIssue> Issues { get; set; }
-    //     = new HashSet<InitiativeIssue>();
-    // public ICollection<InitiativeRisk> Risks { get; set; }
-    //     = new HashSet<InitiativeRisk>();
+    public string? LatestAnalytics { get; private set; }
+    public DateTimeOffset? LatestAnalyticsDate { get; private set; }
+    public Analytic? LatestAnalyticsModel
+    {
+        get => _latestAnalyticsModel;
+        set
+        {
+            _latestAnalyticsModel = value;
+            LatestAnalytics = value?.Description;
+            LatestAnalyticsDate = value?.AnalyzedAt;
+        }
+    }
+    public ICollection<Analytic> Analytics { get; set; }
+        = new HashSet<Analytic>();
 }

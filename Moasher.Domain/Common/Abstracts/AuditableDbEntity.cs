@@ -6,4 +6,5 @@ public abstract class AuditableDbEntity : DbEntity
     public string CreatedBy { get; set; } = "Raed";
     public DateTimeOffset? LastModified { get; set; }
     public string? LastModifiedBy { get; set; }
+    public bool Approved { get; set; }
 }

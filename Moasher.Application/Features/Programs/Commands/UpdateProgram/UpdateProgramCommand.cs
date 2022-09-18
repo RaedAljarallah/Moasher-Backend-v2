@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
-using Moasher.Application.Features.Programs.BackgroundJobs;
+using Moasher.Domain.Events.Programs;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Programs.Commands.UpdateProgram;
@@ -18,15 +18,10 @@ public class UpdateProgramCommandHandler : IRequestHandler<UpdateProgramCommand,
 {
     private readonly IMoasherDbContext _context;
     private readonly IMapper _mapper;
-    private readonly IBackgroundQueue _queue;
-    private readonly IProgramUpdatedJob _programUpdatedJob;
-
-    public UpdateProgramCommandHandler(IMoasherDbContext context, IMapper mapper, IBackgroundQueue queue, IProgramUpdatedJob programUpdatedJob)
+    public UpdateProgramCommandHandler(IMoasherDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
-        _queue = queue;
-        _programUpdatedJob = programUpdatedJob;
     }
     
     public async Task<ProgramDto> Handle(UpdateProgramCommand request, CancellationToken cancellationToken)
@@ -39,17 +34,16 @@ public class UpdateProgramCommandHandler : IRequestHandler<UpdateProgramCommand,
         }
         
         request.ValidateAndThrow(new ProgramDomainValidator(programs.Where(e => e.Id != request.Id).ToList(), request.Name, request.Code));
-        
-        var runBackgroundJob = request.Name != program.Name;
+
+        if (request.Name != program.Name)
+        {
+            program.AddDomainEvent(new ProgramUpdatedEvent(program));
+        }
         
         _mapper.Map(request, program);
         _context.Programs.Update(program);
         await _context.SaveChangesAsync(cancellationToken);
-
-        if (runBackgroundJob)
-        {
-            await _queue.QueueTask(ct => _programUpdatedJob.ExecuteAsync(program.Id, ct));
-        }
+        
         return _mapper.Map<ProgramDto>(program);
     }
 }

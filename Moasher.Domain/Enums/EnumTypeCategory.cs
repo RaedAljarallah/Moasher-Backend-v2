@@ -19,6 +19,6 @@ public enum EnumTypeCategory
 
     InitiativeContractType,
     InitiativeContractStatus,
-
+    InitiativeProjectStatus,
     KPIStatus
 }

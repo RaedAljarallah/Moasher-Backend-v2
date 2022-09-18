@@ -153,11 +153,74 @@ namespace Moasher.Persistence.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Moasher.Domain.Entities.Analytic", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("AnalyzedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("AnalyzedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("InitiativeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InitiativeName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("KPIId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("KPIName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.HasIndex("KPIId");
+
+                    b.ToTable("Analytics");
+                });
+
             modelBuilder.Entity("Moasher.Domain.Entities.Entity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -195,6 +258,9 @@ namespace Moasher.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("CanBeDeleted")
                         .HasColumnType("bit");
@@ -249,6 +315,13 @@ namespace Moasher.Persistence.Migrations
                     b.Property<DateTimeOffset?>("ActualStart")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("ApprovedCost")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
                     b.Property<bool>("CalculateStatus")
                         .HasColumnType("bit");
 
@@ -269,6 +342,10 @@ namespace Moasher.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<decimal?>("CurrentYearBudget")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
                     b.Property<Guid>("EntityId")
                         .HasColumnType("uniqueidentifier");
 
@@ -276,7 +353,7 @@ namespace Moasher.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("FundStatusEnumId")
+                    b.Property<Guid?>("FundStatusEnumId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("LastModified")
@@ -285,6 +362,12 @@ namespace Moasher.Persistence.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("LatestAnalytics")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LatestAnalyticsDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<Guid?>("LevelFourStrategicObjectiveId")
                         .HasColumnType("uniqueidentifier");
@@ -355,6 +438,10 @@ namespace Moasher.Persistence.Migrations
                     b.Property<string>("TargetSegment")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal?>("TotalBudget")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
                     b.Property<string>("UnifiedCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -382,11 +469,651 @@ namespace Moasher.Persistence.Migrations
                     b.ToTable("Initiatives");
                 });
 
-            modelBuilder.Entity("Moasher.Domain.Entities.Portfolio", b =>
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeApprovedCost", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<DateTimeOffset>("ApprovalDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("InitiativeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InitiativeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("SupportingDocument")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.ToTable("InitiativeApprovedCosts");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeBudget", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<DateTimeOffset>("ApprovalDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("InitiativeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InitiativeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("SupportingDocument")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.ToTable("InitiativeBudgets");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeContract", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("ContractedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("DurationUnit")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTimeOffset>("EndDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("InitiativeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InitiativeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("OfferingDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("RefNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("StatusEnumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Supplier")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("TypeEnumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.HasIndex("StatusEnumId");
+
+                    b.HasIndex("TypeEnumId");
+
+                    b.ToTable("InitiativeContracts");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeContractExpenditure", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("InitiativeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InitiativeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InitiativeContractExpenditures");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeDeliverable", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ActualFinish")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("InitiativeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InitiativeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("PlannedFinish")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("SupportingDocument")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.ToTable("InitiativeDeliverables");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeImpact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("InitiativeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InitiativeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.ToTable("InitiativeImpacts");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeIssue", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("ClosedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("EstimatedResolutionDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ImpactDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ImpactEnumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("InitiativeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InitiativeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTimeOffset>("RaisedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("RaisedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Resolution")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ScopeEnumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("StatusEnumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ImpactEnumId");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.HasIndex("ScopeEnumId");
+
+                    b.HasIndex("StatusEnumId");
+
+                    b.ToTable("InitiativeIssues");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeMilestone", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ActualFinish")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("InitiativeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InitiativeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("PlannedFinish")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("SupportingDocument")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Weight")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.ToTable("InitiativeMilestones");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeRisk", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImpactDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ImpactEnumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("InitiativeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InitiativeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Owner")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("PriorityEnumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ProbabilityEnumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("RaisedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("RaisedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResponsePlane")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ScopeEnumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TypeEnumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ImpactEnumId");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.HasIndex("PriorityEnumId");
+
+                    b.HasIndex("ProbabilityEnumId");
+
+                    b.HasIndex("ScopeEnumId");
+
+                    b.HasIndex("TypeEnumId");
+
+                    b.ToTable("InitiativeRisks");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeTeam", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("InitiativeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InitiativeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("RoleEnumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.HasIndex("RoleEnumId");
+
+                    b.ToTable("InitiativeTeams");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.KPIEntities.KPI", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<float?>("ActualProgress")
+                        .HasColumnType("real");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<float?>("BaselineValue")
+                        .HasColumnType("real");
+
+                    b.Property<short?>("BaselineYear")
+                        .HasColumnType("smallint");
+
+                    b.Property<bool>("CalculateStatus")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -397,13 +1124,211 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("DataSource")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("EntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Formula")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte>("Frequency")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("LatestAnalytics")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LatestAnalyticsDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("LevelFourStrategicObjectiveId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LevelFourStrategicObjectiveName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("LevelOneStrategicObjectiveId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LevelOneStrategicObjectiveName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("LevelThreeStrategicObjectiveId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LevelThreeStrategicObjectiveName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("LevelTwoStrategicObjectiveId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LevelTwoStrategicObjectiveName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MeasurementUnit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OwnerEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OwnerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OwnerPhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OwnerPosition")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float?>("PlannedProgress")
+                        .HasColumnType("real");
+
+                    b.Property<byte>("Polarity")
+                        .HasColumnType("tinyint");
+
+                    b.Property<Guid?>("StatusEnumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte>("ValidationStatus")
+                        .HasColumnType("tinyint");
+
+                    b.Property<bool>("Visible")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("VisibleOnDashboard")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("LevelThreeStrategicObjectiveId");
+
+                    b.HasIndex("StatusEnumId");
+
+                    b.ToTable("KPIs");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.KPIEntities.KPIValue", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ActualFinish")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<float?>("ActualValue")
+                        .HasColumnType("real");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("KPIId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("KPIName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset?>("LastModified")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<byte>("MeasurementPeriod")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTimeOffset>("PlannedFinish")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<byte>("Polarity")
+                        .HasColumnType("tinyint");
+
+                    b.Property<float>("TargetValue")
+                        .HasColumnType("real");
+
+                    b.Property<short>("Year")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KPIId");
+
+                    b.ToTable("KPIValues");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.Portfolio", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -420,6 +1345,9 @@ namespace Moasher.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -429,13 +1357,15 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTimeOffset?>("LastModified")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -452,6 +1382,9 @@ namespace Moasher.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -461,7 +1394,8 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<HierarchyId>("HierarchyId")
                         .IsRequired()
@@ -471,7 +1405,8 @@ namespace Moasher.Persistence.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -617,6 +1552,21 @@ namespace Moasher.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Moasher.Domain.Entities.Analytic", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.Initiative", "Initiative")
+                        .WithMany("Analytics")
+                        .HasForeignKey("InitiativeId");
+
+                    b.HasOne("Moasher.Domain.Entities.KPIEntities.KPI", "KPI")
+                        .WithMany("Analytics")
+                        .HasForeignKey("KPIId");
+
+                    b.Navigation("Initiative");
+
+                    b.Navigation("KPI");
+                });
+
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.Initiative", b =>
                 {
                     b.HasOne("Moasher.Domain.Entities.Entity", "Entity")
@@ -627,9 +1577,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasOne("Moasher.Domain.Entities.EnumType", "FundStatusEnum")
                         .WithMany()
-                        .HasForeignKey("FundStatusEnumId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FundStatusEnumId");
 
                     b.HasOne("Moasher.Domain.Entities.StrategicObjectiveEntities.StrategicObjective", "LevelThreeStrategicObjective")
                         .WithMany("Initiatives")
@@ -696,9 +1644,430 @@ namespace Moasher.Persistence.Migrations
                     b.Navigation("StatusEnum");
                 });
 
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeApprovedCost", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.Initiative", "Initiative")
+                        .WithMany("ApprovedCosts")
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Initiative");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeBudget", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.Initiative", "Initiative")
+                        .WithMany("Budgets")
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Initiative");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeContract", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.Initiative", "Initiative")
+                        .WithMany()
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Moasher.Domain.Entities.EnumType", "StatusEnum")
+                        .WithMany()
+                        .HasForeignKey("StatusEnumId");
+
+                    b.HasOne("Moasher.Domain.Entities.EnumType", "TypeEnum")
+                        .WithMany()
+                        .HasForeignKey("TypeEnumId");
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeContractId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("InitiativeContractId");
+
+                            b1.ToTable("InitiativeContracts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeContractId");
+                        });
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Type", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeContractId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("InitiativeContractId");
+
+                            b1.ToTable("InitiativeContracts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeContractId");
+                        });
+
+                    b.Navigation("Initiative");
+
+                    b.Navigation("Status")
+                        .IsRequired();
+
+                    b.Navigation("StatusEnum");
+
+                    b.Navigation("Type")
+                        .IsRequired();
+
+                    b.Navigation("TypeEnum");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeDeliverable", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.Initiative", "Initiative")
+                        .WithMany("Deliverables")
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Initiative");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeImpact", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.Initiative", "Initiative")
+                        .WithMany("Impacts")
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Initiative");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeIssue", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.EnumType", "ImpactEnum")
+                        .WithMany()
+                        .HasForeignKey("ImpactEnumId");
+
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.Initiative", "Initiative")
+                        .WithMany("Issues")
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Moasher.Domain.Entities.EnumType", "ScopeEnum")
+                        .WithMany()
+                        .HasForeignKey("ScopeEnumId");
+
+                    b.HasOne("Moasher.Domain.Entities.EnumType", "StatusEnum")
+                        .WithMany()
+                        .HasForeignKey("StatusEnumId");
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Impact", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeIssueId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("InitiativeIssueId");
+
+                            b1.ToTable("InitiativeIssues");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeIssueId");
+                        });
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Scope", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeIssueId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("InitiativeIssueId");
+
+                            b1.ToTable("InitiativeIssues");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeIssueId");
+                        });
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeIssueId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("InitiativeIssueId");
+
+                            b1.ToTable("InitiativeIssues");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeIssueId");
+                        });
+
+                    b.Navigation("Impact")
+                        .IsRequired();
+
+                    b.Navigation("ImpactEnum");
+
+                    b.Navigation("Initiative");
+
+                    b.Navigation("Scope")
+                        .IsRequired();
+
+                    b.Navigation("ScopeEnum");
+
+                    b.Navigation("Status")
+                        .IsRequired();
+
+                    b.Navigation("StatusEnum");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeMilestone", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.Initiative", "Initiative")
+                        .WithMany("Milestones")
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Initiative");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeRisk", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.EnumType", "ImpactEnum")
+                        .WithMany()
+                        .HasForeignKey("ImpactEnumId");
+
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.Initiative", "Initiative")
+                        .WithMany("Risks")
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Moasher.Domain.Entities.EnumType", "PriorityEnum")
+                        .WithMany()
+                        .HasForeignKey("PriorityEnumId");
+
+                    b.HasOne("Moasher.Domain.Entities.EnumType", "ProbabilityEnum")
+                        .WithMany()
+                        .HasForeignKey("ProbabilityEnumId");
+
+                    b.HasOne("Moasher.Domain.Entities.EnumType", "ScopeEnum")
+                        .WithMany()
+                        .HasForeignKey("ScopeEnumId");
+
+                    b.HasOne("Moasher.Domain.Entities.EnumType", "TypeEnum")
+                        .WithMany()
+                        .HasForeignKey("TypeEnumId");
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Impact", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeRiskId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("InitiativeRiskId");
+
+                            b1.ToTable("InitiativeRisks");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeRiskId");
+                        });
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Priority", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeRiskId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("InitiativeRiskId");
+
+                            b1.ToTable("InitiativeRisks");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeRiskId");
+                        });
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Probability", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeRiskId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("InitiativeRiskId");
+
+                            b1.ToTable("InitiativeRisks");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeRiskId");
+                        });
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Scope", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeRiskId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("InitiativeRiskId");
+
+                            b1.ToTable("InitiativeRisks");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeRiskId");
+                        });
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Type", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeRiskId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("InitiativeRiskId");
+
+                            b1.ToTable("InitiativeRisks");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeRiskId");
+                        });
+
+                    b.Navigation("Impact")
+                        .IsRequired();
+
+                    b.Navigation("ImpactEnum");
+
+                    b.Navigation("Initiative");
+
+                    b.Navigation("Priority")
+                        .IsRequired();
+
+                    b.Navigation("PriorityEnum");
+
+                    b.Navigation("Probability")
+                        .IsRequired();
+
+                    b.Navigation("ProbabilityEnum");
+
+                    b.Navigation("Scope")
+                        .IsRequired();
+
+                    b.Navigation("ScopeEnum");
+
+                    b.Navigation("Type")
+                        .IsRequired();
+
+                    b.Navigation("TypeEnum");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeTeam", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.Initiative", "Initiative")
+                        .WithMany("Teams")
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Moasher.Domain.Entities.EnumType", "RoleEnum")
+                        .WithMany()
+                        .HasForeignKey("RoleEnumId");
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Role", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeTeamId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("InitiativeTeamId");
+
+                            b1.ToTable("InitiativeTeams");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeTeamId");
+                        });
+
+                    b.Navigation("Initiative");
+
+                    b.Navigation("Role")
+                        .IsRequired();
+
+                    b.Navigation("RoleEnum");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.KPIEntities.KPI", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.Entity", "Entity")
+                        .WithMany()
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Moasher.Domain.Entities.StrategicObjectiveEntities.StrategicObjective", "LevelThreeStrategicObjective")
+                        .WithMany()
+                        .HasForeignKey("LevelThreeStrategicObjectiveId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Moasher.Domain.Entities.EnumType", "StatusEnum")
+                        .WithMany()
+                        .HasForeignKey("StatusEnumId");
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
+                        {
+                            b1.Property<Guid>("KPIId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("KPIId");
+
+                            b1.ToTable("KPIs");
+
+                            b1.WithOwner()
+                                .HasForeignKey("KPIId");
+                        });
+
+                    b.Navigation("Entity");
+
+                    b.Navigation("LevelThreeStrategicObjective");
+
+                    b.Navigation("Status")
+                        .IsRequired();
+
+                    b.Navigation("StatusEnum");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.KPIEntities.KPIValue", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.KPIEntities.KPI", "KPI")
+                        .WithMany("Values")
+                        .HasForeignKey("KPIId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("KPI");
+                });
+
             modelBuilder.Entity("Moasher.Domain.Entities.Entity", b =>
                 {
                     b.Navigation("Initiatives");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.Initiative", b =>
+                {
+                    b.Navigation("Analytics");
+
+                    b.Navigation("ApprovedCosts");
+
+                    b.Navigation("Budgets");
+
+                    b.Navigation("Deliverables");
+
+                    b.Navigation("Impacts");
+
+                    b.Navigation("Issues");
+
+                    b.Navigation("Milestones");
+
+                    b.Navigation("Risks");
+
+                    b.Navigation("Teams");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.KPIEntities.KPI", b =>
+                {
+                    b.Navigation("Analytics");
+
+                    b.Navigation("Values");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.Portfolio", b =>

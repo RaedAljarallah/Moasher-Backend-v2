@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.Entities.KPIEntities;
 
 namespace Moasher.Domain.Entities;
 
@@ -12,6 +13,6 @@ public class Entity : AuditableDbEntity
 
     public ICollection<Initiative> Initiatives { get; set; }
         = new HashSet<Initiative>();
-    // public ICollection<KPI> KPIs { get; set; }
-    //     = new HashSet<KPI>();
+    public ICollection<KPI> KPIs { get; set; }
+        = new HashSet<KPI>();
 }

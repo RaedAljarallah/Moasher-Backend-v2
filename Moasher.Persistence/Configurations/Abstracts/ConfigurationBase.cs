@@ -9,6 +9,7 @@ public abstract class ConfigurationBase<TEntity> : IEntityTypeConfiguration<TEnt
 {
     public virtual void Configure(EntityTypeBuilder<TEntity> builder)
     {
+        builder.Ignore(e => e.DomainEvents);
         builder.Property(e => e.CreatedBy).HasMaxLength(256).IsRequired();
         builder.Property(e => e.CreatedAt).IsRequired();
         builder.Property(e => e.LastModifiedBy).HasMaxLength(256);

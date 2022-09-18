@@ -4,7 +4,7 @@ using Moasher.Application.Common.Interfaces;
 
 namespace Moasher.Infrastructure.BackgroundJobs.Common;
 
-public class QueuedHostedService  : BackgroundService
+public class QueuedHostedService : BackgroundService
 {
     private readonly IBackgroundQueue _queue;
     private readonly ILogger<QueuedHostedService> _logger;
