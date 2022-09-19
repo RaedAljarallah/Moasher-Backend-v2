@@ -19,4 +19,9 @@
       <ProjectReference Include="..\Moasher.Domain\Moasher.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features\Milestones\Commands\DeleteMilestone" />
+      <Folder Include="Features\Milestones\Commands\UpdateMilestone" />
+    </ItemGroup>
+
 </Project>

@@ -6,7 +6,7 @@ using Moasher.Domain.Enums;
 using Moasher.Domain.Events.Initiatives;
 using Moasher.Domain.Extensions;
 
-namespace Moasher.Application.Features.Initiatives.Commands.EventHandlers;
+namespace Moasher.Application.Features.Initiatives.EventHandlers;
 
 public class InitiativeStatusUpdateEventHandler : INotificationHandler<InitiativeStatusUpdateEvent>
 {
@@ -32,8 +32,7 @@ public class InitiativeStatusUpdateEventHandler : INotificationHandler<Initiativ
             if (initiative.Milestones.Any())
             {
                 var statusEnums = await context.EnumTypes
-                    .Where(e => string.Equals(e.Category, EnumTypeCategory.InitiativeStatus.ToString(),
-                        StringComparison.CurrentCultureIgnoreCase))
+                    .Where(e => e.Category == EnumTypeCategory.InitiativeStatus.ToString())
                     .ToListAsync(cancellationToken);
 
                 initiative.SetStatus(statusEnums);

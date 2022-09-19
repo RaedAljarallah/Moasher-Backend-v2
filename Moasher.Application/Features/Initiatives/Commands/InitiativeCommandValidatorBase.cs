@@ -17,8 +17,8 @@ public abstract class InitiativeCommandValidatorBase<TCommand> : ValidatorBase<T
             .MaximumLength(50).WithMessage(ValidationErrorMessages.MaximumLength("رمز المبادرة في البرنامج"));
 
         RuleFor(command => command.Name)
-            .NotEmpty().WithMessage(ValidationErrorMessages.NotEmpty("إسم المبادرة"))
-            .MaximumLength(255).WithMessage(ValidationErrorMessages.MaximumLength("إسم المبادرة"));
+            .NotEmpty().WithMessage(ValidationErrorMessages.NotEmpty("اسم المبادرة"))
+            .MaximumLength(255).WithMessage(ValidationErrorMessages.MaximumLength("اسم المبادرة"));
 
         RuleFor(command => command.Scope)
             .MaximumLength(5000).WithMessage(ValidationErrorMessages.MaximumLength("نطاق المبادرة"));

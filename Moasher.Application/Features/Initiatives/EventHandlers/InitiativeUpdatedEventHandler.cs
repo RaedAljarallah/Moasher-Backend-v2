@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Events.Initiatives;
 
-namespace Moasher.Application.Features.Initiatives.Commands.EventHandlers;
+namespace Moasher.Application.Features.Initiatives.EventHandlers;
 
 public class InitiativeUpdatedEventHandler : INotificationHandler<InitiativeUpdatedEvent>
 {

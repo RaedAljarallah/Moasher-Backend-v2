@@ -36,9 +36,10 @@ public class UpdateInitiativeCommandHandler : IRequestHandler<UpdateInitiativeCo
             throw new NotFoundException();
         }
 
-        request.ValidateAndThrow(new InitiativeDomainValidator(initiatives.Where(e => e.Id != request.Id).ToList(),
+        request.ValidateAndThrow(new InitiativeDomainValidator(initiatives.Where(i => i.Id != request.Id).ToList(),
             request.Name, request.UnifiedCode, request.CodeByProgram));
-
+        
+        #region EnumTypes
         if (IsDifferentEnums(request, initiative))
         {
             var enumTypesIds = new List<Guid> {request.FundStatusEnumId};
@@ -79,7 +80,9 @@ public class UpdateInitiativeCommandHandler : IRequestHandler<UpdateInitiativeCo
 
             initiative.FundStatusEnum = fundStatusEnum;
         }
-
+        #endregion
+        
+        #region Entity
         if (initiative.EntityId != request.EntityId)
         {
             var entity = await _context.Entities
@@ -92,7 +95,9 @@ public class UpdateInitiativeCommandHandler : IRequestHandler<UpdateInitiativeCo
 
             initiative.Entity = entity;
         }
-
+        #endregion
+        
+        #region Program
         if (initiative.ProgramId != request.ProgramId)
         {
             var program = await _context.Programs
@@ -105,7 +110,9 @@ public class UpdateInitiativeCommandHandler : IRequestHandler<UpdateInitiativeCo
 
             initiative.Program = program;
         }
+        #endregion
 
+        #region StrategicObjectives
         if (initiative.LevelThreeStrategicObjectiveId != request.LevelThreeStrategicObjectiveId ||
             initiative.LevelFourStrategicObjectiveId != request.LevelFourStrategicObjectiveId)
         {
@@ -152,7 +159,9 @@ public class UpdateInitiativeCommandHandler : IRequestHandler<UpdateInitiativeCo
             initiative.LevelThreeStrategicObjective = l3StrategicObjective;
             initiative.LevelFourStrategicObjective = l4StrategicObjective;
         }
-        
+        #endregion
+
+        #region Portfolio
         if (initiative.PortfolioId != request.PortfolioId)
         {
             var portfolio = await _context.Portfolios
@@ -165,7 +174,8 @@ public class UpdateInitiativeCommandHandler : IRequestHandler<UpdateInitiativeCo
             }
             initiative.Portfolio = portfolio;
         }
-
+        #endregion
+        
         var hasEvent = request.Name != initiative.Name || request.EntityId != initiative.EntityId;
 
         _mapper.Map(request, initiative);

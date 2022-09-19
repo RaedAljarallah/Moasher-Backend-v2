@@ -22,14 +22,14 @@ public class DeleteInitiativeCommandHandler : IRequestHandler<DeleteInitiativeCo
     public async Task<Unit> Handle(DeleteInitiativeCommand request, CancellationToken cancellationToken)
     {
         var initiative = await _context.Initiatives
-            // .Include(i => i.Analytics)
+            .Include(i => i.Analytics)
             .FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken);
         if (initiative is null)
         {
             throw new NotFoundException();
         }
         
-        //_context.Analytics.RemoveRange(initiative.Analytics);
+        _context.Analytics.RemoveRange(initiative.Analytics);
         _context.Initiatives.Remove(initiative);
         await _context.SaveChangesAsync(cancellationToken);
         
