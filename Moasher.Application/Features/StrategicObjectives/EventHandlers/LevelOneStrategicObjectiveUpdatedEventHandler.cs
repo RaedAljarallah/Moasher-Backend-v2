@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Events.StrategicObjectives;
 
@@ -8,25 +7,22 @@ namespace Moasher.Application.Features.StrategicObjectives.EventHandlers;
 
 public class LevelOneStrategicObjectiveUpdatedEventHandler : INotificationHandler<LevelOneStrategicObjectiveUpdatedEvent>
 {
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IMoasherDbContext _context;
 
-    public LevelOneStrategicObjectiveUpdatedEventHandler(IServiceScopeFactory scopeFactory)
+    public LevelOneStrategicObjectiveUpdatedEventHandler(IMoasherDbContext context)
     {
-        _scopeFactory = scopeFactory;
+        _context = context;
     }
     
     public async Task Handle(LevelOneStrategicObjectiveUpdatedEvent notification, CancellationToken cancellationToken)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<IMoasherDbContext>();
-        
         var strategicObjective = notification.StrategicObjective;
 
-        var initiatives = await context.Initiatives
+        var initiatives = await _context.Initiatives
             .Where(i => i.LevelOneStrategicObjectiveId == strategicObjective.Id)
             .ToListAsync(cancellationToken);
 
-        var kpis = await context.KPIs
+        var kpis = await _context.KPIs
             .Where(k => k.LevelOneStrategicObjectiveId == strategicObjective.Id)
             .ToListAsync(cancellationToken);
 
@@ -34,6 +30,6 @@ public class LevelOneStrategicObjectiveUpdatedEventHandler : INotificationHandle
         initiatives.ForEach(i => i.LevelOneStrategicObjective = strategicObjective);
         kpis.ForEach(k => k.LevelOneStrategicObjective = strategicObjective);
             
-        await context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }

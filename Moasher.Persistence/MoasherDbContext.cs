@@ -15,15 +15,13 @@ namespace Moasher.Persistence;
 public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IMoasherDbContext
 {
     private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
-    private readonly IPublisher _publisher;
     private readonly IBackgroundQueue _queue;
 
     public MoasherDbContext(DbContextOptions<MoasherDbContext> options,
-        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor, IPublisher publisher,
+        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
         IBackgroundQueue queue) : base(options)
     {
         _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
-        _publisher = publisher;
         _queue = queue;
     }
 
@@ -46,6 +44,7 @@ public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
     public DbSet<KPI> KPIs => Set<KPI>();
     public DbSet<KPIValue> KPIValues => Set<KPIValue>();
     public DbSet<Analytic> Analytics => Set<Analytic>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -88,7 +87,7 @@ public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
 
         foreach (var domainEvent in domainEvents)
         {
-            await _queue.QueueTask(ct => _publisher.Publish(domainEvent, ct));
+            await _queue.QueueTask(ct => Task.Factory.StartNew(() => domainEvent as INotification, ct));
         }
     }
 }

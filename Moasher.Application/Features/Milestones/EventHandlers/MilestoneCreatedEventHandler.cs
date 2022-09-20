@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Enums;
 using Moasher.Domain.Events.Milestones;
@@ -10,30 +9,33 @@ namespace Moasher.Application.Features.Milestones.EventHandlers;
 
 public class MilestoneCreatedEventHandler : INotificationHandler<MilestoneCreatedEvent>
 {
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IMoasherDbContext _context;
 
-    public MilestoneCreatedEventHandler(IServiceScopeFactory scopeFactory)
+    public MilestoneCreatedEventHandler(IMoasherDbContext context)
     {
-        _scopeFactory = scopeFactory;
+        _context = context;
     }
     
     public async Task Handle(MilestoneCreatedEvent notification, CancellationToken cancellationToken)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<IMoasherDbContext>();
+        var initiativeId = notification.Milestone.InitiativeId;
 
-        var initiative = notification.Milestone.Initiative;
-        initiative.SetProgress();
-        if (initiative.CalculateStatus)
+        var initiative = await _context.Initiatives.Include(i => i.Milestones)
+            .FirstOrDefaultAsync(i => i.Id == initiativeId, cancellationToken);
+
+        if (initiative is not null)
         {
-            var status = await context.EnumTypes
-                .Where(e => e.Category == EnumTypeCategory.InitiativeStatus.ToString())
-                .ToListAsync(cancellationToken);
+            initiative.SetProgress();
+            if (initiative.CalculateStatus)
+            {
+                var status = await _context.EnumTypes
+                    .Where(e => e.Category == EnumTypeCategory.InitiativeStatus.ToString())
+                    .ToListAsync(cancellationToken);
 
-            initiative.SetStatus(status);
+                initiative.SetStatus(status);
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
         }
-
-        context.Initiatives.Update(initiative);
-        await context.SaveChangesAsync(cancellationToken);
     }
 }

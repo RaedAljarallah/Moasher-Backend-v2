@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Events.Initiatives;
 
@@ -8,20 +7,18 @@ namespace Moasher.Application.Features.Initiatives.EventHandlers;
 
 public class InitiativeUpdatedEventHandler : INotificationHandler<InitiativeUpdatedEvent>
 {
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IMoasherDbContext _context;
 
-    public InitiativeUpdatedEventHandler(IServiceScopeFactory scopeFactory)
+    public InitiativeUpdatedEventHandler(IMoasherDbContext context)
     {
-        _scopeFactory = scopeFactory;
+        _context = context;
     }
     
     public async Task Handle(InitiativeUpdatedEvent notification, CancellationToken cancellationToken)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<IMoasherDbContext>();
         var initiativeId = notification.Initiative.Id;
         
-        var initiative = await context.Initiatives
+        var initiative = await _context.Initiatives
             .Include(i => i.ApprovedCosts)
             .Include(i => i.Budgets)
             // .Include(i => i.Contracts)
@@ -57,7 +54,7 @@ public class InitiativeUpdatedEventHandler : INotificationHandler<InitiativeUpda
             initiative.Teams.ToList().ForEach(t => t.Initiative = initiative);
             initiative.Analytics.ToList().ForEach(a => a.Initiative = initiative);
 
-            await context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

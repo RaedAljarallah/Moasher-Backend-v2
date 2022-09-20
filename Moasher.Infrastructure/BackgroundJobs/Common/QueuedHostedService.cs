@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moasher.Application.Common.Interfaces;
 
@@ -8,11 +10,13 @@ public class QueuedHostedService : BackgroundService
 {
     private readonly IBackgroundQueue _queue;
     private readonly ILogger<QueuedHostedService> _logger;
+    private readonly IServiceProvider _serviceProvider;
 
-    public QueuedHostedService(IBackgroundQueue queue, ILogger<QueuedHostedService> logger)
+    public QueuedHostedService(IBackgroundQueue queue, ILogger<QueuedHostedService> logger, IServiceProvider serviceProvider)
     {
         _queue = queue;
         _logger = logger;
+        _serviceProvider = serviceProvider;
     }
     
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -28,7 +32,10 @@ public class QueuedHostedService : BackgroundService
             try
             {
                 var task = await _queue.DequeueAsync(stoppingToken);
-                await task(stoppingToken);
+                using var scope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+                var publisher = scope.ServiceProvider.GetRequiredService<IPublisher>();
+                var domainEvent = await task(stoppingToken);
+                await publisher.Publish(domainEvent, stoppingToken);
             }
             catch (OperationCanceledException)
             {

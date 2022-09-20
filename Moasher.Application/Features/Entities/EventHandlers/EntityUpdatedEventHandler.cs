@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Events.Entities;
 
@@ -8,20 +7,17 @@ namespace Moasher.Application.Features.Entities.EventHandlers;
 
 public class EntityUpdatedEventHandler : INotificationHandler<EntityUpdatedEvent>
 {
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IMoasherDbContext _context;
 
-    public EntityUpdatedEventHandler(IServiceScopeFactory scopeFactory)
+    public EntityUpdatedEventHandler(IMoasherDbContext context)
     {
-        _scopeFactory = scopeFactory;
+        _context = context;
     }
 
     public async Task Handle(EntityUpdatedEvent notification, CancellationToken cancellationToken)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<IMoasherDbContext>();
-        
         var entityId = notification.Entity.Id;
-        var entity = await context.Entities
+        var entity = await _context.Entities
             .Include(e => e.Initiatives).ThenInclude(i => i.ApprovedCosts)
             .Include(e => e.Initiatives).ThenInclude(i => i.Budgets)
             // .Include(e => e.Initiatives).ThenInclude(i => i.Contracts).ThenInclude(c => c.Expenditures)
@@ -33,30 +29,33 @@ public class EntityUpdatedEventHandler : INotificationHandler<EntityUpdatedEvent
             .Include(e => e.KPIs).ThenInclude(k => k.Values)
             .AsSplitQuery()
             .FirstOrDefaultAsync(e => e.Id == entityId, cancellationToken);
-        
-        entity?.Initiatives.ToList().ForEach(i => 
+
+        if (entity is not null)
         {
-            i.Entity = entity;
-            i.ApprovedCosts.ToList().ForEach(a => a.Initiative = i);
-            i.Budgets.ToList().ForEach(b => b.Initiative = i);
-            // i.Contracts.ToList().ForEach(c =>
-            // {
-            //     c.Initiative = i;
-            //     c.Expenditures.ToList().ForEach(e => e.Initiative = i);
-            // });
-            i.Deliverables.ToList().ForEach(d => d.Initiative = i);
-            i.Issues.ToList().ForEach(issue => issue.Initiative = i);
-            i.Milestones.ToList().ForEach(m => m.Initiative = i);
-            i.Risks.ToList().ForEach(r => r.Initiative = i);
-            i.Teams.ToList().ForEach(t => t.Initiative = i);
-        });
+            entity.Initiatives.ToList().ForEach(i => 
+            {
+                i.Entity = entity;
+                i.ApprovedCosts.ToList().ForEach(a => a.Initiative = i);
+                i.Budgets.ToList().ForEach(b => b.Initiative = i);
+                // i.Contracts.ToList().ForEach(c =>
+                // {
+                //     c.Initiative = i;
+                //     c.Expenditures.ToList().ForEach(e => e.Initiative = i);
+                // });
+                i.Deliverables.ToList().ForEach(d => d.Initiative = i);
+                i.Issues.ToList().ForEach(issue => issue.Initiative = i);
+                i.Milestones.ToList().ForEach(m => m.Initiative = i);
+                i.Risks.ToList().ForEach(r => r.Initiative = i);
+                i.Teams.ToList().ForEach(t => t.Initiative = i);
+            });
         
-        entity?.KPIs.ToList().ForEach(k =>
-        {
-            k.Entity = entity;
-            k.Values.ToList().ForEach(v => v.KPI = k);
-        });
+            entity.KPIs.ToList().ForEach(k =>
+            {
+                k.Entity = entity;
+                k.Values.ToList().ForEach(v => v.KPI = k);
+            });
         
-        await context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
     }
 }

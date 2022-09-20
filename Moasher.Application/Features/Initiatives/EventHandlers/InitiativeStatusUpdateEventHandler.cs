@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Enums;
 using Moasher.Domain.Events.Initiatives;
@@ -10,20 +9,18 @@ namespace Moasher.Application.Features.Initiatives.EventHandlers;
 
 public class InitiativeStatusUpdateEventHandler : INotificationHandler<InitiativeStatusUpdateEvent>
 {
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IMoasherDbContext _context;
 
-    public InitiativeStatusUpdateEventHandler(IServiceScopeFactory scopeFactory)
+    public InitiativeStatusUpdateEventHandler(IMoasherDbContext context)
     {
-        _scopeFactory = scopeFactory;
+        _context = context;
     }
 
     public async Task Handle(InitiativeStatusUpdateEvent notification, CancellationToken cancellationToken)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<IMoasherDbContext>();
         var initiativeId = notification.Initiative.Id;
 
-        var initiative = await context.Initiatives
+        var initiative = await _context.Initiatives
             .Include(i => i.Milestones)
             .FirstOrDefaultAsync(i => i.Id == initiativeId, cancellationToken);
 
@@ -31,7 +28,7 @@ public class InitiativeStatusUpdateEventHandler : INotificationHandler<Initiativ
         {
             if (initiative.Milestones.Any())
             {
-                var statusEnums = await context.EnumTypes
+                var statusEnums = await _context.EnumTypes
                     .Where(e => e.Category == EnumTypeCategory.InitiativeStatus.ToString())
                     .ToListAsync(cancellationToken);
 
@@ -42,7 +39,7 @@ public class InitiativeStatusUpdateEventHandler : INotificationHandler<Initiativ
                 initiative.StatusEnum = null;
             }
             
-            await context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

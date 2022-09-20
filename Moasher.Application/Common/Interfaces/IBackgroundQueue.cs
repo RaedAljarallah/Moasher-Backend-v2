@@ -1,7 +1,9 @@
-﻿namespace Moasher.Application.Common.Interfaces;
+﻿using MediatR;
+
+namespace Moasher.Application.Common.Interfaces;
 
 public interface IBackgroundQueue
 {
-    Task QueueTask(Func<CancellationToken, Task> task);
-    Task<Func<CancellationToken, Task>> DequeueAsync(CancellationToken cancellationToken);
+    Task QueueTask(Func<CancellationToken, Task<INotification>> task);
+    Task<Func<CancellationToken, Task<INotification>>> DequeueAsync(CancellationToken cancellationToken);
 }

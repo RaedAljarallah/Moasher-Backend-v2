@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Events.KPIs;
 
@@ -8,20 +7,18 @@ namespace Moasher.Application.Features.KPIs.EventHandlers;
 
 public class KPIUpdatedEventHandler : INotificationHandler<KPIUpdatedEvent>
 {
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IMoasherDbContext _context;
 
-    public KPIUpdatedEventHandler(IServiceScopeFactory scopeFactory)
+    public KPIUpdatedEventHandler(IMoasherDbContext context)
     {
-        _scopeFactory = scopeFactory;
+        _context = context;
     }
     
     public async Task Handle(KPIUpdatedEvent notification, CancellationToken cancellationToken)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<IMoasherDbContext>();
         var kpiId = notification.Kpi.Id;
         
-        var kpi = await context.KPIs
+        var kpi = await _context.KPIs
             .Include(k => k.Values)
             .Include(k => k.Analytics)
             .AsSplitQuery()
@@ -31,7 +28,7 @@ public class KPIUpdatedEventHandler : INotificationHandler<KPIUpdatedEvent>
         {
             kpi.Values.ToList().ForEach(v => v.KPI = kpi);
             kpi.Analytics.ToList().ForEach(a => a.KPI = kpi);
-            await context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
         
     }

@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Enums;
 using Moasher.Domain.Events.KPIs;
@@ -10,20 +9,18 @@ namespace Moasher.Application.Features.KPIs.EventHandlers;
 
 public class KPIStatusUpdateEventHandler : INotificationHandler<KPIStatusUpdateEvent>
 {
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IMoasherDbContext _context;
 
-    public KPIStatusUpdateEventHandler(IServiceScopeFactory scopeFactory)
+    public KPIStatusUpdateEventHandler(IMoasherDbContext context)
     {
-        _scopeFactory = scopeFactory;
+        _context = context;
     }
     
     public async Task Handle(KPIStatusUpdateEvent notification, CancellationToken cancellationToken)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<IMoasherDbContext>();
         var kpiId = notification.Kpi.Id;
         
-        var kpi = await context.KPIs
+        var kpi = await _context.KPIs
             .Include(k => k.Values)
             .FirstOrDefaultAsync(k => k.Id == kpiId, cancellationToken);
 
@@ -31,7 +28,7 @@ public class KPIStatusUpdateEventHandler : INotificationHandler<KPIStatusUpdateE
         {
             if (kpi.Values.Any())
             {
-                var statusEnums = await context.EnumTypes
+                var statusEnums = await _context.EnumTypes
                     .Where(e => e.Category == EnumTypeCategory.KPIStatus.ToString())
                     .ToListAsync(cancellationToken);
             
@@ -42,7 +39,7 @@ public class KPIStatusUpdateEventHandler : INotificationHandler<KPIStatusUpdateE
                 kpi.StatusEnum = null;
             }
             
-            await context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }
