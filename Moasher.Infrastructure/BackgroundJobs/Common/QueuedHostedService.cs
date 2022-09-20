@@ -31,9 +31,9 @@ public class QueuedHostedService : BackgroundService
         {
             try
             {
-                var task = await _queue.DequeueAsync(stoppingToken);
                 using var scope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
                 var publisher = scope.ServiceProvider.GetRequiredService<IPublisher>();
+                var task = await _queue.DequeueAsync(stoppingToken);
                 var domainEvent = await task(stoppingToken);
                 await publisher.Publish(domainEvent, stoppingToken);
             }

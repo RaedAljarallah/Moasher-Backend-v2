@@ -22,7 +22,6 @@ public class MilestoneCreatedEventHandler : INotificationHandler<MilestoneCreate
 
         var initiative = await _context.Initiatives.Include(i => i.Milestones)
             .FirstOrDefaultAsync(i => i.Id == initiativeId, cancellationToken);
-
         if (initiative is not null)
         {
             initiative.SetProgress();
