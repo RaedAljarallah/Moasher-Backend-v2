@@ -10,10 +10,7 @@ using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.StrategicObjectives.Commands.CreateStrategicObjective;
 
-public record CreateStrategicObjectiveCommand : StrategicObjectiveCommandBase, IRequest<object>
-{
-    
-}
+public record CreateStrategicObjectiveCommand : StrategicObjectiveCommandBase, IRequest<object>;
 
 public class CreateStrategicObjectiveCommandHandler : IRequestHandler<CreateStrategicObjectiveCommand, object>
 {

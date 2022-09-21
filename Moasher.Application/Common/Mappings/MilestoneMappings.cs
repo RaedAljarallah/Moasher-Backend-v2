@@ -2,6 +2,7 @@
 using Moasher.Application.Common.Abstracts;
 using Moasher.Application.Features.Milestones;
 using Moasher.Application.Features.Milestones.Commands.CreateMilestone;
+using Moasher.Application.Features.Milestones.Commands.UpdateMilestone;
 using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities.InitiativeEntities;
 
@@ -16,9 +17,9 @@ public class MilestoneMappings : Profile
         
         CreateMap<CreateMilestoneCommand, InitiativeMilestone>();
         
-        // CreateMap<UpdateMilestoneCommand, InitiativeMilestone>()
-        //     .ForMember(e => e.Initiative, opt => opt.Ignore())
-        //     .ForMember(e => e.InitiativeId, opt => opt.Ignore())
-        //     .ForMember(c => c.Id, opt => opt.Ignore());
+        CreateMap<UpdateMilestoneCommand, InitiativeMilestone>()
+            .ForMember(e => e.Initiative, opt => opt.Ignore())
+            .ForMember(e => e.InitiativeId, opt => opt.Ignore())
+            .ForMember(c => c.Id, opt => opt.Ignore());
     }
 }

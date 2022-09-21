@@ -29,7 +29,7 @@ public class UpdateInitiativeCommandHandler : IRequestHandler<UpdateInitiativeCo
 
     public async Task<InitiativeDto> Handle(UpdateInitiativeCommand request, CancellationToken cancellationToken)
     {
-        var initiatives = await _context.Initiatives.ToListAsync(cancellationToken);
+        var initiatives = await _context.Initiatives.AsNoTracking().ToListAsync(cancellationToken);
         var initiative = initiatives.FirstOrDefault(i => i.Id == request.Id);
         if (initiative is null)
         {
@@ -183,6 +183,8 @@ public class UpdateInitiativeCommandHandler : IRequestHandler<UpdateInitiativeCo
         {
             initiative.AddDomainEvent(new InitiativeUpdatedEvent(initiative));
         }
+
+        _context.Initiatives.Update(initiative);
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<InitiativeDto>(initiative);

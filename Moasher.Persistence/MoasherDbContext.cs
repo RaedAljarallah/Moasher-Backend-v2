@@ -65,29 +65,35 @@ public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
         optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
     }
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
+        var events = GetEvents();
         var result = await base.SaveChangesAsync(cancellationToken);
-        await DispatchEvents();
+        await DispatchEvents(events);
         return result;
     }
 
-    private async Task DispatchEvents()
+    private async Task DispatchEvents(List<DomainEvent> domainEvents)
+    {
+        foreach (var domainEvent in domainEvents)
+        {
+            await _queue.QueueTask(ct => Task.Factory.StartNew(() => domainEvent as INotification, ct));
+        }
+    }
+
+    private List<DomainEvent> GetEvents()
     {
         var entities = ChangeTracker
             .Entries<DbEntity>()
             .Where(e => e.Entity.DomainEvents.Any())
             .Select(e => e.Entity).ToList();
-
+        
         var domainEvents = entities
             .SelectMany(e => e.DomainEvents)
             .ToList();
-
+        
         entities.ForEach(e => e.ClearDomainEvents());
 
-        foreach (var domainEvent in domainEvents)
-        {
-            await _queue.QueueTask(ct => Task.Factory.StartNew(() => domainEvent as INotification, ct));
-        }
+        return domainEvents;
     }
 }

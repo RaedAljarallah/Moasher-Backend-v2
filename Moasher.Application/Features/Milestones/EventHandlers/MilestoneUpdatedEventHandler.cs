@@ -7,19 +7,18 @@ using Moasher.Domain.Extensions;
 
 namespace Moasher.Application.Features.Milestones.EventHandlers;
 
-public class MilestoneCreatedEventHandler : INotificationHandler<MilestoneCreatedEvent>
+public class MilestoneUpdatedEventHandler : INotificationHandler<MilestoneUpdatedEvent>
 {
     private readonly IMoasherDbContext _context;
 
-    public MilestoneCreatedEventHandler(IMoasherDbContext context)
+    public MilestoneUpdatedEventHandler(IMoasherDbContext context)
     {
         _context = context;
     }
     
-    public async Task Handle(MilestoneCreatedEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(MilestoneUpdatedEvent notification, CancellationToken cancellationToken)
     {
         var initiativeId = notification.Milestone.InitiativeId;
-
         var initiative = await _context.Initiatives.Include(i => i.Milestones)
             .FirstOrDefaultAsync(i => i.Id == initiativeId, cancellationToken);
         if (initiative is not null)
@@ -34,7 +33,6 @@ public class MilestoneCreatedEventHandler : INotificationHandler<MilestoneCreate
                 initiative.SetStatus(status);
             }
 
-            _context.Initiatives.Update(initiative);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

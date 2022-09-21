@@ -39,11 +39,11 @@ public class UpdateEntityCommandHandler : IRequestHandler<UpdateEntityCommand, E
         var hasEvent = request.Name != entity.Name;
         
         _mapper.Map(request, entity);
+        _context.Entities.Update(entity);
         if (hasEvent)
         {
             entity.AddDomainEvent(new EntityUpdatedEvent(entity));
         }
-        _context.Entities.Update(entity);
         await _context.SaveChangesAsync(cancellationToken);
         
         return _mapper.Map<EntityDto>(entity);

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Moasher.Domain.Common.Abstracts;
+﻿using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Entities.KPIEntities;
 

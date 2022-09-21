@@ -4,43 +4,51 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
-using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Events.Milestones;
 using Moasher.Domain.Validators;
 
-namespace Moasher.Application.Features.Milestones.Commands.CreateMilestone;
+namespace Moasher.Application.Features.Milestones.Commands.UpdateMilestone;
 
-public record CreateMilestoneCommand : MilestoneCommandBase, IRequest<MilestoneDto>;
+public record UpdateMilestoneCommand : MilestoneCommandBase, IRequest<MilestoneDto>
+{
+    public Guid Id { get; set; }
+}
 
-public class CreateMilestoneCommandHandler : IRequestHandler<CreateMilestoneCommand, MilestoneDto>
+public class UpdateMilestoneCommandHandler : IRequestHandler<UpdateMilestoneCommand, MilestoneDto>
 {
     private readonly IMoasherDbContext _context;
     private readonly IMapper _mapper;
 
-    public CreateMilestoneCommandHandler(IMoasherDbContext context, IMapper mapper)
+    public UpdateMilestoneCommandHandler(IMoasherDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
     }
 
-    public async Task<MilestoneDto> Handle(CreateMilestoneCommand request, CancellationToken cancellationToken)
+    public async Task<MilestoneDto> Handle(UpdateMilestoneCommand request, CancellationToken cancellationToken)
     {
         var initiative = await _context.Initiatives
+            .AsNoTracking()
             .Include(i => i.Milestones)
             .FirstOrDefaultAsync(i => i.Id == request.InitiativeId, cancellationToken);
-
         if (initiative is null)
         {
             throw new NotFoundException();
         }
 
+        var milestone = initiative.Milestones.FirstOrDefault(m => m.Id == request.Id);
+        if (milestone is null)
+        {
+            throw new NotFoundException();
+        }
+
+        initiative.Milestones = initiative.Milestones.Where(m => m.Id != request.Id).ToList();
         request.ValidateAndThrow(new MilestoneDomainValidator(initiative, request.Name, request.Weight,
             request.PlannedFinish, request.ActualFinish));
-        
-        var milestone = _mapper.Map<InitiativeMilestone>(request);
-        milestone.Initiative = initiative;
-        milestone.AddDomainEvent(new MilestoneCreatedEvent(milestone));
-        initiative.Milestones.Add(milestone);
+
+        _mapper.Map(request, milestone);
+        milestone.AddDomainEvent(new MilestoneUpdatedEvent(milestone));
+        _context.InitiativeMilestones.Update(milestone);
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<MilestoneDto>(milestone);

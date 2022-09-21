@@ -10,9 +10,7 @@ using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.KPIs.Commands.CreateKPI;
 
-public record CreateKPICommand : KPICommandBase, IRequest<KPIDto>
-{
-}
+public record CreateKPICommand : KPICommandBase, IRequest<KPIDto>;
 
 public class CreateKPICommandHandler : IRequestHandler<CreateKPICommand, KPIDto>
 {

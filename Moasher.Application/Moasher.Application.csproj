@@ -20,8 +20,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\Milestones\Commands\DeleteMilestone" />
-      <Folder Include="Features\Milestones\Commands\UpdateMilestone" />
+      <Folder Include="Features\Deliverables\Commands\CreateDeliverable" />
+      <Folder Include="Features\Deliverables\Commands\DeleteDeliverable" />
+      <Folder Include="Features\Deliverables\Commands\UpdateDeliverable" />
     </ItemGroup>
 
 </Project>

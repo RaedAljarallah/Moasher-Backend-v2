@@ -11,9 +11,7 @@ using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Initiatives.Commands.CreateInitiative;
 
-public record CreateInitiativeCommand : InitiativeCommandBase, IRequest<InitiativeDto>
-{
-}
+public record CreateInitiativeCommand : InitiativeCommandBase, IRequest<InitiativeDto>;
 
 public class CreateInitiativeCommandHandler : IRequestHandler<CreateInitiativeCommand, InitiativeDto>
 {

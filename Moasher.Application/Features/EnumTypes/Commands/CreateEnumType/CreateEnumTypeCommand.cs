@@ -8,9 +8,7 @@ using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.EnumTypes.Commands.CreateEnumType;
 
-public record CreateEnumTypeCommand : EnumTypeCommandBase, IRequest<EnumTypeDto>
-{
-}
+public record CreateEnumTypeCommand : EnumTypeCommandBase, IRequest<EnumTypeDto>;
 
 public class CreateEnumTypeCommandHandler : IRequestHandler<CreateEnumTypeCommand, EnumTypeDto>
 {

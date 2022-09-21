@@ -29,7 +29,7 @@ public class UpdateKPICommandHandler : IRequestHandler<UpdateKPICommand, KPIDto>
 
     public async Task<KPIDto> Handle(UpdateKPICommand request, CancellationToken cancellationToken)
     {
-        var kpis = await _context.KPIs.ToListAsync(cancellationToken);
+        var kpis = await _context.KPIs.AsNoTracking().ToListAsync(cancellationToken);
         var kpi = kpis.FirstOrDefault(k => k.Id == request.Id);
         if (kpi is null)
         {
@@ -134,6 +134,8 @@ public class UpdateKPICommandHandler : IRequestHandler<UpdateKPICommand, KPIDto>
         {
             kpi.AddDomainEvent(new KPIUpdatedEvent(kpi));
         }
+
+        _context.KPIs.Update(kpi);
         await _context.SaveChangesAsync(cancellationToken);
         return _mapper.Map<KPIDto>(kpi);
     }

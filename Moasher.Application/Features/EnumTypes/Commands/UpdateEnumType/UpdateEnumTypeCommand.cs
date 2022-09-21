@@ -42,12 +42,11 @@ public class UpdateEnumTypeCommandHandler : IRequestHandler<UpdateEnumTypeComman
         
         _mapper.Map(request, enumType);
         enumType.Metadata = request.Metadata;
-        
-        _context.EnumTypes.Update(enumType);
         if (hasEvent)
         {
             enumType.AddDomainEvent(new EnumTypeUpdatedEvent(enumType));
         }
+        _context.EnumTypes.Update(enumType);
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<EnumTypeDto>(enumType);

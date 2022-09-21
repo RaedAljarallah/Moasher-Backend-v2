@@ -28,6 +28,7 @@ public class UpdatePortfolioCommandHandler : IRequestHandler<UpdatePortfolioComm
     public async Task<PortfolioDto> Handle(UpdatePortfolioCommand request, CancellationToken cancellationToken)
     {
         var portfolios = await _context.Portfolios
+            .AsNoTracking()
             .Include(i => i.Initiatives.Where(initiative => initiative.PortfolioId == request.Id))
             .ToListAsync(cancellationToken);
         var portfolio = portfolios.FirstOrDefault(p => p.Id == request.Id);

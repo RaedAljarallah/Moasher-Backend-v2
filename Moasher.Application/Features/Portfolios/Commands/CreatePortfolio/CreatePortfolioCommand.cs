@@ -8,10 +8,7 @@ using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Portfolios.Commands.CreatePortfolio;
 
-public record CreatePortfolioCommand : PortfolioCommandBase, IRequest<PortfolioDto>
-{
-    
-}
+public record CreatePortfolioCommand : PortfolioCommandBase, IRequest<PortfolioDto>;
 
 public class CreatePortfolioCommandHandler : IRequestHandler<CreatePortfolioCommand, PortfolioDto>
 {

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moasher.Application.Features.Milestones.Commands.CreateMilestone;
+using Moasher.Application.Features.Milestones.Commands.DeleteMilestone;
+using Moasher.Application.Features.Milestones.Commands.UpdateMilestone;
 using Moasher.Application.Features.Milestones.Queries.GetMilestones;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -28,30 +30,29 @@ public class MilestonesController : ApiControllerBase
         return Created($"{ApiEndpoints.Milestones.All}/{result.Id}", result);
     }
     
-    //
-    // [HttpPut(ApiEndpoints.Milestones.Update)]
-    // [BadRequestResponseType]
-    // [UnauthorizedResponseType]
-    // [NotFoundResponseType]
-    // [OkResponseType]
-    // [Produces("application/json")]
-    // public async Task<IActionResult> Update(Guid id, UpdateMilestoneCommand command, CancellationToken cancellationToken)
-    // {
-    //     if (!id.Equals(command.Id))
-    //     {
-    //         return BadRequest();
-    //     }
-    //
-    //     return Ok(await Sender.Send(command, cancellationToken));
-    // }
-    //
-    // [HttpDelete(ApiEndpoints.Milestones.Delete)]
-    // [NotFoundResponseType]
-    // [ConflictResponseType]
-    // [Produces("application/json")]
-    // public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
-    // {
-    //     await Sender.Send(new DeleteMilestoneCommand { Id = id }, cancellationToken);
-    //     return NoContent();
-    // }
+    [HttpPut(ApiEndpoints.Milestones.Update)]
+    [BadRequestResponseType]
+    [UnauthorizedResponseType]
+    [NotFoundResponseType]
+    [OkResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> Update(Guid id, UpdateMilestoneCommand command, CancellationToken cancellationToken)
+    {
+        if (!id.Equals(command.Id))
+        {
+            return BadRequest();
+        }
+    
+        return Ok(await Sender.Send(command, cancellationToken));
+    }
+    
+    [HttpDelete(ApiEndpoints.Milestones.Delete)]
+    [NotFoundResponseType]
+    [ConflictResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        await Sender.Send(new DeleteMilestoneCommand { Id = id }, cancellationToken);
+        return NoContent();
+    }
 }

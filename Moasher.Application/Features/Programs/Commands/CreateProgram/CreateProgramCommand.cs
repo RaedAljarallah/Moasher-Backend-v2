@@ -8,9 +8,7 @@ using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Programs.Commands.CreateProgram;
 
-public record CreateProgramCommand : ProgramCommandBase, IRequest<ProgramDto>
-{
-}
+public record CreateProgramCommand : ProgramCommandBase, IRequest<ProgramDto>;
 
 public class CreateProgramCommandHandler : IRequestHandler<CreateProgramCommand, ProgramDto>
 {

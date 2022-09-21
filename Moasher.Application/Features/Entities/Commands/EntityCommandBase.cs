@@ -7,4 +7,5 @@ public record EntityCommandBase
 
     public string Code { get => _code; set => _code = value.Trim(); }
     public string Name { get => _name; set => _name = value.Trim(); }
+    
 }

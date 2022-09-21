@@ -8,9 +8,7 @@ using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Entities.Commands.CreateEntity;
 
-public record CreateEntityCommand : EntityCommandBase, IRequest<EntityDto>
-{
-}
+public record CreateEntityCommand : EntityCommandBase, IRequest<EntityDto>;
 
 public class CreateEntityCommandHandler : IRequestHandler<CreateEntityCommand, EntityDto>
 {
@@ -27,6 +25,7 @@ public class CreateEntityCommandHandler : IRequestHandler<CreateEntityCommand, E
     {
         var entities = await _context.Entities.AsNoTracking().ToListAsync(cancellationToken);
         request.ValidateAndThrow(new EntityDomainValidator(entities, request.Name, request.Code));
+        
         var entity = _mapper.Map<Entity>(request);
         _context.Entities.Add(entity);
         await _context.SaveChangesAsync(cancellationToken);
