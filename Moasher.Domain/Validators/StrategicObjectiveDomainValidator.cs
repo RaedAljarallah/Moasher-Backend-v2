@@ -22,14 +22,14 @@ public class StrategicObjectiveDomainValidator : DomainValidator, IDomainValidat
     {
         foreach (var strategicObjective in _strategicObjectives)
         {
-            if (strategicObjective.Name == _name)
+            if (string.Equals(strategicObjective.Name, _name, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("اسم الهدف الإستراتيجي")};
+                Errors[nameof(StrategicObjective.Name)] = new[] {DomainValidationErrorMessages.Duplicated("اسم الهدف الإستراتيجي")};
             }
 
-            if (strategicObjective.Code == _code)
+            if (string.Equals(strategicObjective.Code, _code, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["Code"] = new[] {DomainValidationErrorMessages.Duplicated("رمز الهدف الإستراتيجي")};
+                Errors[nameof(StrategicObjective.Code)] = new[] {DomainValidationErrorMessages.Duplicated("رمز الهدف الإستراتيجي")};
             }
         }
 

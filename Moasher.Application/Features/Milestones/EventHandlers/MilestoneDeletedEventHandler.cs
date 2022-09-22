@@ -33,7 +33,7 @@ public class MilestoneDeletedEventHandler : INotificationHandler<MilestoneDelete
 
                 initiative.SetStatus(status);
             }
-
+            _context.Initiatives.Update(initiative);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

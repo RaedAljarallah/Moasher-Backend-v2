@@ -1,6 +1,6 @@
 ﻿namespace Moasher.Application.Features.StrategicObjectives.Commands;
 
-public record StrategicObjectiveCommandBase
+public abstract record StrategicObjectiveCommandBase
 {
     private string _code = default!;
     private string _name = default!;

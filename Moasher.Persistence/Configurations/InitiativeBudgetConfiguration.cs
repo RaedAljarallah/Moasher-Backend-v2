@@ -11,5 +11,6 @@ public class InitiativeBudgetConfiguration : ConfigurationBase<InitiativeBudget>
         base.Configure(builder);
         
         builder.Property(i => i.Amount).HasPrecision(18, 6);
+        builder.Property(i => i.InitialAmount).HasPrecision(18, 6);
     }
 }

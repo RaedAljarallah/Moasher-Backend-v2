@@ -39,29 +39,29 @@ public static class SchedulableQueryableExtension
             }
         }
         
-        if (parameter.DueUntil.HasValue)
+        if (parameter.Du.HasValue)
         {
-            query = query.DueUntil(parameter.DueUntil.Value);
+            query = query.DueUntil(parameter.Du.Value);
         }
         
-        if (parameter.PlannedFrom.HasValue)
+        if (parameter.Pf.HasValue)
         {
-            query = query.PlannedFrom(parameter.PlannedFrom.Value);
+            query = query.PlannedFrom(parameter.Pf.Value);
         }
         
-        if (parameter.PlannedTo.HasValue)
+        if (parameter.Pt.HasValue)
         {
-            query = query.PlannedTo(parameter.PlannedTo.Value);
+            query = query.PlannedTo(parameter.Pt.Value);
         }
 
-        if (parameter.ActualFrom.HasValue)
+        if (parameter.Af.HasValue)
         {
-            query = query.ActualFrom(parameter.ActualFrom.Value);
+            query = query.ActualFrom(parameter.Af.Value);
         }
 
-        if (parameter.ActualTo.HasValue)
+        if (parameter.At.HasValue)
         {
-            query = query.ActualTo(parameter.ActualTo.Value);
+            query = query.ActualTo(parameter.At.Value);
         }
 
         return query.Cast<TEntity>();

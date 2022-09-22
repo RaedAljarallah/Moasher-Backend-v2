@@ -549,6 +549,10 @@ namespace Moasher.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("InitialAmount")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
                     b.Property<Guid>("InitiativeId")
                         .HasColumnType("uniqueidentifier");
 

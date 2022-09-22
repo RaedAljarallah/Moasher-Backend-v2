@@ -18,11 +18,14 @@ public class EnumTypeDomainValidator : DomainValidator, IDomainValidator
         _name = name;
         _category = category;
     }
+
     public IDictionary<string, string[]> Validate()
     {
-        if (_enumTypes.Any(e => e.Name == _name && e.Category == _category.ToString()))
+        if (_enumTypes.Any(e =>
+                string.Equals(e.Name, _name, StringComparison.CurrentCultureIgnoreCase) 
+                && string.Equals(e.Category, _category.ToString(), StringComparison.CurrentCultureIgnoreCase)))
         {
-            Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("الاسم")};
+            Errors[nameof(EnumType.Name)] = new[] {DomainValidationErrorMessages.Duplicated("الاسم")};
         }
 
         return Errors;

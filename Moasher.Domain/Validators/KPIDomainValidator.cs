@@ -22,14 +22,14 @@ public class KPIDomainValidator : DomainValidator, IDomainValidator
     {
         foreach (var kpi in _kpis)
         {
-            if (kpi.Name == _name)
+            if (string.Equals(kpi.Name, _name, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("اسم المؤشر")};
+                Errors[nameof(KPI.Name)] = new[] {DomainValidationErrorMessages.Duplicated("اسم المؤشر")};
             }
 
-            if (kpi.Code == _code)
+            if (string.Equals(kpi.Code, _code, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["Code"] = new[] {DomainValidationErrorMessages.Duplicated("رمز المؤشر")};
+                Errors[nameof(KPI.Code)] = new[] {DomainValidationErrorMessages.Duplicated("رمز المؤشر")};
             }
             
         }

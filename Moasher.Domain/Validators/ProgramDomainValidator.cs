@@ -22,14 +22,14 @@ public class ProgramDomainValidator : DomainValidator, IDomainValidator
     {
         foreach (var program in _programs)
         {
-            if (program.Name == _name)
+            if (string.Equals(program.Name, _name, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("اسم البرنامج")};
+                Errors[nameof(Program.Name)] = new[] {DomainValidationErrorMessages.Duplicated("اسم البرنامج")};
             }
 
-            if (program.Code == _code)
+            if (string.Equals(program.Code, _code, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["Code"] = new[] {DomainValidationErrorMessages.Duplicated("رمز البرنامج")};
+                Errors[nameof(Program.Code)] = new[] {DomainValidationErrorMessages.Duplicated("رمز البرنامج")};
             }
         }
 

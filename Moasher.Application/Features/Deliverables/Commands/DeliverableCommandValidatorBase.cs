@@ -3,7 +3,7 @@ using Moasher.Application.Common.Constants;
 
 namespace Moasher.Application.Features.Deliverables.Commands;
 
-public class DeliverableCommandValidatorBase<TCommand> : AbstractValidator<TCommand>
+public abstract class DeliverableCommandValidatorBase<TCommand> : AbstractValidator<TCommand>
     where TCommand : DeliverableCommandBase
 {
     public DeliverableCommandValidatorBase()

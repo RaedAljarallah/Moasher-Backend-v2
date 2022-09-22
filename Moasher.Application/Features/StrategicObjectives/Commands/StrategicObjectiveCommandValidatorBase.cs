@@ -5,7 +5,7 @@ using Moasher.Application.Common.Services;
 
 namespace Moasher.Application.Features.StrategicObjectives.Commands;
 
-public class StrategicObjectiveCommandValidatorBase<TCommand> : ValidatorBase<TCommand>
+public abstract class StrategicObjectiveCommandValidatorBase<TCommand> : ValidatorBase<TCommand>
     where TCommand : StrategicObjectiveCommandBase
 {
     public StrategicObjectiveCommandValidatorBase()

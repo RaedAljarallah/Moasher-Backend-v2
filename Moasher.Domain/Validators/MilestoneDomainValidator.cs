@@ -2,6 +2,7 @@
 using Moasher.Domain.Common.Constants;
 using Moasher.Domain.Common.Interfaces;
 using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.Validators.Common.Extensions;
 
 namespace Moasher.Domain.Validators;
 
@@ -27,93 +28,25 @@ public class MilestoneDomainValidator : DomainValidator, IDomainValidator
     {
         foreach (var milestone in _initiative.Milestones)
         {
-            if (milestone.Name == _name)
+            if (string.Equals(milestone.Name, _name, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("اسم المعلم")};
+                Errors[nameof(InitiativeMilestone.Name)] = new[] {DomainValidationErrorMessages.Duplicated("اسم المعلم")};
             }
         }
 
         var weightSum = _initiative.Milestones.Sum(m => m.Weight);
         if (weightSum + _weight > 100)
         {
-            Errors["Weight"] = new[] {$"مجموع اوزان المعالم يجب أن لا تزيد عن 100 - الوزن المتبقي [{100 - weightSum}]"};
+            Errors[nameof(InitiativeMilestone.Weight)] = new[] {$"مجموع اوزان المعالم يجب أن لا تزيد عن 100 - الوزن المتبقي [{100 - weightSum}]"};
         }
 
-        if (_initiative.ActualStart.HasValue)
-        {
-            if (_plannedFinish < _initiative.ActualStart)
-            {
-                Errors["PlannedFinish"] = new[]
-                {
-                    $"تاريخ الإنجاز المخطط يجب أن يكون بعد تاريخ بداية المبادرة الفعلي [{_initiative.ActualStart.Value:yyyy-MM-dd}]"
-                };
-            }
-
-            if (_actualFinish < _initiative.ActualStart)
-            {
-                Errors["ActualFinish"] = new[]
-                {
-                    $"تاريخ الإنجاز الفعلي يجب أن يكون بعد تاريخ بداية المبادرة الفعلي [{_initiative.ActualStart.Value:yyyy-MM-dd}]"
-                };
-            }
-        }
-        else
-        {
-            if (_plannedFinish < _initiative.PlannedStart)
-            {
-                Errors["PlannedFinish"] = new[]
-                {
-                    $"تاريخ الإنجاز المخطط يجب أن يكون بعد تاريخ بداية المبادرة المخطط [{_initiative.PlannedStart:yyyy-MM-dd}]"
-                };
-            }
-            
-            if (_actualFinish < _initiative.PlannedStart)
-            {
-                Errors["ActualFinish"] = new[]
-                {
-                    $"تاريخ الإنجاز الفعلي يجب أن يكون بعد تاريخ بداية المبادرة المخطط [{_initiative.PlannedStart:yyyy-MM-dd}]"
-                };
-            }
-        }
-
-        if (_initiative.ActualFinish.HasValue)
-        {
-            if (_plannedFinish > _initiative.ActualFinish)
-            {
-                Errors["PlannedFinish"] = new[]
-                {
-                    $"تاريخ الإنجاز المخطط يجب أن يكون قبل تاريخ نهاية المبادرة الفعلي [{_initiative.ActualFinish.Value:yyyy-MM-dd}]"
-                };
-            }
-            
-            if (_actualFinish > _initiative.ActualFinish)
-            {
-                Errors["ActualFinish"] = new[]
-                {
-                    $"تاريخ الإنجاز الفعلي يجب أن يكون قبل تاريخ نهاية المبادرة الفعلي [{_initiative.ActualFinish.Value:yyyy-MM-dd}]"
-                };
-            }
-        }
-        else
-        {
-            if (_plannedFinish < _initiative.PlannedFinish)
-            {
-                Errors["PlannedFinish"] = new[]
-                {
-                    $"تاريخ الإنجاز المخطط يجب أن يكون قبل تاريخ نهاية المبادرة المخطط [{_initiative.PlannedFinish:yyyy-MM-dd}]"
-                };
-            }
-            
-            if (_actualFinish < _initiative.PlannedFinish)
-            {
-                Errors["ActualFinish"] = new[]
-                {
-                    $"تاريخ الإنجاز الفعلي يجب أن يكون قبل تاريخ نهاية المبادرة المخطط [{_initiative.PlannedFinish:yyyy-MM-dd}]"
-                };
-            }
-        }
+        _initiative.AchievedAfterInitiativeStart(_plannedFinish, _actualFinish,
+            nameof(InitiativeDeliverable.PlannedFinish), nameof(InitiativeMilestone.ActualFinish), Errors);
         
+        _initiative.AchievedBeforeInitiativeFinish(_plannedFinish, _actualFinish,
+            nameof(InitiativeDeliverable.PlannedFinish), nameof(InitiativeMilestone.ActualFinish), Errors);
         
         return Errors;
     }
 }
+

@@ -1,6 +1,6 @@
 ﻿namespace Moasher.Application.Features.Portfolios.Commands;
 
-public record PortfolioCommandBase
+public abstract record PortfolioCommandBase
 {
     private string _code = default!;
     private string _name = default!;

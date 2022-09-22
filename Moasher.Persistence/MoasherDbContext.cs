@@ -14,15 +14,11 @@ namespace Moasher.Persistence;
 
 public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IMoasherDbContext
 {
-    private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
-    private readonly IBackgroundQueue _queue;
+    private readonly SaveChangesAsyncInterceptor _interceptor;
 
-    public MoasherDbContext(DbContextOptions<MoasherDbContext> options,
-        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
-        IBackgroundQueue queue) : base(options)
+    public MoasherDbContext(DbContextOptions<MoasherDbContext> options, SaveChangesAsyncInterceptor interceptor) : base(options)
     {
-        _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
-        _queue = queue;
+        _interceptor = interceptor;
     }
 
     public DbSet<Initiative> Initiatives => Set<Initiative>();
@@ -62,38 +58,7 @@ public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
+        optionsBuilder.AddInterceptors(_interceptor);
     }
-
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
-    {
-        var events = GetEvents();
-        var result = await base.SaveChangesAsync(cancellationToken);
-        await DispatchEvents(events);
-        return result;
-    }
-
-    private async Task DispatchEvents(List<DomainEvent> domainEvents)
-    {
-        foreach (var domainEvent in domainEvents)
-        {
-            await _queue.QueueTask(ct => Task.Factory.StartNew(() => domainEvent as INotification, ct));
-        }
-    }
-
-    private List<DomainEvent> GetEvents()
-    {
-        var entities = ChangeTracker
-            .Entries<DbEntity>()
-            .Where(e => e.Entity.DomainEvents.Any())
-            .Select(e => e.Entity).ToList();
-        
-        var domainEvents = entities
-            .SelectMany(e => e.DomainEvents)
-            .ToList();
-        
-        entities.ForEach(e => e.ClearDomainEvents());
-
-        return domainEvents;
-    }
+    
 }

@@ -5,7 +5,7 @@ using Moasher.Domain.Enums;
 
 namespace Moasher.Application.Features.EnumTypes.Commands;
 
-public class EnumTypeCommandValidatorBase<TCommand> : ValidatorBase<TCommand>
+public abstract class EnumTypeCommandValidatorBase<TCommand> : ValidatorBase<TCommand>
     where TCommand : EnumTypeCommandBase
 {
     public EnumTypeCommandValidatorBase()

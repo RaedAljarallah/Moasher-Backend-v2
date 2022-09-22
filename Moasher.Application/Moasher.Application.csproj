@@ -19,10 +19,4 @@
       <ProjectReference Include="..\Moasher.Domain\Moasher.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Features\Deliverables\Commands\CreateDeliverable" />
-      <Folder Include="Features\Deliverables\Commands\DeleteDeliverable" />
-      <Folder Include="Features\Deliverables\Commands\UpdateDeliverable" />
-    </ItemGroup>
-
 </Project>

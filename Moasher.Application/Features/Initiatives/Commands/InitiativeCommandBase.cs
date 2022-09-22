@@ -1,6 +1,6 @@
 ﻿namespace Moasher.Application.Features.Initiatives.Commands;
 
-public record InitiativeCommandBase
+public abstract record InitiativeCommandBase
 {
     private string _name = default!;
     private string _unifiedCode = default!;

@@ -22,14 +22,14 @@ public class EntityDomainValidator : DomainValidator, IDomainValidator
     {
         foreach (var entity in _entities)
         {
-            if (entity.Name == _name)
+            if (string.Equals(entity.Name, _name, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("اسم الجهة")};
+                Errors[nameof(Entity.Name)] = new[] {DomainValidationErrorMessages.Duplicated("اسم الجهة")};
             }
 
-            if (entity.Code == _code)
+            if (string.Equals(entity.Code, _code, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["Code"] = new[] {DomainValidationErrorMessages.Duplicated("رمز الجهة")};
+                Errors[nameof(Entity.Code)] = new[] {DomainValidationErrorMessages.Duplicated("رمز الجهة")};
             }
         }
 

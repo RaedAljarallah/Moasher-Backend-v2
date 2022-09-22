@@ -1,6 +1,6 @@
 ﻿namespace Moasher.Application.Features.Entities.Commands;
 
-public record EntityCommandBase
+public abstract record EntityCommandBase
 {
     private string _code = default!;
     private string _name = default!;

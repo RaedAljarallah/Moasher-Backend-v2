@@ -2,7 +2,7 @@
 
 namespace Moasher.Application.Features.EnumTypes.Commands;
 
-public record EnumTypeCommandBase
+public abstract record EnumTypeCommandBase
 {
     private string _name = default!;
     private string _style = default!;

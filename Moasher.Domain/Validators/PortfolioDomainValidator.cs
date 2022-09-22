@@ -22,14 +22,14 @@ public class PortfolioDomainValidator : DomainValidator, IDomainValidator
     {
         foreach (var portfolio in _portfolios)
         {
-            if (portfolio.Name == _name)
+            if (string.Equals(portfolio.Name, _name, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("اسم المحفظة")};
+                Errors[nameof(Portfolio.Name)] = new[] {DomainValidationErrorMessages.Duplicated("اسم المحفظة")};
             }
 
-            if (portfolio.Code == _code)
+            if (string.Equals(portfolio.Code, _code, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["Code"] = new[] {DomainValidationErrorMessages.Duplicated("رمز المحفظة")};
+                Errors[nameof(Portfolio.Code)] = new[] {DomainValidationErrorMessages.Duplicated("رمز المحفظة")};
             }
         }
         

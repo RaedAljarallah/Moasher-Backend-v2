@@ -24,19 +24,20 @@ public class InitiativeDomainValidator : DomainValidator, IDomainValidator
     {
         foreach (var initiative in _initiatives)
         {
-            if (initiative.Name == _name)
+            if (string.Equals(initiative.Name, _name, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["Name"] = new[] {DomainValidationErrorMessages.Duplicated("اسم المبادرة")};
+                Errors[nameof(Initiative.Name)] = new[] {DomainValidationErrorMessages.Duplicated("اسم المبادرة")};
             }
 
-            if (initiative.UnifiedCode == _code)
+            if (string.Equals(initiative.UnifiedCode, _code, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["UnifiedCode"] = new[] {DomainValidationErrorMessages.Duplicated("رمز المبادرة الموحد")};
+                Errors[nameof(Initiative.UnifiedCode)] = new[] {DomainValidationErrorMessages.Duplicated("رمز المبادرة الموحد")};
             }
             
-            if (!string.IsNullOrWhiteSpace(_codeByProgram) && initiative.CodeByProgram == _codeByProgram)
+            if (!string.IsNullOrWhiteSpace(_codeByProgram) 
+                && string.Equals(initiative.CodeByProgram, _codeByProgram, StringComparison.CurrentCultureIgnoreCase))
             {
-                Errors["CodeByProgram"] = new[] {DomainValidationErrorMessages.Duplicated("رمز المبادرة في البرنامج")};
+                Errors[nameof(Initiative.CodeByProgram)] = new[] {DomainValidationErrorMessages.Duplicated("رمز المبادرة في البرنامج")};
             }
         }
 

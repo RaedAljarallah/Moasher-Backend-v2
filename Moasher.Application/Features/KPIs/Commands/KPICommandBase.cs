@@ -2,7 +2,7 @@
 
 namespace Moasher.Application.Features.KPIs.Commands;
 
-public record KPICommandBase
+public abstract record KPICommandBase
 {
     private string _code = default!;
     private string _name = default!;

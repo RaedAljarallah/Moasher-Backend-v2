@@ -1,6 +1,6 @@
 ﻿namespace Moasher.Application.Features.Deliverables.Commands;
 
-public record DeliverableCommandBase
+public abstract record DeliverableCommandBase
 {
     private string _name = default!;
     private string? _supportingDocument;
