@@ -38,6 +38,6 @@ public class GetDeliverablesQueryHandler : IRequestHandler<GetDeliverablesQuery,
             .AsNoTracking()
             .WithinParameters(new GetDeliverablesQueryParameter(request))
             .ProjectTo<DeliverableDto>(_mapper.ConfigurationProvider)
-            .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken);
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

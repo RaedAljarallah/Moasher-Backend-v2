@@ -39,6 +39,6 @@ public class GetEntitiesQueryHandler : IRequestHandler<GetEntitiesQuery, Paginat
             .AsNoTracking()
             .WithinParameters(new GetEntitiesQueryParameter(request))
             .ProjectTo<EntityDto>(_mapper.ConfigurationProvider)
-            .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken);
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

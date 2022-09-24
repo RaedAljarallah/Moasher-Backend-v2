@@ -39,6 +39,6 @@ public class GetMilestonesQueryHandler : IRequestHandler<GetMilestonesQuery, Pag
             .AsNoTracking()
             .WithinParameters(new GetMilestonesQueryParameter(request))
             .ProjectTo<MilestoneDto>(_mapper.ConfigurationProvider)
-            .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken);
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

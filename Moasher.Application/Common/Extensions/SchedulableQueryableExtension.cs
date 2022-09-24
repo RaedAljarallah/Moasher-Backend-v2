@@ -11,57 +11,57 @@ public static class SchedulableQueryableExtension
         SchedulableQueryParametersDto parameter)
         where TEntity : ISchedulable
     {
-        if (!string.IsNullOrWhiteSpace(parameter.St))
+        if (!string.IsNullOrWhiteSpace(parameter.Status))
         {
-            if (string.Equals(parameter.St, SchedulableStatus.Planned.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            if (string.Equals(parameter.Status, SchedulableStatus.Planned.ToString(), StringComparison.CurrentCultureIgnoreCase))
             {
                 query = query.Planned();
             }
             
-            if (string.Equals(parameter.St, SchedulableStatus.Completed.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            if (string.Equals(parameter.Status, SchedulableStatus.Completed.ToString(), StringComparison.CurrentCultureIgnoreCase))
             {
                 query = query.Completed();
             }
             
-            if (string.Equals(parameter.St, SchedulableStatus.Late.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            if (string.Equals(parameter.Status, SchedulableStatus.Late.ToString(), StringComparison.CurrentCultureIgnoreCase))
             {
                 query = query.Late();
             }
             
-            if (string.Equals(parameter.St, SchedulableStatus.Uncompleted.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            if (string.Equals(parameter.Status, SchedulableStatus.Uncompleted.ToString(), StringComparison.CurrentCultureIgnoreCase))
             {
                 query = query.Uncompleted();
             }
             
-            if (string.Equals(parameter.St, SchedulableStatus.Due.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            if (string.Equals(parameter.Status, SchedulableStatus.Due.ToString(), StringComparison.CurrentCultureIgnoreCase))
             {
                 query = query.Due();
             }
         }
         
-        if (parameter.Du.HasValue)
+        if (parameter.DueUntil.HasValue)
         {
-            query = query.DueUntil(parameter.Du.Value);
+            query = query.DueUntil(parameter.DueUntil.Value);
         }
         
-        if (parameter.Pf.HasValue)
+        if (parameter.PlannedFrom.HasValue)
         {
-            query = query.PlannedFrom(parameter.Pf.Value);
+            query = query.PlannedFrom(parameter.PlannedFrom.Value);
         }
         
-        if (parameter.Pt.HasValue)
+        if (parameter.PlannedTo.HasValue)
         {
-            query = query.PlannedTo(parameter.Pt.Value);
+            query = query.PlannedTo(parameter.PlannedTo.Value);
         }
 
-        if (parameter.Af.HasValue)
+        if (parameter.ActualFrom.HasValue)
         {
-            query = query.ActualFrom(parameter.Af.Value);
+            query = query.ActualFrom(parameter.ActualFrom.Value);
         }
 
-        if (parameter.At.HasValue)
+        if (parameter.ActualTo.HasValue)
         {
-            query = query.ActualTo(parameter.At.Value);
+            query = query.ActualTo(parameter.ActualTo.Value);
         }
 
         return query.Cast<TEntity>();

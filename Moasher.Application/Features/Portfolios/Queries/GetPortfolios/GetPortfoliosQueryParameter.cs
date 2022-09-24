@@ -17,9 +17,18 @@ public class GetPortfoliosQueryParameter : IQueryParameterBuilder<Portfolio>
     public IQueryable<Portfolio> Build(IQueryable<Portfolio> query)
     {
         query = query.OrderBy(_parameter.OrderBy);
-        if (!string.IsNullOrWhiteSpace(_parameter.Q))
+        if (!string.IsNullOrWhiteSpace(_parameter.SearchQuery))
         {
-            query = query.Like(_parameter.Q, "Name", "Code");
+            query = query.Like(_parameter.SearchQuery, "Name", "Code");
+        }
+        if (!string.IsNullOrWhiteSpace(_parameter.Name))
+        {
+            query = query.Like(_parameter.Name, "Name");
+        }
+
+        if (!string.IsNullOrWhiteSpace(_parameter.Code))
+        {
+            query = query.Like(_parameter.Code, "Code");
         }
 
         return query;

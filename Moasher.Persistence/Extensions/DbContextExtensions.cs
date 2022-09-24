@@ -21,23 +21,5 @@ public static class DbContextExtensions
         
         return domainEvents;
     }
-
-    public static void UpdateAuditRecords(this DbContext context)
-    {
-        foreach (var entry in context.ChangeTracker.Entries<AuditableDbEntity>())
-        {
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                    // TODO: Replace dummy value
-                    entry.Entity.CreatedBy = "Test@Test.com";
-                    entry.Entity.CreatedAt = DateTimeService.Now;
-                    break;
-                case EntityState.Modified:
-                    entry.Entity.LastModifiedBy = "Test@Test.com";
-                    entry.Entity.LastModified = DateTimeService.Now;
-                    break;
-            }
-        }
-    }
+    
 }

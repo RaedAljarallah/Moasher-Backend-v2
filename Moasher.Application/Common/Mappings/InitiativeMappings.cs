@@ -4,6 +4,7 @@ using Moasher.Application.Features.Initiatives;
 using Moasher.Application.Features.Initiatives.Commands.CreateInitiative;
 using Moasher.Application.Features.Initiatives.Commands.UpdateInitiative;
 using Moasher.Application.Features.Initiatives.Queries.EditInitiative;
+using Moasher.Application.Features.Initiatives.Queries.GetInitiativeDetails;
 using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities.InitiativeEntities;
 
@@ -24,8 +25,7 @@ public class InitiativeMappings : Profile
         CreateMap<UpdateInitiativeCommand, Initiative>()
             .ForMember(i => i.Id, opt => opt.Ignore());
         
-        // TODO: Uncomment
-        // CreateMap<Initiative, InitiativeDetailsDto>()
-        //     .IncludeBase<Initiative, InitiativeDto>();
+        CreateMap<Initiative, InitiativeDetailsDto>()
+            .IncludeBase<Initiative, InitiativeDto>();
     }
 }

@@ -17,9 +17,9 @@ public class GetEnumTypesQueryParameter : IQueryParameterBuilder<EnumType>
     public IQueryable<EnumType> Build(IQueryable<EnumType> query)
     {
         query = query.OrderBy(_parameter.OrderBy);
-        if (!string.IsNullOrWhiteSpace(_parameter.Q))
+        if (!string.IsNullOrWhiteSpace(_parameter.SearchQuery))
         {
-            query = query.Like(_parameter.Q, "Name");
+            query = query.Like(_parameter.SearchQuery, "Name");
         }
         if (!string.IsNullOrWhiteSpace(_parameter.Name))
         {

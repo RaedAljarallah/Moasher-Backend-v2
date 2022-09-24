@@ -16,9 +16,9 @@ public class GetDeliverablesQueryParameter : IQueryParameterBuilder<InitiativeDe
     public IQueryable<InitiativeDeliverable> Build(IQueryable<InitiativeDeliverable> query)
     {
         query = query.WithinSchedulableParameters<InitiativeDeliverable>(_parameter);
-        if (!string.IsNullOrWhiteSpace(_parameter.Q))
+        if (!string.IsNullOrWhiteSpace(_parameter.SearchQuery))
         {
-            query = query.Like(_parameter.Q, "Name");
+            query = query.Like(_parameter.SearchQuery, "Name");
         }
         if (!string.IsNullOrWhiteSpace(_parameter.Name))
         {

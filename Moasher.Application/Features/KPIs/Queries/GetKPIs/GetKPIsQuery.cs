@@ -13,15 +13,15 @@ public record GetKPIsQuery : QueryParameterBase, IRequest<PaginatedList<KPIDto>>
 {
     public string? Name { get; set; }
     public string? Code { get; set; }
-    public string? Entity { get; set; }
-    public string? L1 { get; set; }
-    public string? L2 { get; set; }
-    public string? L3 { get; set; }
-    public string? L4 { get; set; }
-    public string? St { get; set; }
+    public string? EntityName { get; set; }
+    public string? L1Name { get; set; }
+    public string? L2Name { get; set; }
+    public string? L3Name { get; set; }
+    public string? L4Name { get; set; }
+    public string? Status { get; set; }
     public Guid? EntityId { get; set; }
     public Guid? ProgramId { get; set; }
-    public Guid? StId { get; set; }
+    public Guid? StatusId { get; set; }
     public Guid? L1Id { get; set; }
     public Guid? L2Id { get; set; }
     public Guid? L3Id { get; set; }
@@ -45,6 +45,6 @@ public class GetKPIsQueryHandler : IRequestHandler<GetKPIsQuery, PaginatedList<K
             .AsNoTracking()
             .WithinParameters(new GetKPIsQueryParameter(request))
             .ProjectTo<KPIDto>(_mapper.ConfigurationProvider)
-            .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken);
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

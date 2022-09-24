@@ -34,6 +34,6 @@ public class GetApprovedCostsQueryHandler : IRequestHandler<GetApprovedCostsQuer
             .AsNoTracking()
             .WithinParameters(new GetApprovedCostsQueryParameter(request))
             .ProjectTo<ApprovedCostDto>(_mapper.ConfigurationProvider)
-            .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken);
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

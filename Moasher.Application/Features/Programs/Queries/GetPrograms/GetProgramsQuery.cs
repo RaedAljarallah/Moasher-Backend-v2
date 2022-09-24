@@ -34,6 +34,6 @@ public class GetProgramsQueryHandler : IRequestHandler<GetProgramsQuery, Paginat
             .AsNoTracking()
             .WithinParameters(new GetProgramsQueryParameter(request))
             .ProjectTo<ProgramDto>(_mapper.ConfigurationProvider)
-            .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken);
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

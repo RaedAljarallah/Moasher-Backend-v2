@@ -18,9 +18,9 @@ public class GetEntitiesQueryParameter : IQueryParameterBuilder<Entity>
     public IQueryable<Entity> Build(IQueryable<Entity> query)
     {
         query = query.OrderBy(_parameter.OrderBy);
-        if (!string.IsNullOrWhiteSpace(_parameter.Q))
+        if (!string.IsNullOrWhiteSpace(_parameter.SearchQuery))
         {
-            query = query.Like(_parameter.Q, "Name", "Code");
+            query = query.Like(_parameter.SearchQuery, "Name", "Code");
         }
 
         if (!string.IsNullOrWhiteSpace(_parameter.Name))

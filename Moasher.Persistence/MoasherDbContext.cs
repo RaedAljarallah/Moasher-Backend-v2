@@ -8,17 +8,21 @@ using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Entities.KPIEntities;
 using Moasher.Domain.Entities.StrategicObjectiveEntities;
+using Moasher.Persistence.Extensions;
 using Moasher.Persistence.Interceptors;
 
 namespace Moasher.Persistence;
 
 public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IMoasherDbContext
 {
-    private readonly SaveChangesAsyncInterceptor _interceptor;
+    private readonly AuditingInterceptor _auditingInterceptor;
+    private readonly IBackgroundQueue _backgroundQueue;
 
-    public MoasherDbContext(DbContextOptions<MoasherDbContext> options, SaveChangesAsyncInterceptor interceptor) : base(options)
+    public MoasherDbContext(DbContextOptions<MoasherDbContext> options, AuditingInterceptor auditingInterceptor,
+        IBackgroundQueue backgroundQueue) : base(options)
     {
-        _interceptor = interceptor;
+        _auditingInterceptor = auditingInterceptor;
+        _backgroundQueue = backgroundQueue;
     }
 
     public DbSet<Initiative> Initiatives => Set<Initiative>();
@@ -58,7 +62,22 @@ public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.AddInterceptors(_interceptor);
+        optionsBuilder.AddInterceptors(_auditingInterceptor);
     }
-    
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        var events = this.GetDomainEvents();
+        var result = await base.SaveChangesAsync(cancellationToken);
+        await DispatchEvents(events);
+        return result;
+    }
+
+    private async Task DispatchEvents(List<DomainEvent> domainEvents)
+    {
+        foreach (var domainEvent in domainEvents)
+        {
+            await _backgroundQueue.QueueTask(ct => Task.Factory.StartNew(() => domainEvent as INotification, ct));
+        }
+    }
 }

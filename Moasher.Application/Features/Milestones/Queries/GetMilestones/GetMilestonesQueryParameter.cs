@@ -16,9 +16,9 @@ public class GetMilestonesQueryParameter : IQueryParameterBuilder<InitiativeMile
     public IQueryable<InitiativeMilestone> Build(IQueryable<InitiativeMilestone> query)
     {
         query = query.WithinSchedulableParameters<InitiativeMilestone>(_parameter);
-        if (!string.IsNullOrWhiteSpace(_parameter.Q))
+        if (!string.IsNullOrWhiteSpace(_parameter.SearchQuery))
         {
-            query = query.Like(_parameter.Q, "Name");
+            query = query.Like(_parameter.SearchQuery, "Name");
         }
         if (!string.IsNullOrWhiteSpace(_parameter.Name))
         {

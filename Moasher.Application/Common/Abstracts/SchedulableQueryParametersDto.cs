@@ -2,10 +2,10 @@
 
 public record SchedulableQueryParametersDto : QueryParameterBase
 {
-    public string? St { get; set; }
-    public DateTimeOffset? Du { get; set; }
-    public DateTimeOffset? Pf { get; set; }
-    public DateTimeOffset? Pt { get; set; }
-    public DateTimeOffset? Af { get; set; }
-    public DateTimeOffset? At { get; set; }
+    public string? Status { get; set; }
+    public DateTimeOffset? DueUntil { get; set; }
+    public DateTimeOffset? PlannedFrom { get; set; }
+    public DateTimeOffset? PlannedTo { get; set; }
+    public DateTimeOffset? ActualFrom { get; set; }
+    public DateTimeOffset? ActualTo { get; set; }
 }

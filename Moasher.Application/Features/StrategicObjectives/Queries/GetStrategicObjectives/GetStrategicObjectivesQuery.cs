@@ -35,7 +35,7 @@ public class GetStrategicObjectivesQueryHandler : IRequestHandler<GetStrategicOb
 
     public async Task<object> Handle(GetStrategicObjectivesQuery request, CancellationToken cancellationToken)
     {
-        object strategicObjectives = new PaginatedList<object>(new List<object>(), 0, request.Pn, request.Ps);
+        object strategicObjectives = new PaginatedList<object>(new List<object>(), 0, request.PageNumber, request.PageSize);
 
         if (request.ParentId.HasValue)
         {
@@ -59,16 +59,16 @@ public class GetStrategicObjectivesQueryHandler : IRequestHandler<GetStrategicOb
         {
             1 => await GenerateLevelOneQuery(strategicObjectivesQuery)
                 .ProjectTo<StrategicObjectiveLevelOneDto>(_mapper.ConfigurationProvider)
-                .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken),
+                .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken),
             2 => await GenerateLevelTwoQuery(strategicObjectivesQuery)
                 .ProjectTo<StrategicObjectiveLevelTwoDto>(_mapper.ConfigurationProvider)
-                .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken),
+                .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken),
             3 => await GenerateLevelThreeQuery(strategicObjectivesQuery)
                 .ProjectTo<StrategicObjectiveLevelThreeDto>(_mapper.ConfigurationProvider)
-                .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken),
+                .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken),
             4 => await GenerateLevelFourQuery(strategicObjectivesQuery)
                 .ProjectTo<StrategicObjectiveLevelFourDto>(_mapper.ConfigurationProvider)
-                .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken),
+                .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken),
             _ => strategicObjectives
         };
 

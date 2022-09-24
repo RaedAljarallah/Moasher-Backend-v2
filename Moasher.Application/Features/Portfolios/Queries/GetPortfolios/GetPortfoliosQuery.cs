@@ -33,6 +33,6 @@ public class GetPortfoliosQueryHandler : IRequestHandler<GetPortfoliosQuery, Pag
             .AsNoTracking()
             .WithinParameters(new GetPortfoliosQueryParameter(request))
             .ProjectTo<PortfolioDto>(_mapper.ConfigurationProvider)
-            .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken);
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

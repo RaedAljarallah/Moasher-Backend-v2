@@ -38,6 +38,6 @@ public class GetEnumTypesQueryHandler : IRequestHandler<GetEnumTypesQuery, Pagin
             .AsNoTracking()
             .WithinParameters(new GetEnumTypesQueryParameter(request))
             .ProjectTo<EnumTypeDto>(_mapper.ConfigurationProvider)
-            .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken);
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

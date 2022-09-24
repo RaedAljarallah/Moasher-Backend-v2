@@ -34,6 +34,6 @@ public class GetBudgetsQueryHandler : IRequestHandler<GetBudgetsQuery, Paginated
             .AsNoTracking()
             .WithinParameters(new GetBudgetsQueryParameter(request))
             .ProjectTo<BudgetDto>(_mapper.ConfigurationProvider)
-            .ToPaginatedListAsync(request.Pn, request.Ps, cancellationToken);
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

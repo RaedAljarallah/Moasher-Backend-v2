@@ -10,7 +10,7 @@ public static class Startup
 {
     public static void AddPersistence(this IServiceCollection services, IConfiguration config)
     {
-        services.AddScoped<SaveChangesAsyncInterceptor>();
+        services.AddScoped<AuditingInterceptor>();
         services.AddDbContext<MoasherDbContext>(options =>
         {
             options.UseSqlServer(config.GetConnectionString("DefaultConnection"), sqlOptions =>
