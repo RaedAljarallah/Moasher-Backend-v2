@@ -55,6 +55,8 @@ public class EntityUpdatedEventHandler : INotificationHandler<EntityUpdatedEvent
                 k.Values.ToList().ForEach(v => v.KPI = k);
             });
         
+            _context.Initiatives.UpdateRange(entity.Initiatives);
+            _context.KPIs.UpdateRange(entity.KPIs);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

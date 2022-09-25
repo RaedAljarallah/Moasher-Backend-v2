@@ -29,6 +29,8 @@ public class LevelFourStrategicObjectiveUpdatedEventHandler : INotificationHandl
         initiatives.ForEach(i => i.LevelFourStrategicObjective = strategicObjective);
         kpis.ForEach(k => k.LevelFourStrategicObjective = strategicObjective);
 
+        _context.Initiatives.UpdateRange(initiatives);
+        _context.KPIs.UpdateRange(kpis);
         await _context.SaveChangesAsync(cancellationToken);
     }
 }

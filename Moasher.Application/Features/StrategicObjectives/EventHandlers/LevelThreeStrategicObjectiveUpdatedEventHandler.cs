@@ -28,6 +28,8 @@ public class LevelThreeStrategicObjectiveUpdatedEventHandler : INotificationHand
             strategicObjective.Initiatives.ToList().ForEach(i => i.LevelThreeStrategicObjective = strategicObjective);
             strategicObjective.KPIs.ToList().ForEach(k => k.LevelThreeStrategicObjective = strategicObjective);
 
+            _context.Initiatives.UpdateRange(strategicObjective.Initiatives);
+            _context.KPIs.UpdateRange(strategicObjective.KPIs);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

@@ -127,7 +127,7 @@ public class UpdateKPICommandHandler : IRequestHandler<UpdateKPICommand, KPIDto>
         }
         #endregion
 
-        var hasEvent = request.Name != kpi.Name || request.Polarity != kpi.Polarity;
+        var hasEvent = request.Name != kpi.Name || request.Polarity != kpi.Polarity || request.MeasurementUnit != kpi.MeasurementUnit;
         
         _mapper.Map(request, kpi);
         if (hasEvent)

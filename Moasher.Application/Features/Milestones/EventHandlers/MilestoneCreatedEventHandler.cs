@@ -28,7 +28,7 @@ public class MilestoneCreatedEventHandler : INotificationHandler<MilestoneCreate
             if (initiative.CalculateStatus)
             {
                 var status = await _context.EnumTypes
-                    .Where(e => e.Category == EnumTypeCategory.InitiativeStatus.ToString())
+                    .Where(e => e.Category.ToLower() == EnumTypeCategory.InitiativeStatus.ToString().ToLower())
                     .ToListAsync(cancellationToken);
 
                 initiative.SetStatus(status);

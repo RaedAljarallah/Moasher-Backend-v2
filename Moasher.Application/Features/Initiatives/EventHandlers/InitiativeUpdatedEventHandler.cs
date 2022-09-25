@@ -53,7 +53,8 @@ public class InitiativeUpdatedEventHandler : INotificationHandler<InitiativeUpda
             initiative.Risks.ToList().ForEach(r => r.Initiative = initiative);
             initiative.Teams.ToList().ForEach(t => t.Initiative = initiative);
             initiative.Analytics.ToList().ForEach(a => a.Initiative = initiative);
-
+            
+            _context.Initiatives.Update(initiative);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

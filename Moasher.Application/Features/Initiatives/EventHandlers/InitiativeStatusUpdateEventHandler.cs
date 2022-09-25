@@ -38,7 +38,8 @@ public class InitiativeStatusUpdateEventHandler : INotificationHandler<Initiativ
             {
                 initiative.StatusEnum = null;
             }
-            
+
+            _context.Initiatives.Update(initiative);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

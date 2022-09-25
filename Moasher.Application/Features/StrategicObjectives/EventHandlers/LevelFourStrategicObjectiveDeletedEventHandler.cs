@@ -28,7 +28,9 @@ public class LevelFourStrategicObjectiveDeletedEventHandler : INotificationHandl
 
         initiatives.ForEach(i => i.LevelFourStrategicObjective = null);
         kpis.ForEach(k => k.LevelFourStrategicObjective = null);
-
+        
+        _context.Initiatives.UpdateRange(initiatives);
+        _context.KPIs.UpdateRange(kpis);
         await _context.SaveChangesAsync(cancellationToken);
     }
 }

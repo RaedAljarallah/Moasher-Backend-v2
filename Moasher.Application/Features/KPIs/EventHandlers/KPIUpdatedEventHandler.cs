@@ -28,6 +28,9 @@ public class KPIUpdatedEventHandler : INotificationHandler<KPIUpdatedEvent>
         {
             kpi.Values.ToList().ForEach(v => v.KPI = kpi);
             kpi.Analytics.ToList().ForEach(a => a.KPI = kpi);
+            
+            _context.KPIValues.UpdateRange(kpi.Values);
+            _context.Analytics.UpdateRange(kpi.Analytics);
             await _context.SaveChangesAsync(cancellationToken);
         }
         

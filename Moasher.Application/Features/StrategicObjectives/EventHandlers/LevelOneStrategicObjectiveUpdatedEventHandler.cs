@@ -30,6 +30,8 @@ public class LevelOneStrategicObjectiveUpdatedEventHandler : INotificationHandle
         initiatives.ForEach(i => i.LevelOneStrategicObjective = strategicObjective);
         kpis.ForEach(k => k.LevelOneStrategicObjective = strategicObjective);
             
+        _context.Initiatives.UpdateRange(initiatives);
+        _context.KPIs.UpdateRange(kpis);
         await _context.SaveChangesAsync(cancellationToken);
     }
 }

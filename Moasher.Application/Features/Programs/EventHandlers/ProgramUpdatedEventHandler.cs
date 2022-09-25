@@ -27,7 +27,8 @@ public class ProgramUpdatedEventHandler : INotificationHandler<ProgramUpdatedEve
             {
                 i.Program = program;
             });
-        
+            
+            _context.Initiatives.UpdateRange(program.Initiatives);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

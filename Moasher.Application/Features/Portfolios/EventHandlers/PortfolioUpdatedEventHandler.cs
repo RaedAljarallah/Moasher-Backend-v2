@@ -24,7 +24,8 @@ public class PortfolioUpdatedEventHandler : INotificationHandler<PortfolioUpdate
 
         if (portfolio is not null)
         {
-            portfolio.Initiatives.ToList().ForEach(i =>i.Portfolio = portfolio);
+            portfolio.Initiatives.ToList().ForEach(i => i.Portfolio = portfolio);
+            _context.Initiatives.UpdateRange(portfolio.Initiatives);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

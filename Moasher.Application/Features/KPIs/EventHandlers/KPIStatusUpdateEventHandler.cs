@@ -38,7 +38,8 @@ public class KPIStatusUpdateEventHandler : INotificationHandler<KPIStatusUpdateE
             {
                 kpi.StatusEnum = null;
             }
-            
+
+            _context.KPIs.Update(kpi);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }
