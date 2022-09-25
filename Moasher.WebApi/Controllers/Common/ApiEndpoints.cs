@@ -151,4 +151,14 @@ public struct ApiEndpoints
         public const string Delete = $"{Base}/{{id}}";
         public const string Edit = $"{Base}/{{id}}/edit";
     }
+    
+    public struct Analytics
+    {
+        private const string Base = "analytics";
+        public const string All = Base;
+        public const string Details = $"{Base}/{{id}}";
+        public const string Create = Base;
+        public const string Update = $"{Base}/{{id}}";
+        public const string Delete = $"{Base}/{{id}}";
+    }
 }

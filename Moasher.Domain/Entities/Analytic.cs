@@ -12,7 +12,6 @@ public class Analytic : AuditableDbEntity
     public string Description { get; set; } = default!;
     public DateTimeOffset AnalyzedAt { get; set; }
     public string AnalyzedBy { get; set; } = default!;
-    public string Model { get; private set; } = default!;
     public string? InitiativeName { get; private set; }
     public Initiative? Initiative
     {
@@ -23,7 +22,8 @@ public class Analytic : AuditableDbEntity
             InitiativeName = value?.Name;
         }
     }
-    
+
+    public Guid? InitiativeId { get; set; }
     public string? KPIName { get; private set; }
     public KPI? KPI
     {

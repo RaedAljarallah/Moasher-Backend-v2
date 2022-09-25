@@ -9,7 +9,8 @@ namespace Moasher.Application.Common.Extensions;
 
 public static class QueryableExtensions
 {
-    public static IQueryable<TEntity> WithinParameters<TEntity>(this IQueryable<TEntity> query, IQueryParameterBuilder<TEntity> parameters)
+    public static IQueryable<TEntity> WithinParameters<TEntity>(this IQueryable<TEntity> query,
+        IQueryParameterBuilder<TEntity> parameters)
         where TEntity : DbEntity
     {
         return parameters.Build(query);
@@ -21,8 +22,17 @@ public static class QueryableExtensions
         var predicate = fields.Aggregate(string.Empty, (current, field) => !string.IsNullOrEmpty(current)
             ? $"{current} || {field}.Contains(@0)"
             : $"{field}.Contains(@0)");
-        
+
         return query.Where(ParsingConfig.DefaultEFCore21, predicate, searchQuery);
+    }
+
+    public static IQueryable<TEntity> IncludeWhen<TEntity, TProperty>(this IQueryable<TEntity> query,
+        Expression<Func<TEntity, TProperty>> navigationPropertyPath, bool shouldInclude)
+        where TEntity : DbEntity
+    {
+        return shouldInclude
+            ? query.Include(navigationPropertyPath)
+            : query;
     }
 
     public static async Task<PaginatedList<TResult>> ToPaginatedListAsync<TResult>(this IQueryable<TResult> query,
@@ -33,6 +43,7 @@ public static class QueryableExtensions
         {
             query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
         }
+
         var items = await query.ToListAsync(cancellationToken);
 
         return new PaginatedList<TResult>(items, count, pageNumber, pageSize);
