@@ -15,6 +15,7 @@ public record GetProgramsQuery :  QueryParameterBase, IRequest<PaginatedList<Pro
     public string? Code { get; set; }
     public bool WithInitiatives { get; set; }
     public bool WithKPIs { get; set; }
+    public Guid? PortfolioId { get; set; }
 }
 
 public class GetProgramsQueryHandler : IRequestHandler<GetProgramsQuery, PaginatedList<ProgramDto>>

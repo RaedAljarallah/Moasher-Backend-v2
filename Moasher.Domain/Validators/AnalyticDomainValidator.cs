@@ -19,7 +19,7 @@ public class AnalyticDomainValidator : DomainValidator, IDomainValidator
     {
         if (_analytics.Any(a => a.AnalyzedAt.Date == _analyzedAt))
         {
-            Errors[nameof(Analytic.Description)] = new[] {DomainValidationErrorMessages.Duplicated("التحليل")};
+            Errors[nameof(Analytic.AnalyzedAt)] = new[] {DomainValidationErrorMessages.Duplicated("التحليل")};
         }
         return Errors;
     }

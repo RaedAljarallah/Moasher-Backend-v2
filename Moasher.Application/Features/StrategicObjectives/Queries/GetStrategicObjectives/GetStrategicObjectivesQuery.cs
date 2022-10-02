@@ -20,6 +20,7 @@ public record GetStrategicObjectivesQuery : QueryParameterBase, IRequest<object>
     public Guid? ParentId { get; set; }
     public Guid? EntityId { get; set; }
     public Guid? ProgramId { get; set; }
+    public Guid? PortfolioId { get; set; }
 }
 
 public class GetStrategicObjectivesQueryHandler : IRequestHandler<GetStrategicObjectivesQuery, object>

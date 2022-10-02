@@ -50,7 +50,10 @@ public class GetProgramsQueryParameter : IQueryParameterBuilder<Program>
                 .ThenInclude(o => o.KPIs);
         }
 
-
+        if (_parameter.PortfolioId.HasValue)
+        {
+            query = query.Where(p => p.Initiatives.Select(i => i.PortfolioId).Contains(_parameter.PortfolioId.Value));
+        }
         return query;
     }
 }
