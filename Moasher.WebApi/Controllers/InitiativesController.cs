@@ -5,6 +5,7 @@ using Moasher.Application.Features.Initiatives.Commands.UpdateInitiative;
 using Moasher.Application.Features.Initiatives.Queries.EditInitiative;
 using Moasher.Application.Features.Initiatives.Queries.GetInitiativeDetails;
 using Moasher.Application.Features.Initiatives.Queries.GetInitiatives;
+using Moasher.Application.Features.Initiatives.Queries.GetInitiativesSummary;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -19,6 +20,15 @@ public class InitiativesController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetInitiativesQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.Initiatives.Summary)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> Summary([FromQuery] GetInitiativesSummaryQuery query, CancellationToken cancellationToken)
+    {
+        return Ok(await Sender.Send(query, cancellationToken));
     }
     
     [HttpGet(ApiEndpoints.Initiatives.Details)]

@@ -6,6 +6,7 @@ public struct ApiEndpoints
     {
         private const string Base = "initiatives";
         public const string All = Base;
+        public const string Summary = $"{Base}/summary";
         public const string Details = $"{Base}/{{id}}";
         public const string Create = Base;
         public const string Update = $"{Base}/{{id}}";
