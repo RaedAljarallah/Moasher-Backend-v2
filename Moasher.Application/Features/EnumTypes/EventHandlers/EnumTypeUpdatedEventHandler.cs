@@ -14,12 +14,13 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
     {
         _context = context;
     }
-    
+
     public async Task Handle(EnumTypeUpdatedEvent notification, CancellationToken cancellationToken)
     {
         var enumType = notification.EnumType;
-        
-        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeTeamRole.ToString(), StringComparison.CurrentCultureIgnoreCase))
+
+        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeTeamRole.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
         {
             var teamMembers = await _context.InitiativeTeams.Where(t => t.RoleEnumId == enumType.Id)
                 .ToListAsync(cancellationToken);
@@ -27,8 +28,9 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
             teamMembers.ForEach(t => t.RoleEnum = enumType);
             _context.InitiativeTeams.UpdateRange(teamMembers);
         }
-        
-        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeStatus.ToString(), StringComparison.CurrentCultureIgnoreCase))
+
+        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeStatus.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
         {
             var initiatives = await _context.Initiatives.Where(i => i.StatusEnumId == enumType.Id)
                 .ToListAsync(cancellationToken);
@@ -36,8 +38,9 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
             initiatives.ForEach(i => i.StatusEnum = enumType);
             _context.Initiatives.UpdateRange(initiatives);
         }
-        
-        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeFundStatus.ToString(), StringComparison.CurrentCultureIgnoreCase))
+
+        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeFundStatus.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
         {
             var initiatives = await _context.Initiatives.Where(i => i.FundStatusEnumId == enumType.Id)
                 .ToListAsync(cancellationToken);
@@ -45,8 +48,9 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
             initiatives.ForEach(i => i.FundStatusEnum = enumType);
             _context.Initiatives.UpdateRange(initiatives);
         }
-        
-        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeIssueScope.ToString(), StringComparison.CurrentCultureIgnoreCase))
+
+        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeIssueScope.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
         {
             var issues = await _context.InitiativeIssues.Where(i => i.ScopeEnumId == enumType.Id)
                 .ToListAsync(cancellationToken);
@@ -54,8 +58,9 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
             issues.ForEach(i => i.ScopeEnum = enumType);
             _context.InitiativeIssues.UpdateRange(issues);
         }
-        
-        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeIssueStatus.ToString(), StringComparison.CurrentCultureIgnoreCase))
+
+        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeIssueStatus.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
         {
             var issues = await _context.InitiativeIssues.Where(i => i.StatusEnumId == enumType.Id)
                 .ToListAsync(cancellationToken);
@@ -63,8 +68,9 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
             issues.ForEach(i => i.StatusEnum = enumType);
             _context.InitiativeIssues.UpdateRange(issues);
         }
-        
-        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeIssueImpact.ToString(), StringComparison.CurrentCultureIgnoreCase))
+
+        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeIssueImpact.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
         {
             var issues = await _context.InitiativeIssues.Where(i => i.ImpactEnumId == enumType.Id)
                 .ToListAsync(cancellationToken);
@@ -72,8 +78,9 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
             issues.ForEach(i => i.ImpactEnum = enumType);
             _context.InitiativeIssues.UpdateRange(issues);
         }
-        
-        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeRiskType.ToString(), StringComparison.CurrentCultureIgnoreCase))
+
+        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeRiskType.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
         {
             var risks = await _context.InitiativeRisks.Where(i => i.TypeEnumId == enumType.Id)
                 .ToListAsync(cancellationToken);
@@ -81,8 +88,9 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
             risks.ForEach(i => i.TypeEnum = enumType);
             _context.InitiativeRisks.UpdateRange(risks);
         }
-        
-        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeRiskPriority.ToString(), StringComparison.CurrentCultureIgnoreCase))
+
+        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeRiskPriority.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
         {
             var risks = await _context.InitiativeRisks.Where(i => i.PriorityEnumId == enumType.Id)
                 .ToListAsync(cancellationToken);
@@ -90,8 +98,9 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
             risks.ForEach(i => i.PriorityEnum = enumType);
             _context.InitiativeRisks.UpdateRange(risks);
         }
-        
-        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeRiskProbability.ToString(), StringComparison.CurrentCultureIgnoreCase))
+
+        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeRiskProbability.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
         {
             var risks = await _context.InitiativeRisks.Where(i => i.ProbabilityEnumId == enumType.Id)
                 .ToListAsync(cancellationToken);
@@ -99,8 +108,9 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
             risks.ForEach(i => i.ProbabilityEnum = enumType);
             _context.InitiativeRisks.UpdateRange(risks);
         }
-        
-        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeRiskImpact.ToString(), StringComparison.CurrentCultureIgnoreCase))
+
+        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeRiskImpact.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
         {
             var risks = await _context.InitiativeRisks.Where(i => i.ImpactEnumId == enumType.Id)
                 .ToListAsync(cancellationToken);
@@ -109,7 +119,8 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
             _context.InitiativeRisks.UpdateRange(risks);
         }
 
-        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeRiskScope.ToString(), StringComparison.CurrentCultureIgnoreCase))
+        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeRiskScope.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
         {
             var risks = await _context.InitiativeRisks.Where(i => i.ScopeEnumId == enumType.Id)
                 .ToListAsync(cancellationToken);
@@ -118,16 +129,8 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
             _context.InitiativeRisks.UpdateRange(risks);
         }
 
-        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeContractType.ToString(), StringComparison.CurrentCultureIgnoreCase))
-        {
-            var contracts = await _context.InitiativeContracts.Where(i => i.TypeEnumId == enumType.Id)
-                .ToListAsync(cancellationToken);
-
-            contracts.ForEach(i => i.TypeEnum = enumType);
-            _context.InitiativeContracts.UpdateRange(contracts);
-        }
-
-        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeContractStatus.ToString(), StringComparison.CurrentCultureIgnoreCase))
+        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeContractStatus.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
         {
             var contracts = await _context.InitiativeContracts.Where(i => i.StatusEnumId == enumType.Id)
                 .ToListAsync(cancellationToken);
@@ -135,9 +138,19 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
             contracts.ForEach(i => i.StatusEnum = enumType);
             _context.InitiativeContracts.UpdateRange(contracts);
         }
-        
-        // TODO: Add Initiative ProjectsStatus
-        if (string.Equals(enumType.Category, EnumTypeCategory.KPIStatus.ToString(), StringComparison.CurrentCultureIgnoreCase))
+
+        if (string.Equals(enumType.Category, EnumTypeCategory.InitiativeProjectPhase.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
+        {
+            var projects = await _context.InitiativeProjects.Where(p => p.PhaseEnumId == enumType.Id)
+                .ToListAsync(cancellationToken);
+            
+            projects.ForEach(p => p.PhaseEnum = enumType);
+            _context.InitiativeProjects.UpdateRange(projects);
+        }
+
+        if (string.Equals(enumType.Category, EnumTypeCategory.KPIStatus.ToString(),
+                StringComparison.CurrentCultureIgnoreCase))
         {
             var kpis = await _context.KPIs.Where(k => k.StatusEnumId == enumType.Id)
                 .ToListAsync(cancellationToken);

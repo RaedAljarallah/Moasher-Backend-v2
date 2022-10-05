@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Moasher.Persistence;
 
@@ -11,9 +12,10 @@ using Moasher.Persistence;
 namespace Moasher.Persistence.Migrations
 {
     [DbContext(typeof(MoasherDbContext))]
-    partial class MoasherDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221003113815_LinkContractsToInitiativesTable")]
+    partial class LinkContractsToInitiativesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,7 +208,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("KPIId");
 
-                    b.ToTable("Analytics", (string)null);
+                    b.ToTable("Analytics");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.Entity", b =>
@@ -246,7 +248,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Entities", (string)null);
+                    b.ToTable("Entities");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.EnumType", b =>
@@ -293,7 +295,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EnumTypes", (string)null);
+                    b.ToTable("EnumTypes");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.Initiative", b =>
@@ -474,7 +476,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("StatusEnumId");
 
-                    b.ToTable("Initiatives", (string)null);
+                    b.ToTable("Initiatives");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeApprovedCost", b =>
@@ -526,7 +528,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("InitiativeId");
 
-                    b.ToTable("InitiativeApprovedCosts", (string)null);
+                    b.ToTable("InitiativeApprovedCosts");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeBudget", b =>
@@ -582,7 +584,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("InitiativeId");
 
-                    b.ToTable("InitiativeBudgets", (string)null);
+                    b.ToTable("InitiativeBudgets");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeContract", b =>
@@ -649,7 +651,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("StatusEnumId");
 
-                    b.ToTable("InitiativeContracts", (string)null);
+                    b.ToTable("InitiativeContracts");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeDeliverable", b =>
@@ -704,7 +706,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("InitiativeId");
 
-                    b.ToTable("InitiativeDeliverables", (string)null);
+                    b.ToTable("InitiativeDeliverables");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeExpenditure", b =>
@@ -756,7 +758,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("InitiativeExpenditures", (string)null);
+                    b.ToTable("InitiativeExpenditures");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeImpact", b =>
@@ -802,7 +804,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("InitiativeId");
 
-                    b.ToTable("InitiativeImpacts", (string)null);
+                    b.ToTable("InitiativeImpacts");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeIssue", b =>
@@ -892,7 +894,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("StatusEnumId");
 
-                    b.ToTable("InitiativeIssues", (string)null);
+                    b.ToTable("InitiativeIssues");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeMilestone", b =>
@@ -950,7 +952,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("InitiativeId");
 
-                    b.ToTable("InitiativeMilestones", (string)null);
+                    b.ToTable("InitiativeMilestones");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProject", b =>
@@ -1024,7 +1026,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("PhaseEnumId");
 
-                    b.ToTable("InitiativeProjects", (string)null);
+                    b.ToTable("InitiativeProjects");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeRisk", b =>
@@ -1113,7 +1115,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("TypeEnumId");
 
-                    b.ToTable("InitiativeRisks", (string)null);
+                    b.ToTable("InitiativeRisks");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeTeam", b =>
@@ -1172,7 +1174,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("RoleEnumId");
 
-                    b.ToTable("InitiativeTeams", (string)null);
+                    b.ToTable("InitiativeTeams");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.KPIEntities.KPI", b =>
@@ -1317,7 +1319,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("StatusEnumId");
 
-                    b.ToTable("KPIs", (string)null);
+                    b.ToTable("KPIs");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.KPIEntities.KPIValue", b =>
@@ -1384,7 +1386,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("KPIId");
 
-                    b.ToTable("KPIValues", (string)null);
+                    b.ToTable("KPIValues");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.Portfolio", b =>
@@ -1421,7 +1423,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Portfolios", (string)null);
+                    b.ToTable("Portfolios");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.Program", b =>
@@ -1458,7 +1460,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Programs", (string)null);
+                    b.ToTable("Programs");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.StrategicObjectiveEntities.StrategicObjective", b =>
@@ -1499,7 +1501,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("StrategicObjectives", (string)null);
+                    b.ToTable("StrategicObjectives");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.User", b =>
@@ -1684,7 +1686,7 @@ namespace Moasher.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("StatusEnumId");
 
-                    b.OwnsOne("Moasher.Domain.Entities.InitiativeEntities.Initiative.FundStatus#Moasher.Domain.ValueObjects.EnumValue", "FundStatus", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "FundStatus", b1 =>
                         {
                             b1.Property<Guid>("InitiativeId")
                                 .HasColumnType("uniqueidentifier");
@@ -1697,13 +1699,13 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("InitiativeId");
 
-                            b1.ToTable("Initiatives", (string)null);
+                            b1.ToTable("Initiatives");
 
                             b1.WithOwner()
                                 .HasForeignKey("InitiativeId");
                         });
 
-                    b.OwnsOne("Moasher.Domain.Entities.InitiativeEntities.Initiative.Status#Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
                         {
                             b1.Property<Guid>("InitiativeId")
                                 .HasColumnType("uniqueidentifier");
@@ -1716,7 +1718,7 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("InitiativeId");
 
-                            b1.ToTable("Initiatives", (string)null);
+                            b1.ToTable("Initiatives");
 
                             b1.WithOwner()
                                 .HasForeignKey("InitiativeId");
@@ -1775,7 +1777,7 @@ namespace Moasher.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("StatusEnumId");
 
-                    b.OwnsOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeContract.Status#Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
                         {
                             b1.Property<Guid>("InitiativeContractId")
                                 .HasColumnType("uniqueidentifier");
@@ -1788,7 +1790,7 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("InitiativeContractId");
 
-                            b1.ToTable("InitiativeContracts", (string)null);
+                            b1.ToTable("InitiativeContracts");
 
                             b1.WithOwner()
                                 .HasForeignKey("InitiativeContractId");
@@ -1855,7 +1857,7 @@ namespace Moasher.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("StatusEnumId");
 
-                    b.OwnsOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeIssue.Impact#Moasher.Domain.ValueObjects.EnumValue", "Impact", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Impact", b1 =>
                         {
                             b1.Property<Guid>("InitiativeIssueId")
                                 .HasColumnType("uniqueidentifier");
@@ -1868,13 +1870,13 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("InitiativeIssueId");
 
-                            b1.ToTable("InitiativeIssues", (string)null);
+                            b1.ToTable("InitiativeIssues");
 
                             b1.WithOwner()
                                 .HasForeignKey("InitiativeIssueId");
                         });
 
-                    b.OwnsOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeIssue.Scope#Moasher.Domain.ValueObjects.EnumValue", "Scope", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Scope", b1 =>
                         {
                             b1.Property<Guid>("InitiativeIssueId")
                                 .HasColumnType("uniqueidentifier");
@@ -1887,13 +1889,13 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("InitiativeIssueId");
 
-                            b1.ToTable("InitiativeIssues", (string)null);
+                            b1.ToTable("InitiativeIssues");
 
                             b1.WithOwner()
                                 .HasForeignKey("InitiativeIssueId");
                         });
 
-                    b.OwnsOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeIssue.Status#Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
                         {
                             b1.Property<Guid>("InitiativeIssueId")
                                 .HasColumnType("uniqueidentifier");
@@ -1906,7 +1908,7 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("InitiativeIssueId");
 
-                            b1.ToTable("InitiativeIssues", (string)null);
+                            b1.ToTable("InitiativeIssues");
 
                             b1.WithOwner()
                                 .HasForeignKey("InitiativeIssueId");
@@ -1957,7 +1959,7 @@ namespace Moasher.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("PhaseEnumId");
 
-                    b.OwnsOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeProject.Phase#Moasher.Domain.ValueObjects.EnumValue", "Phase", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Phase", b1 =>
                         {
                             b1.Property<Guid>("InitiativeProjectId")
                                 .HasColumnType("uniqueidentifier");
@@ -1970,7 +1972,7 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("InitiativeProjectId");
 
-                            b1.ToTable("InitiativeProjects", (string)null);
+                            b1.ToTable("InitiativeProjects");
 
                             b1.WithOwner()
                                 .HasForeignKey("InitiativeProjectId");
@@ -2014,7 +2016,7 @@ namespace Moasher.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("TypeEnumId");
 
-                    b.OwnsOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeRisk.Impact#Moasher.Domain.ValueObjects.EnumValue", "Impact", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Impact", b1 =>
                         {
                             b1.Property<Guid>("InitiativeRiskId")
                                 .HasColumnType("uniqueidentifier");
@@ -2027,13 +2029,13 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("InitiativeRiskId");
 
-                            b1.ToTable("InitiativeRisks", (string)null);
+                            b1.ToTable("InitiativeRisks");
 
                             b1.WithOwner()
                                 .HasForeignKey("InitiativeRiskId");
                         });
 
-                    b.OwnsOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeRisk.Priority#Moasher.Domain.ValueObjects.EnumValue", "Priority", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Priority", b1 =>
                         {
                             b1.Property<Guid>("InitiativeRiskId")
                                 .HasColumnType("uniqueidentifier");
@@ -2046,13 +2048,13 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("InitiativeRiskId");
 
-                            b1.ToTable("InitiativeRisks", (string)null);
+                            b1.ToTable("InitiativeRisks");
 
                             b1.WithOwner()
                                 .HasForeignKey("InitiativeRiskId");
                         });
 
-                    b.OwnsOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeRisk.Probability#Moasher.Domain.ValueObjects.EnumValue", "Probability", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Probability", b1 =>
                         {
                             b1.Property<Guid>("InitiativeRiskId")
                                 .HasColumnType("uniqueidentifier");
@@ -2065,13 +2067,13 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("InitiativeRiskId");
 
-                            b1.ToTable("InitiativeRisks", (string)null);
+                            b1.ToTable("InitiativeRisks");
 
                             b1.WithOwner()
                                 .HasForeignKey("InitiativeRiskId");
                         });
 
-                    b.OwnsOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeRisk.Scope#Moasher.Domain.ValueObjects.EnumValue", "Scope", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Scope", b1 =>
                         {
                             b1.Property<Guid>("InitiativeRiskId")
                                 .HasColumnType("uniqueidentifier");
@@ -2084,13 +2086,13 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("InitiativeRiskId");
 
-                            b1.ToTable("InitiativeRisks", (string)null);
+                            b1.ToTable("InitiativeRisks");
 
                             b1.WithOwner()
                                 .HasForeignKey("InitiativeRiskId");
                         });
 
-                    b.OwnsOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeRisk.Type#Moasher.Domain.ValueObjects.EnumValue", "Type", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Type", b1 =>
                         {
                             b1.Property<Guid>("InitiativeRiskId")
                                 .HasColumnType("uniqueidentifier");
@@ -2103,7 +2105,7 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("InitiativeRiskId");
 
-                            b1.ToTable("InitiativeRisks", (string)null);
+                            b1.ToTable("InitiativeRisks");
 
                             b1.WithOwner()
                                 .HasForeignKey("InitiativeRiskId");
@@ -2149,7 +2151,7 @@ namespace Moasher.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("RoleEnumId");
 
-                    b.OwnsOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeTeam.Role#Moasher.Domain.ValueObjects.EnumValue", "Role", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Role", b1 =>
                         {
                             b1.Property<Guid>("InitiativeTeamId")
                                 .HasColumnType("uniqueidentifier");
@@ -2162,7 +2164,7 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("InitiativeTeamId");
 
-                            b1.ToTable("InitiativeTeams", (string)null);
+                            b1.ToTable("InitiativeTeams");
 
                             b1.WithOwner()
                                 .HasForeignKey("InitiativeTeamId");
@@ -2194,7 +2196,7 @@ namespace Moasher.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("StatusEnumId");
 
-                    b.OwnsOne("Moasher.Domain.Entities.KPIEntities.KPI.Status#Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
                         {
                             b1.Property<Guid>("KPIId")
                                 .HasColumnType("uniqueidentifier");
@@ -2207,7 +2209,7 @@ namespace Moasher.Persistence.Migrations
 
                             b1.HasKey("KPIId");
 
-                            b1.ToTable("KPIs", (string)null);
+                            b1.ToTable("KPIs");
 
                             b1.WithOwner()
                                 .HasForeignKey("KPIId");

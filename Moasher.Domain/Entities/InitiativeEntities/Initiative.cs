@@ -185,12 +185,16 @@ public class Initiative : AuditableDbEntity
     public ICollection<InitiativeRisk> Risks { get; set; }
         = new HashSet<InitiativeRisk>();
     
-    // public decimal? ContractsAmount { get; set; }
-    // public ICollection<InitiativeContract> Contracts { get; set; }
-    //     = new HashSet<InitiativeContract>();
-    // public decimal? TotalExpenditure { get; set; }
-    // public decimal? CurrentYearExpenditure { get; set; }
+    public decimal? ContractsAmount { get; set; }
+    public ICollection<InitiativeContract> Contracts { get; set; }
+        = new HashSet<InitiativeContract>();
+    public decimal? TotalExpenditure { get; set; }
+    public decimal? CurrentYearExpenditure { get; set; }
     public string? LatestAnalytics { get; private set; }
+
+    public ICollection<InitiativeProject> Projects { get; set; }
+        = new HashSet<InitiativeProject>();
+    
     public DateTimeOffset? LatestAnalyticsDate { get; private set; }
     public Analytic? LatestAnalyticsModel
     {

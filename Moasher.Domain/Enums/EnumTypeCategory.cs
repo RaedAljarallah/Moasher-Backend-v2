@@ -17,8 +17,7 @@ public enum EnumTypeCategory
     InitiativeRiskImpact,
     InitiativeRiskScope,
 
-    InitiativeContractType,
     InitiativeContractStatus,
-    InitiativeProjectStatus,
+    InitiativeProjectPhase,
     KPIStatus
 }

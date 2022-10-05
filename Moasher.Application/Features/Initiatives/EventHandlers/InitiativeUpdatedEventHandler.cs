@@ -21,7 +21,8 @@ public class InitiativeUpdatedEventHandler : INotificationHandler<InitiativeUpda
         var initiative = await _context.Initiatives
             .Include(i => i.ApprovedCosts)
             .Include(i => i.Budgets)
-            // .Include(i => i.Contracts)
+            .Include(i => i.Contracts)
+            .Include(i => i.Projects)
             // .ThenInclude(c => c.Expenditures)
             .Include(i => i.Deliverables)
             .Include(i => i.Impacts)
@@ -37,15 +38,8 @@ public class InitiativeUpdatedEventHandler : INotificationHandler<InitiativeUpda
         {
             initiative.ApprovedCosts.ToList().ForEach(a => a.Initiative = initiative);
             initiative.Budgets.ToList().ForEach(b => b.Initiative = initiative);
-            // initiative.Contracts.ToList().ForEach(c =>
-            // {
-            //     c.Initiative = initiative;
-            //     c.Expenditures.ToList().ForEach(e =>
-            //     {
-            //         e.Contract = c;
-            //         e.Initiative = initiative;
-            //     });
-            // });
+            initiative.Contracts.ToList().ForEach(c => c.Initiative = initiative);
+            initiative.Projects.ToList().ForEach(p => p.Initiative = initiative);
             initiative.Deliverables.ToList().ForEach(d => d.Initiative = initiative);
             initiative.Impacts.ToList().ForEach(i => i.Initiative = initiative);
             initiative.Issues.ToList().ForEach(i => i.Initiative = initiative);

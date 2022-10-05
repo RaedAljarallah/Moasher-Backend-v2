@@ -30,41 +30,44 @@ public static class InitiativeExtensions
         initiative.TotalBudget = initiative.GetTotalBudget();
     }
     
-    // public static decimal? GetContractsAmount(this Initiative initiative)
-    // {
-    //     return initiative.Contracts.Where(c => c.Approved).Sum(c => c.Amount);
-    // }
+    public static decimal? GetContractsAmount(this Initiative initiative)
+    {
+        return initiative.Contracts
+            .Where(c => c.Approved)
+            .Where(c => c.CalculateAmount)
+            .Sum(c => c.Amount);
+    }
     
-    // public static void SetContractsAmount(this Initiative initiative)
-    // {
-    //     initiative.ContractsAmount = initiative.GetContractsAmount();
-    // }
+    public static void SetContractsAmount(this Initiative initiative)
+    {
+        initiative.ContractsAmount = initiative.GetContractsAmount();
+    }
     
-    // public static decimal? GetTotalExpenditure(this Initiative initiative)
-    // {
-    //     return initiative.Contracts
-    //         .Where(c => c.Approved)
-    //         .SelectMany(c => c.Expenditures)
-    //         .Sum(e => e.ActualAmount);
-    // }
+    public static decimal? GetTotalExpenditure(this Initiative initiative)
+    {
+        return initiative.Contracts
+            .Where(c => c.Approved)
+            .Sum(c => c.TotalExpenditure);
+    }
+
+    public static void SetTotalExpenditure(this Initiative initiative)
+    {
+        initiative.TotalExpenditure = initiative.GetTotalExpenditure();
+    }
     
-    // public static void SetTotalExpenditure(this Initiative initiative)
-    // {
-    //     initiative.TotalExpenditure = initiative.GetTotalExpenditure();
-    // }
+    public static decimal? GetCurrentYearExpenditure(this Initiative initiative)
+    {
+        return initiative.Projects
+            .Where(c => c.Approved)
+            .SelectMany(p => p.Expenditures.Where(e => e.Year == DateTimeOffset.UtcNow.AddHours(3).Year))
+            .Where(e => e.Approved)
+            .Sum(e => e.ActualAmount);
+    }
     
-    // public static decimal? GetCurrentYearExpenditure(this Initiative initiative)
-    // {
-    //     return initiative.Contracts
-    //         .Where(c => c.Approved)
-    //         .SelectMany(c => c.Expenditures.Where(e => e.Year == DateTimeOffset.UtcNow.AddHours(3).Year))
-    //         .Sum(e => e.ActualAmount);
-    // }
-    
-    // public static void SetCurrentYearExpenditure(this Initiative initiative)
-    // {
-    //     initiative.CurrentYearExpenditure = initiative.GetCurrentYearExpenditure();
-    // }
+    public static void SetCurrentYearExpenditure(this Initiative initiative)
+    {
+        initiative.CurrentYearExpenditure = initiative.GetCurrentYearExpenditure();
+    }
     
     public static decimal? GetTotalApprovedCost(this Initiative initiative)
     {

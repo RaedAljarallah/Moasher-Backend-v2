@@ -11,7 +11,7 @@ public class InitiativeContractConfiguration : ConfigurationBase<InitiativeContr
         base.Configure(builder);
         
         builder.Property(i => i.Amount).HasPrecision(18, 6);
-        builder.OwnsOne(c => c.Type);
+        builder.Property(i => i.TotalExpenditure).HasPrecision(18, 6);
         builder.OwnsOne(c => c.Status);
     }
 }
