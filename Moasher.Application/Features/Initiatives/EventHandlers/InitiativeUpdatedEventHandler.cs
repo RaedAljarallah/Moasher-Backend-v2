@@ -23,7 +23,6 @@ public class InitiativeUpdatedEventHandler : INotificationHandler<InitiativeUpda
             .Include(i => i.Budgets)
             .Include(i => i.Contracts)
             .Include(i => i.Projects)
-            // .ThenInclude(c => c.Expenditures)
             .Include(i => i.Deliverables)
             .Include(i => i.Impacts)
             .Include(i => i.Issues)

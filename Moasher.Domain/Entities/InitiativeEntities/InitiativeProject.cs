@@ -13,6 +13,7 @@ public class InitiativeProject : InitiativeRelatedDbEntity
     public DateTimeOffset PlannedContractingDate { get; set; }
     public DateTimeOffset? ActualContractingDate { get; set; }
     public decimal EstimatedAmount { get; set; }
+    public ushort Duration { get; set; }
     public EnumValue Phase { get; private set; } = default!;
     public EnumType PhaseEnum
     {
@@ -24,7 +25,7 @@ public class InitiativeProject : InitiativeRelatedDbEntity
         }
     }
     public Guid? PhaseEnumId { get; set; }
-
+    public bool Contracted { get; set; }
     public ICollection<InitiativeExpenditure> Expenditures { get; set; }
         = new HashSet<InitiativeExpenditure>();
 

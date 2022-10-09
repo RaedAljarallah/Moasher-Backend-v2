@@ -153,6 +153,17 @@ public struct ApiEndpoints
         public const string Edit = $"{Base}/{{id}}/edit";
     }
     
+    public struct Projects
+    {
+        private const string Base = "projects";
+        public const string All = Base;
+        public const string Details = $"{Base}/{{id}}";
+        public const string Summary = $"{Base}/summary";
+        public const string Create = Base;
+        public const string Update = $"{Base}/{{id}}";
+        public const string Delete = $"{Base}/{{id}}";
+    }
+    
     public struct InitiativeTeams
     {
         private const string Base = "initiative-teams";

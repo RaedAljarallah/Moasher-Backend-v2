@@ -20,7 +20,7 @@ public class EntityUpdatedEventHandler : INotificationHandler<EntityUpdatedEvent
         var entity = await _context.Entities
             .Include(e => e.Initiatives).ThenInclude(i => i.ApprovedCosts)
             .Include(e => e.Initiatives).ThenInclude(i => i.Budgets)
-            // .Include(e => e.Initiatives).ThenInclude(i => i.Contracts).ThenInclude(c => c.Expenditures)
+            .Include(e => e.Initiatives).ThenInclude(i => i.Contracts).ThenInclude(c => c.Project)
             .Include(e => e.Initiatives).ThenInclude(i => i.Deliverables)
             .Include(e => e.Initiatives).ThenInclude(i => i.Issues)
             .Include(e => e.Initiatives).ThenInclude(i => i.Milestones)
@@ -37,11 +37,11 @@ public class EntityUpdatedEventHandler : INotificationHandler<EntityUpdatedEvent
                 i.Entity = entity;
                 i.ApprovedCosts.ToList().ForEach(a => a.Initiative = i);
                 i.Budgets.ToList().ForEach(b => b.Initiative = i);
-                // i.Contracts.ToList().ForEach(c =>
-                // {
-                //     c.Initiative = i;
-                //     c.Expenditures.ToList().ForEach(e => e.Initiative = i);
-                // });
+                i.Contracts.ToList().ForEach(c =>
+                {
+                    c.Initiative = i;
+                    c.Project.Initiative = i;
+                });
                 i.Deliverables.ToList().ForEach(d => d.Initiative = i);
                 i.Issues.ToList().ForEach(issue => issue.Initiative = i);
                 i.Milestones.ToList().ForEach(m => m.Initiative = i);

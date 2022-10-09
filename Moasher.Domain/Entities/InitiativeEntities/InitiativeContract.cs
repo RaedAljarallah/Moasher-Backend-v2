@@ -27,7 +27,8 @@ public class InitiativeContract : InitiativeRelatedDbEntity
     public string? Supplier { get; set; }
     public bool CalculateAmount { get; set; }
     public decimal? TotalExpenditure { get; set; }
-    public InitiativeProject? Project { get; set; } = default!;
+    public decimal? CurrentYearExpenditure { get; set; }
+    public InitiativeProject Project { get; set; } = default!;
     // public ICollection<ContractMilestone> ContractMilestones { get; set; }
     //     = new HashSet<ContractMilestone>();
     //
