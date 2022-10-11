@@ -27,6 +27,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
     public async Task<ProjectDto> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {
         var initiative = await _context.Initiatives
+            .AsNoTracking()
             .Include(i => i.Projects.Where(p => !p.Contracted))
             .FirstOrDefaultAsync(i => i.Id == request.InitiativeId, cancellationToken);
 
@@ -46,14 +47,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         {
             throw new ValidationException(nameof(request.PhaseEnumId), ProjectEnumsValidationMessages.WrongPhaseEnumId);
         }
-
-
-        if (!request.Expenditures.Any())
-        {
-            throw new ValidationException(nameof(request.Expenditures),
-                ProjectEnumsValidationMessages.EmptyExpendituresPlan);
-        }
-
+        
         var projectExpenditures = new List<InitiativeExpenditure>();
         foreach (var expenditure in request.Expenditures)
         {
@@ -76,9 +70,18 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         var project = _mapper.Map<InitiativeProject>(request);
         project.PhaseEnum = phaseEnum;
         project.Initiative = initiative;
-        project.Expenditures.ToList().AddRange(projectExpenditures);
+        projectExpenditures.ForEach(e =>
+        {
+            project.Expenditures.Add(e);
+            _context.TrackAdded(e);
+
+            var baseline = InitiativeExpenditureBaseline.Map(e);
+            project.ExpendituresBaseline.Add(baseline);
+            _context.TrackAdded(baseline);
+        });
+        
         // Domain Events Goes Here
-        initiative.Projects.Add(project);
+        _context.TrackAdded(project);
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<ProjectDto>(project);

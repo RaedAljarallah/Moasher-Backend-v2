@@ -9,7 +9,6 @@ public class InitiativeExpenditureConfiguration : ConfigurationBase<InitiativeEx
     public override void Configure(EntityTypeBuilder<InitiativeExpenditure> builder)
     {
         base.Configure(builder);
-        builder.Property(e => e.InitialPlannedAmount).HasPrecision(18, 6);
         builder.Property(e => e.PlannedAmount).HasPrecision(18, 6);
         builder.Property(e => e.ActualAmount).HasPrecision(18, 6);
     }

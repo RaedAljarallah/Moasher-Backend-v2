@@ -14,8 +14,7 @@ public class ExpenditureMappings : Profile
         CreateMap<InitiativeExpenditure, ExpenditureDto>()
             .IncludeBase<AuditableDbEntity, DtoBase>();
 
-        CreateMap<CreateExpenditureCommand, InitiativeExpenditure>()
-            .ForMember(e => e.InitialPlannedAmount, opt => opt.MapFrom(e => e.PlannedAmount));
+        CreateMap<CreateExpenditureCommand, InitiativeExpenditure>();
 
         CreateMap<InitiativeExpenditure, CreateExpenditureCommand>();
     }

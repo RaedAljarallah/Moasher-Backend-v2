@@ -29,6 +29,9 @@ public class InitiativeProject : InitiativeRelatedDbEntity
     public ICollection<InitiativeExpenditure> Expenditures { get; set; }
         = new HashSet<InitiativeExpenditure>();
 
+    public ICollection<InitiativeExpenditureBaseline> ExpendituresBaseline { get; set; }
+        = new HashSet<InitiativeExpenditureBaseline>();
+    
     public InitiativeContract? Contract { get; set; }
     public Guid? ContractId { get; set; }
 }

@@ -27,7 +27,12 @@ public abstract class ProjectCommandValidatorBase<TCommand> : AbstractValidator<
         RuleFor(command => command.EstimatedAmount)
             .InclusiveBetween(0, decimal.MaxValue)
             .WithMessage(ValidationErrorMessages.WrongFormat("القيمة التقديرية"));
-        
+
+        RuleFor(command => command.Expenditures)
+            .Must(expenditures => expenditures.Any())
+            .WithMessage(ValidationErrorMessages.NotEmpty("خطة الصرف للمشروع"));
+            
+            
         RuleFor(command => command.PhaseEnumId)
             .NotEqual(Guid.Empty).WithMessage(ValidationErrorMessages.NotEmpty("المرحلة"));
         

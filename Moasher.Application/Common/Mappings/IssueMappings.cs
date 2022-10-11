@@ -26,8 +26,8 @@ public class IssueMappings : Profile
             .ForMember(i => i.Impact, opt => opt.MapFrom(i => i.ImpactEnum));
 
         CreateMap<UpdateIssueCommand, InitiativeIssue>()
-            .ForMember(m => m.Initiative, opt => opt.Ignore())
-            .ForMember(m => m.InitiativeId, opt => opt.Ignore())
-            .ForMember(m => m.Id, opt => opt.Ignore());
+            .ForMember(i => i.Initiative, opt => opt.Ignore())
+            .ForMember(i => i.InitiativeId, opt => opt.Ignore())
+            .ForMember(i => i.Id, opt => opt.Ignore());
     }
 }
