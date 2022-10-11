@@ -14,8 +14,9 @@ public class BudgetMappings : Profile
     {
         CreateMap<InitiativeBudget, BudgetDto>()
             .IncludeBase<AuditableDbEntity, DtoBase>();
-        
-        CreateMap<CreateBudgetCommand, InitiativeBudget>();
+
+        CreateMap<CreateBudgetCommand, InitiativeBudget>()
+            .ForMember(b => b.InitialAmount, opt => opt.MapFrom(b => b.Amount));
 
         CreateMap<UpdateBudgetCommand, InitiativeBudget>()
             .ForMember(e => e.Initiative, opt => opt.Ignore())

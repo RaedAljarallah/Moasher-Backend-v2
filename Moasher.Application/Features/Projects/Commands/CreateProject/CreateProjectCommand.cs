@@ -2,9 +2,12 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
+using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Application.Features.Expenditures.Commands.CreateExpenditure;
 using Moasher.Application.Features.Projects.Commands.Common;
 using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Projects.Commands.CreateProject;
 
@@ -20,17 +23,20 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         _context = context;
         _mapper = mapper;
     }
-    
+
     public async Task<ProjectDto> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {
         var initiative = await _context.Initiatives
             .Include(i => i.Projects.Where(p => !p.Contracted))
             .FirstOrDefaultAsync(i => i.Id == request.InitiativeId, cancellationToken);
-        
+
         if (initiative is null)
         {
             throw new NotFoundException();
         }
+
+        request.ValidateAndThrow(new ProjectDomainValidator(initiative, request.Name, request.PlannedBiddingDate,
+            request.ActualBiddingDate, request.PlannedContractingDate, request.Duration));
 
         var phaseEnum = await _context.EnumTypes
             .AsNoTracking()
@@ -40,11 +46,37 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         {
             throw new ValidationException(nameof(request.PhaseEnumId), ProjectEnumsValidationMessages.WrongPhaseEnumId);
         }
-        // Domain Validator Goes Here
+
+
+        if (!request.Expenditures.Any())
+        {
+            throw new ValidationException(nameof(request.Expenditures),
+                ProjectEnumsValidationMessages.EmptyExpendituresPlan);
+        }
+
+        var projectExpenditures = new List<InitiativeExpenditure>();
+        foreach (var expenditure in request.Expenditures)
+        {
+            if (expenditure.PlannedAmount == 0) continue;
+
+            var expenditureValidator = new CreateExpenditureCommandValidator();
+            expenditureValidator.SetValidationArguments(request.PlannedContractingDate,
+                request.PlannedContractingDate.AddMonths(request.Duration));
+
+            var expenditureValidationResult = expenditureValidator.Validate(expenditure);
+            if (!expenditureValidationResult.IsValid)
+            {
+                throw new ValidationException(expenditureValidationResult.Errors);
+            }
+
+            var mappedExpenditure = _mapper.Map<InitiativeExpenditure>(expenditure);
+            projectExpenditures.Add(mappedExpenditure);
+        }
 
         var project = _mapper.Map<InitiativeProject>(request);
         project.PhaseEnum = phaseEnum;
         project.Initiative = initiative;
+        project.Expenditures.ToList().AddRange(projectExpenditures);
         // Domain Events Goes Here
         initiative.Projects.Add(project);
         await _context.SaveChangesAsync(cancellationToken);

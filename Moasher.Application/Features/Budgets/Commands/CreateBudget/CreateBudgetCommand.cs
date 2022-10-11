@@ -38,7 +38,6 @@ public class CreateBudgetCommandHandler : IRequestHandler<CreateBudgetCommand, B
         
         var budget = _mapper.Map<InitiativeBudget>(request);
         budget.Initiative = initiative;
-        budget.InitialAmount = request.Amount;
         budget.AddDomainEvent(new BudgetCreatedEvent(budget));
         initiative.Budgets.Add(budget);
         await _context.SaveChangesAsync(cancellationToken);

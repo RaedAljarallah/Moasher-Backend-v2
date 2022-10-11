@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moasher.Application.Features.Projects.Commands.CreateProject;
+using Moasher.Application.Features.Projects.Queries.EditProject;
 using Moasher.Application.Features.Projects.Queries.GetProjects;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -26,5 +27,20 @@ public class ProjectsController : ApiControllerBase
     {
         var result = await Sender.Send(command, cancellationToken);
         return Created($"{ApiEndpoints.Projects.All}/{result.Id}", result);
+    }
+    
+    [HttpGet(ApiEndpoints.Projects.Edit)]
+    [UnauthorizedResponseType]
+    [NotFoundResponseType]
+    [OkResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> Edit(Guid id, [FromRoute] EditProjectQuery query, CancellationToken cancellationToken)
+    {
+        if (!id.Equals(query.Id))
+        {
+            return NotFound();
+        }
+        
+        return Ok(await Sender.Send(query, cancellationToken));
     }
 }

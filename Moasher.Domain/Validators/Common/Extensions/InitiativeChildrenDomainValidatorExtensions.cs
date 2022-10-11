@@ -12,6 +12,23 @@ internal static class InitiativeChildrenDomainValidatorExtensions
             plannedPropertyName, actualPropertyName, errorsContainer);
     }
 
+    internal static void BiddingAfterInitiativeStart(this Initiative initiative, DateTimeOffset plannedBidding,
+        DateTimeOffset? actualBidding, string plannedPropertyName, string actualPropertyName,
+        IDictionary<string, string[]> errorsContainer)
+    {
+        ApplyAfterInitiativeStartValidation(initiative, plannedBidding, actualBidding, "الطرح المخطط", "الطرح الفعلي",
+            plannedPropertyName, actualPropertyName, errorsContainer);
+    }
+
+    internal static void ContractingAfterInitiativeStart(this Initiative initiative, DateTimeOffset plannedContracting,
+        DateTimeOffset? actualContracting, string plannedPropertyName, string actualPropertyName,
+        IDictionary<string, string[]> errorsContainer)
+    {
+        ApplyAfterInitiativeStartValidation(initiative, plannedContracting, actualContracting, "التعاقد المخطط",
+            "التعاقد الفعلي",
+            plannedPropertyName, actualPropertyName, errorsContainer);
+    }
+
     internal static void ApprovedAfterInitiativeStart(this Initiative initiative, DateTimeOffset approvalDate,
         string propertyName, IDictionary<string, string[]> errorsContainer)
     {
@@ -27,6 +44,32 @@ internal static class InitiativeChildrenDomainValidatorExtensions
         ApplyBeforeInitiativeFinishValidation(initiative, plannedFinish, actualFinish, "الإنجاز المخطط",
             "الإنجاز الفعلي",
             plannedPropertyName, actualPropertyName, errorsContainer);
+    }
+
+    internal static void BiddingBeforeInitiativeFinish(this Initiative initiative, DateTimeOffset plannedBidding,
+        DateTimeOffset? actualBidding, string plannedPropertyName, string actualPropertyName,
+        IDictionary<string, string[]> errorsContainer)
+    {
+        ApplyBeforeInitiativeFinishValidation(initiative, plannedBidding, actualBidding, "الطرح المخطط",
+            "الطرح الفعلي",
+            plannedPropertyName, actualPropertyName, errorsContainer);
+    }
+
+    internal static void ContractingBeforeInitiativeFinish(this Initiative initiative,
+        DateTimeOffset plannedContracting,
+        DateTimeOffset? actualContracting, string plannedPropertyName, string actualPropertyName,
+        IDictionary<string, string[]> errorsContainer)
+    {
+        ApplyBeforeInitiativeFinishValidation(initiative, plannedContracting, actualContracting, "التعاقد المخطط",
+            "التعاقد الفعلي",
+            plannedPropertyName, actualPropertyName, errorsContainer);
+    }
+
+    internal static void ContractEndsBeforeInitiativeFinish(this Initiative initiative, DateTimeOffset contractEndDate,
+        string propertyName, IDictionary<string, string[]> errorsContainer)
+    {
+        ApplyBeforeInitiativeFinishValidation(initiative, contractEndDate, null, "نهاية العقد", string.Empty,
+            propertyName, propertyName, errorsContainer);
     }
 
     internal static void ApprovedBeforeInitiativeFinish(this Initiative initiative, DateTimeOffset approvalDate,
