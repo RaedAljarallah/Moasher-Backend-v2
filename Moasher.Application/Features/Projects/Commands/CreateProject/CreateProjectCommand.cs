@@ -37,7 +37,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         }
 
         request.ValidateAndThrow(new ProjectDomainValidator(initiative, request.Name, request.PlannedBiddingDate,
-            request.ActualBiddingDate, request.PlannedContractingDate, request.Duration));
+            request.ActualBiddingDate, request.PlannedContractingDate, request.Duration, request.EstimatedAmount));
 
         var phaseEnum = await _context.EnumTypes
             .AsNoTracking()

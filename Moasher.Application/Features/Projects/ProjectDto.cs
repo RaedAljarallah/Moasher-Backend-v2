@@ -14,6 +14,9 @@ public record ProjectDto : DtoBase
     public decimal EstimatedAmount { get; set; }
     public ushort Duration { get; set; }
     public EnumValue Phase { get; set; } = default!;
+    public string EntityName { get; set; } = default!;
+    public string InitiativeName { get; set; } = default!;
+    public Guid InitiativeId { get; set; }
     public string Status => GetStatus();
 
     private string GetStatus()

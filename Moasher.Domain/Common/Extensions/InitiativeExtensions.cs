@@ -1,9 +1,9 @@
-﻿using Moasher.Domain.Entities;
+﻿using Moasher.Domain.Common.Utilities;
+using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.InitiativeEntities;
-using Moasher.Domain.Utilities;
 using Moasher.Domain.ValueObjects;
 
-namespace Moasher.Domain.Extensions;
+namespace Moasher.Domain.Common.Extensions;
 
 public static class InitiativeExtensions
 {

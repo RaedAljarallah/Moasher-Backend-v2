@@ -4,8 +4,8 @@ using Moasher.Application.Features.Programs;
 using Moasher.Application.Features.Programs.Commands.CreateProgram;
 using Moasher.Application.Features.Programs.Commands.UpdateProgram;
 using Moasher.Domain.Common.Abstracts;
+using Moasher.Domain.Common.Extensions;
 using Moasher.Domain.Entities;
-using Moasher.Domain.Extensions;
 
 namespace Moasher.Application.Common.Mappings;
 

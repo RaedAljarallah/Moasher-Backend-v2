@@ -14,9 +14,10 @@ public class ProjectDomainValidator : DomainValidator, IDomainValidator
     private readonly DateTimeOffset? _actualBidding;
     private readonly DateTimeOffset _plannedContracting;
     private readonly ushort _duration;
+    private readonly decimal _estimatedAmount;
 
     public ProjectDomainValidator(Initiative initiative, string name, DateTimeOffset plannedBidding,
-        DateTimeOffset? actualBidding, DateTimeOffset plannedContracting, ushort duration)
+        DateTimeOffset? actualBidding, DateTimeOffset plannedContracting, ushort duration, decimal estimatedAmount)
     {
         _initiative = initiative;
         _name = name;
@@ -24,6 +25,7 @@ public class ProjectDomainValidator : DomainValidator, IDomainValidator
         _actualBidding = actualBidding;
         _plannedContracting = plannedContracting;
         _duration = duration;
+        _estimatedAmount = estimatedAmount;
     }
 
     public IDictionary<string, string[]> Validate()
@@ -37,13 +39,23 @@ public class ProjectDomainValidator : DomainValidator, IDomainValidator
             }
         }
 
+        var amountSum = _initiative.Projects.Sum(p => p.EstimatedAmount);
+        if (amountSum + _estimatedAmount > _initiative.ApprovedCost)
+        {
+            Errors[nameof(InitiativeProject.EstimatedAmount)] = new[]
+            {
+                $"مجموع قيمة المشاريع المدخلة [{(amountSum + _estimatedAmount):N0}] أعلى من قيمة تكاليف المبادرة المعتمدة [{_initiative.ApprovedCosts:N0}]"
+            };
+        }
+
         _initiative.BiddingAfterInitiativeStart(_plannedBidding, _actualBidding,
             nameof(InitiativeProject.PlannedBiddingDate), nameof(InitiativeProject.ActualBiddingDate), Errors);
 
         _initiative.BiddingBeforeInitiativeFinish(_plannedBidding, _actualBidding,
             nameof(InitiativeProject.PlannedBiddingDate), nameof(InitiativeProject.ActualBiddingDate), Errors);
 
-        _initiative.ContractEndsBeforeInitiativeFinish(_plannedContracting.AddMonths(_duration), nameof(InitiativeProject.Duration), Errors);
+        _initiative.ContractEndsBeforeInitiativeFinish(_plannedContracting.AddMonths(_duration),
+            nameof(InitiativeProject.Duration), Errors);
 
         return Errors;
     }

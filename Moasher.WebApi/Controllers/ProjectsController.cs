@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moasher.Application.Features.Projects.Commands.CreateProject;
+using Moasher.Application.Features.Projects.Commands.DeleteProject;
 using Moasher.Application.Features.Projects.Commands.UpdateProject;
 using Moasher.Application.Features.Projects.Queries.EditProject;
 using Moasher.Application.Features.Projects.Queries.GetProjects;
@@ -59,5 +60,15 @@ public class ProjectsController : ApiControllerBase
         }
     
         return Ok(await Sender.Send(command, cancellationToken));
+    }
+    
+    [HttpDelete(ApiEndpoints.Projects.Delete)]
+    [NotFoundResponseType]
+    [ConflictResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        await Sender.Send(new DeleteProjectCommand { Id = id }, cancellationToken);
+        return NoContent();
     }
 }

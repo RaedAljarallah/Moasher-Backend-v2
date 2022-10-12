@@ -1,7 +1,7 @@
 ﻿using Moasher.Domain.Entities;
 using Moasher.Domain.ValueObjects;
 
-namespace Moasher.Domain.Utilities;
+namespace Moasher.Domain.Common.Utilities;
 
 public static class InitiativeUtility
 {

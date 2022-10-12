@@ -1,7 +1,7 @@
 ﻿using Moasher.Domain.Entities;
 using Moasher.Domain.ValueObjects;
 
-namespace Moasher.Domain.Extensions;
+namespace Moasher.Domain.Common.Extensions;
 
 public static class EnumTypeExtension
 {

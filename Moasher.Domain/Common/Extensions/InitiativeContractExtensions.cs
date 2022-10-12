@@ -1,6 +1,6 @@
 ﻿using Moasher.Domain.Entities.InitiativeEntities;
 
-namespace Moasher.Domain.Extensions;
+namespace Moasher.Domain.Common.Extensions;
 
 public static class InitiativeContractExtensions
 {
@@ -14,6 +14,21 @@ public static class InitiativeContractExtensions
         contract.CurrentYearExpenditure = contract.GetCurrentYearExpenditure();
     }
 
+    public static decimal PlannedExpenditureToDate(this InitiativeContract contract)
+    {
+        if (!contract.Approved || !contract.Project.Approved)
+        {
+            return 0;
+        }
+
+        var currentDate = DateTimeOffset.UtcNow.AddHours(3);
+        return contract.Project.Expenditures
+            .Where(e => e.Approved)
+            .Where(e => e.Year <= DateTimeOffset.UtcNow.AddHours(3).Year)
+            .Where(e => new DateTime(e.Year, (int) e.Month, 1) <= new DateTime(currentDate.Year, currentDate.Month, 1))
+            .Sum(e => e.PlannedAmount);
+    }
+    
     internal static decimal? GetTotalExpenditure(this InitiativeContract contract)
     {
         if (!contract.Approved || !contract.Project.Approved)

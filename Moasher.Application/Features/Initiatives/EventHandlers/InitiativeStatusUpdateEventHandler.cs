@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Domain.Common.Extensions;
 using Moasher.Domain.Enums;
 using Moasher.Domain.Events.Initiatives;
-using Moasher.Domain.Extensions;
 
 namespace Moasher.Application.Features.Initiatives.EventHandlers;
 

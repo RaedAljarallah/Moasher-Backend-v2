@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Domain.Common.Extensions;
 using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Entities.KPIEntities;
-using Moasher.Domain.Extensions;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Analytics.Commands.UpdateAnalytic;

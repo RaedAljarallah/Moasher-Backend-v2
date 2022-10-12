@@ -47,7 +47,7 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
         
         initiative.Projects = initiative.Projects.Where(p => p.Id != request.Id).ToList();
         request.ValidateAndThrow(new ProjectDomainValidator(initiative, request.Name, request.PlannedBiddingDate,
-            request.ActualBiddingDate, request.PlannedContractingDate, request.Duration));
+            request.ActualBiddingDate, request.PlannedContractingDate, request.Duration, request.EstimatedAmount));
         
         if (request.PhaseEnumId != project.PhaseEnumId)
         {

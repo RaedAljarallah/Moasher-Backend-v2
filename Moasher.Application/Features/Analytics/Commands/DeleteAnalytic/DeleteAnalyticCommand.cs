@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
-using Moasher.Domain.Extensions;
+using Moasher.Domain.Common.Extensions;
 
 namespace Moasher.Application.Features.Analytics.Commands.DeleteAnalytic;
 

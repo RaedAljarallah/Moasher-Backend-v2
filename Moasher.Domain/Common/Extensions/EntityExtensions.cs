@@ -1,6 +1,6 @@
 ﻿using Moasher.Domain.Entities;
 
-namespace Moasher.Domain.Extensions;
+namespace Moasher.Domain.Common.Extensions;
 
 public static class EntityExtensions
 {

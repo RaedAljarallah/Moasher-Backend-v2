@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Domain.Common.Extensions;
 using Moasher.Domain.Events.ApprovedCosts;
-using Moasher.Domain.Extensions;
 
 namespace Moasher.Application.Features.ApprovedCosts.EventHandlers;
 
