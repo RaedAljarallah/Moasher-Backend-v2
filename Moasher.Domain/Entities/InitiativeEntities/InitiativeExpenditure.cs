@@ -9,6 +9,16 @@ public class InitiativeExpenditure : AuditableDbEntity
     public Month Month { get; set; }
     public decimal PlannedAmount { get; set; }
     public decimal? ActualAmount { get; set; }
-    public InitiativeProject Project { get; set; } = default!;
-    public Guid ProjectId { get; set; }
+    public InitiativeProject? Project { get; set; }
+    public Guid? ProjectId { get; set; }
+    public InitiativeContract? Contract { get; set; }
+    public Guid? ContractId { get; set; }
+
+    public void MoveToContract(InitiativeContract contract)
+    {
+        Project = null;
+        ProjectId = null;
+        Contract = contract;
+        ContractId = contract.Id;
+    }
 }

@@ -16,13 +16,13 @@ public static class InitiativeContractExtensions
 
     public static decimal PlannedExpenditureToDate(this InitiativeContract contract)
     {
-        if (!contract.Approved || !contract.Project.Approved)
+        if (!contract.Approved)
         {
             return 0;
         }
-
+        
         var currentDate = DateTimeOffset.UtcNow.AddHours(3);
-        return contract.Project.Expenditures
+        return contract.Expenditures
             .Where(e => e.Approved)
             .Where(e => e.Year <= DateTimeOffset.UtcNow.AddHours(3).Year)
             .Where(e => new DateTime(e.Year, (int) e.Month, 1) <= new DateTime(currentDate.Year, currentDate.Month, 1))
@@ -31,24 +31,24 @@ public static class InitiativeContractExtensions
     
     internal static decimal? GetTotalExpenditure(this InitiativeContract contract)
     {
-        if (!contract.Approved || !contract.Project.Approved)
+        if (!contract.Approved)
         {
             return default;
         }
 
-        return contract.Project.Expenditures
+        return contract.Expenditures
             .Where(e => e.Approved)
             .Sum(e => e.ActualAmount);
     }
 
     internal static decimal? GetCurrentYearExpenditure(this InitiativeContract contract)
     {
-        if (!contract.Approved || !contract.Project.Approved)
+        if (!contract.Approved)
         {
             return default;
         }
 
-        return contract.Project.Expenditures
+        return contract.Expenditures
             .Where(e => e.Approved)
             .Where(e => e.Year == DateTimeOffset.UtcNow.AddHours(3).Year)
             .Sum(e => e.ActualAmount);

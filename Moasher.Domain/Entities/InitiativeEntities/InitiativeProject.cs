@@ -31,7 +31,16 @@ public class InitiativeProject : InitiativeRelatedDbEntity
 
     public ICollection<InitiativeExpenditureBaseline> ExpendituresBaseline { get; set; }
         = new HashSet<InitiativeExpenditureBaseline>();
+
+    public ICollection<InitiativeProjectProgress> Progress { get; set; }
+        = new HashSet<InitiativeProjectProgress>();
     
     public InitiativeContract? Contract { get; set; }
     public Guid? ContractId { get; set; }
+
+    public void Contracting(DateTimeOffset contractingDate)
+    {
+        Contracted = true;
+        ActualContractingDate = contractingDate;
+    }
 }

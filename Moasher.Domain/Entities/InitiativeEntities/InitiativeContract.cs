@@ -29,4 +29,10 @@ public class InitiativeContract : InitiativeRelatedDbEntity
     public decimal? TotalExpenditure { get; set; }
     public decimal? CurrentYearExpenditure { get; set; }
     public InitiativeProject Project { get; set; } = default!;
+
+    public ICollection<InitiativeExpenditure> Expenditures { get; set; }
+        = new HashSet<InitiativeExpenditure>();
+
+    public ICollection<InitiativeExpenditureBaseline> ExpendituresBaseline { get; set; }
+        = new HashSet<InitiativeExpenditureBaseline>();
 }

@@ -22,6 +22,8 @@ public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand,
     public async Task<Unit> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
     {
         var project = await _context.InitiativeProjects
+            .Include(p => p.Expenditures)
+            .Include(p => p.ExpendituresBaseline)
             .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 
         if (project is null)
@@ -29,6 +31,8 @@ public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand,
             throw new NotFoundException();
         }
 
+        _context.InitiativeExpenditures.RemoveRange(project.Expenditures);
+        _context.InitiativeExpendituresBaseline.RemoveRange(project.ExpendituresBaseline);
         _context.InitiativeProjects.Remove(project);
         await _context.SaveChangesAsync(cancellationToken);
         

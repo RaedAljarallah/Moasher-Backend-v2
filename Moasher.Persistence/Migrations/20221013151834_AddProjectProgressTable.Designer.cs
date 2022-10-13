@@ -12,8 +12,8 @@ using Moasher.Persistence;
 namespace Moasher.Persistence.Migrations
 {
     [DbContext(typeof(MoasherDbContext))]
-    [Migration("20221005073823_AddContractedFieldToInitiativeProjectsTable")]
-    partial class AddContractedFieldToInitiativeProjectsTable
+    [Migration("20221013151834_AddProjectProgressTable")]
+    partial class AddProjectProgressTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -611,6 +611,10 @@ namespace Moasher.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<decimal?>("CurrentYearExpenditure")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
                     b.Property<DateTimeOffset>("EndDate")
                         .HasColumnType("datetimeoffset");
 
@@ -729,6 +733,58 @@ namespace Moasher.Persistence.Migrations
                     b.Property<bool>("Approved")
                         .HasColumnType("bit");
 
+                    b.Property<Guid?>("ContractId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<byte>("Month")
+                        .HasColumnType("tinyint");
+
+                    b.Property<decimal>("PlannedAmount")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<Guid?>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContractId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("InitiativeExpenditures");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeExpenditureBaseline", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ContractId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
@@ -751,11 +807,7 @@ namespace Moasher.Persistence.Migrations
                     b.Property<byte>("Month")
                         .HasColumnType("tinyint");
 
-                    b.Property<decimal>("PlannedAmount")
-                        .HasPrecision(18, 6)
-                        .HasColumnType("decimal(18,6)");
-
-                    b.Property<Guid>("ProjectId")
+                    b.Property<Guid?>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Year")
@@ -763,9 +815,11 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ContractId");
+
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("InitiativeExpenditures");
+                    b.ToTable("InitiativeExpendituresBaseline");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeImpact", b =>
@@ -991,6 +1045,9 @@ namespace Moasher.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
                     b.Property<string>("EntityName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1037,6 +1094,45 @@ namespace Moasher.Persistence.Migrations
                     b.HasIndex("PhaseEnumId");
 
                     b.ToTable("InitiativeProjects");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProjectProgress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Completed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("PhaseEndedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("PhaseEndedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<Guid?>("PhaseEnumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("PhaseStartedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("PhaseStartedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhaseEnumId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("InitiativeProjectProgress");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeRisk", b =>
@@ -1827,11 +1923,30 @@ namespace Moasher.Persistence.Migrations
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeExpenditure", b =>
                 {
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeContract", "Contract")
+                        .WithMany("Expenditures")
+                        .HasForeignKey("ContractId");
+
                     b.HasOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeProject", "Project")
                         .WithMany("Expenditures")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectId");
+
+                    b.Navigation("Contract");
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeExpenditureBaseline", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeContract", "Contract")
+                        .WithMany("ExpendituresBaseline")
+                        .HasForeignKey("ContractId");
+
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeProject", "Project")
+                        .WithMany("ExpendituresBaseline")
+                        .HasForeignKey("ProjectId");
+
+                    b.Navigation("Contract");
 
                     b.Navigation("Project");
                 });
@@ -1996,6 +2111,45 @@ namespace Moasher.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("PhaseEnum");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProjectProgress", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.EnumType", "PhaseEnum")
+                        .WithMany()
+                        .HasForeignKey("PhaseEnumId");
+
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeProject", "Project")
+                        .WithMany("Progress")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Phase", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeProjectProgressId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Style")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("InitiativeProjectProgressId");
+
+                            b1.ToTable("InitiativeProjectProgress");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeProjectProgressId");
+                        });
+
+                    b.Navigation("Phase")
+                        .IsRequired();
+
+                    b.Navigation("PhaseEnum");
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeRisk", b =>
@@ -2280,12 +2434,21 @@ namespace Moasher.Persistence.Migrations
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeContract", b =>
                 {
-                    b.Navigation("Project");
+                    b.Navigation("Expenditures");
+
+                    b.Navigation("ExpendituresBaseline");
+
+                    b.Navigation("Project")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProject", b =>
                 {
                     b.Navigation("Expenditures");
+
+                    b.Navigation("ExpendituresBaseline");
+
+                    b.Navigation("Progress");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.KPIEntities.KPI", b =>

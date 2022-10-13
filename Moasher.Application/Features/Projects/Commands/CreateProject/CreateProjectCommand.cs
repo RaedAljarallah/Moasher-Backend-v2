@@ -7,7 +7,9 @@ using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Features.Expenditures.Commands.CreateExpenditure;
 using Moasher.Application.Features.Projects.Commands.Common;
 using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.Events.Projects;
 using Moasher.Domain.Validators;
+using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Application.Features.Projects.Commands.CreateProject;
 
@@ -27,8 +29,10 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
     public async Task<ProjectDto> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {
         var initiative = await _context.Initiatives
-            .AsNoTracking()
             .Include(i => i.Projects.Where(p => !p.Contracted))
+            .ThenInclude(p => p.Expenditures)
+            .Include(i => i.Projects.Where(p => !p.Contracted))
+            .ThenInclude(p => p.ExpendituresBaseline)
             .FirstOrDefaultAsync(i => i.Id == request.InitiativeId, cancellationToken);
 
         if (initiative is null)
@@ -70,18 +74,15 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         var project = _mapper.Map<InitiativeProject>(request);
         project.PhaseEnum = phaseEnum;
         project.Initiative = initiative;
+        project.Expenditures.ToList().AddRange(projectExpenditures);
         projectExpenditures.ForEach(e =>
         {
-            project.Expenditures.Add(e);
-            _context.TrackAdded(e);
-
             var baseline = InitiativeExpenditureBaseline.Map(e);
             project.ExpendituresBaseline.Add(baseline);
-            _context.TrackAdded(baseline);
         });
         
-        // Domain Events Goes Here
-        _context.TrackAdded(project);
+        project.AddDomainEvent(new ProjectCreatedEvent(project));
+        initiative.Projects.Add(project);
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<ProjectDto>(project);

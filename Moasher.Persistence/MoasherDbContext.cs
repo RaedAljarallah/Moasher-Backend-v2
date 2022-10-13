@@ -30,7 +30,9 @@ public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
     public DbSet<InitiativeBudget> InitiativeBudgets => Set<InitiativeBudget>();
     public DbSet<InitiativeContract> InitiativeContracts => Set<InitiativeContract>();
     public DbSet<InitiativeProject> InitiativeProjects => Set<InitiativeProject>();
+    public DbSet<InitiativeProjectProgress> InitiativeProjectProgress => Set<InitiativeProjectProgress>();
     public DbSet<InitiativeExpenditure> InitiativeExpenditures => Set<InitiativeExpenditure>();
+    public DbSet<InitiativeExpenditureBaseline> InitiativeExpendituresBaseline => Set<InitiativeExpenditureBaseline>();
     public DbSet<InitiativeDeliverable> InitiativeDeliverables => Set<InitiativeDeliverable>();
     public DbSet<InitiativeImpact> InitiativeImpacts => Set<InitiativeImpact>();
     public DbSet<InitiativeIssue> InitiativeIssues => Set<InitiativeIssue>();
@@ -75,7 +77,6 @@ public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
     {
         Entry(entity).State = EntityState.Added;
     }
-    
     
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {

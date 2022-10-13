@@ -59,7 +59,7 @@ public class CreateContractCommandHandler : IRequestHandler<CreateContractComman
         var contract = _mapper.Map<InitiativeContract>(request);
         contract.StatusEnum = status;
         contract.Initiative = initiative;
-        project.Contracted = true;
+        project.Contracting(contract.StartDate);
         contract.Project = project;
         
         contract.AddDomainEvent(new ContractCreatedEvent(contract));

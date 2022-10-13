@@ -36,8 +36,7 @@ public class GetContractsQueryHandler : IRequestHandler<GetContractsQuery, Pagin
     {
         return await _context.InitiativeContracts.OrderBy(c => c.StartDate).ThenBy(c => c.Name)
             .AsNoTracking()
-            .Include(c => c.Project)
-            .ThenInclude(p => p.Expenditures)
+            .Include(c => c.Expenditures)
             .WithinParameters(new GetContractsQueryParameter(request))
             .ProjectTo<ContractDto>(_mapper.ConfigurationProvider)
             .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);

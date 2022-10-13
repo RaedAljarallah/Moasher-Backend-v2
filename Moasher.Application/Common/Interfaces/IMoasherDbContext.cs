@@ -14,7 +14,9 @@ public interface IMoasherDbContext
     public DbSet<InitiativeBudget> InitiativeBudgets { get; }
     public DbSet<InitiativeContract> InitiativeContracts { get; }
     public DbSet<InitiativeProject> InitiativeProjects { get; }
+    public DbSet<InitiativeProjectProgress> InitiativeProjectProgress { get; }
     public DbSet<InitiativeExpenditure> InitiativeExpenditures { get; }
+    public DbSet<InitiativeExpenditureBaseline> InitiativeExpendituresBaseline { get; }
     public DbSet<InitiativeDeliverable> InitiativeDeliverables { get; }
     public DbSet<InitiativeImpact> InitiativeImpacts { get; }
     public DbSet<InitiativeIssue> InitiativeIssues { get; }

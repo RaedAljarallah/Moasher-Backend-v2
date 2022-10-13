@@ -7,6 +7,7 @@ using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Features.Expenditures.Commands.CreateExpenditure;
 using Moasher.Application.Features.Projects.Commands.Common;
 using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.Events.Projects;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Projects.Commands.UpdateProject;
@@ -61,6 +62,8 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
             }
         
             project.PhaseEnum = phaseEnum;
+            
+            project.AddDomainEvent(new ProjectPhaseCompletedEvent(project));
         }
         
         if (IsDifferentExpenditures(request, project))
@@ -85,8 +88,9 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
             }
         }
         
-        _mapper.Map(request, project);
-        _context.TrackModified(project);
+        //_context.InitiativeExpenditures.AttachRange(project.Expenditures);
+        _context.InitiativeProjects.Update(project);
+        //_context.TrackModified(project);
         await _context.SaveChangesAsync(cancellationToken);
         
         return _mapper.Map<ProjectDto>(project);

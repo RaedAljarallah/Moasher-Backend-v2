@@ -22,7 +22,6 @@
     <ItemGroup>
       <Folder Include="Features\Contracts\Commands\DeleteContract" />
       <Folder Include="Features\Contracts\Commands\UpdateContract" />
-      <Folder Include="Features\Projects\EventHandlers" />
     </ItemGroup>
 
 </Project>
