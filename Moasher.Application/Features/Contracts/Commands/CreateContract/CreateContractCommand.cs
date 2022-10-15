@@ -11,7 +11,10 @@ using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Contracts.Commands.CreateContract;
 
-public record CreateContractCommand : ContractCommandBase, IRequest<ContractDto>;
+public record CreateContractCommand : ContractCommandBase, IRequest<ContractDto>
+{
+    public Guid ProjectId { get; set; }
+}
 
 public class CreateContractCommandHandler : IRequestHandler<CreateContractCommand, ContractDto>
 {
@@ -28,6 +31,7 @@ public class CreateContractCommandHandler : IRequestHandler<CreateContractComman
     {
         var initiative = await _context.Initiatives
             .Include(i => i.Contracts)
+            .ThenInclude(c => c.Project)
             .FirstOrDefaultAsync(i => i.Id == request.InitiativeId, cancellationToken);
 
         if (initiative is null)
@@ -47,24 +51,23 @@ public class CreateContractCommandHandler : IRequestHandler<CreateContractComman
             throw new NotFoundException();
         }
 
-        var status = await _context.EnumTypes
+        var statusEnum = await _context.EnumTypes
             .AsNoTracking()
             .FirstOrDefaultAsync(e => e.Id == request.StatusEnumId, cancellationToken);
 
-        if (status is null)
+        if (statusEnum is null)
         {
             throw new ValidationException(nameof(request.StatusEnumId), ContractEnumsValidationMessages.WrongStatusEnumId);
         }
 
         var contract = _mapper.Map<InitiativeContract>(request);
-        contract.StatusEnum = status;
+        contract.StatusEnum = statusEnum;
         contract.Initiative = initiative;
         project.Contracting(contract.StartDate);
         contract.Project = project;
         
         contract.AddDomainEvent(new ContractCreatedEvent(contract));
         initiative.Contracts.Add(contract);
-        _context.TrackModified(project);
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<ContractDto>(contract);

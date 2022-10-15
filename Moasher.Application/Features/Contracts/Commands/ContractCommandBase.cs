@@ -14,6 +14,5 @@ public abstract record ContractCommandBase
     public string? Supplier { get => _supplier; set => _supplier = value?.Trim(); }
     public bool CalculateAmount { get; set; }
     public Guid InitiativeId { get; set; }
-    public Guid ProjectId { get; set; }
     public Guid StatusEnumId { get; set; }
 }

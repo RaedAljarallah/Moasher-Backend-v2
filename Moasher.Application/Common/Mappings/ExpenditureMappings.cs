@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Moasher.Application.Common.Abstracts;
 using Moasher.Application.Features.Expenditures;
-using Moasher.Application.Features.Expenditures.Commands.CreateExpenditure;
+using Moasher.Application.Features.Expenditures.Commands.CreateContractExpenditure;
+using Moasher.Application.Features.Expenditures.Commands.CreateProjectExpenditure;
 using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities.InitiativeEntities;
 
@@ -14,8 +15,12 @@ public class ExpenditureMappings : Profile
         CreateMap<InitiativeExpenditure, ExpenditureDto>()
             .IncludeBase<AuditableDbEntity, DtoBase>();
 
-        CreateMap<CreateExpenditureCommand, InitiativeExpenditure>();
+        CreateMap<CreateProjectExpenditureCommand, InitiativeExpenditure>()
+            .ForMember(p => p.ActualAmount, opt => opt.Ignore());
 
-        CreateMap<InitiativeExpenditure, CreateExpenditureCommand>();
+        CreateMap<CreateContractExpenditureCommand, InitiativeExpenditure>();
+
+        CreateMap<InitiativeExpenditure, CreateProjectExpenditureCommand>();
+        CreateMap<InitiativeExpenditure, CreateContractExpenditureCommand>();
     }
 }

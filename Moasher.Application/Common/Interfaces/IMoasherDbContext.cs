@@ -32,6 +32,4 @@ public interface IMoasherDbContext
     public DbSet<StrategicObjective> StrategicObjectives { get; }
     public DbSet<EnumType> EnumTypes { get; }
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-    public void TrackModified(DbEntity entity);
-    public void TrackAdded(DbEntity entity);
 }

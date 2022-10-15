@@ -4,12 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
-using Moasher.Application.Features.Expenditures.Commands.CreateExpenditure;
+using Moasher.Application.Features.Expenditures.Commands.CreateProjectExpenditure;
 using Moasher.Application.Features.Projects.Commands.Common;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Events.Projects;
 using Moasher.Domain.Validators;
-using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Application.Features.Projects.Commands.CreateProject;
 
@@ -57,7 +56,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         {
             if (expenditure.PlannedAmount == 0) continue;
 
-            var expenditureValidator = new CreateExpenditureCommandValidator();
+            var expenditureValidator = new CreateProjectExpenditureCommandValidator();
             expenditureValidator.SetValidationArguments(request.PlannedContractingDate,
                 request.PlannedContractingDate.AddMonths(request.Duration));
 

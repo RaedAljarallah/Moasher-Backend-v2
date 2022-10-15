@@ -1,0 +1,3 @@
+﻿namespace Moasher.Application.Features.Expenditures.Commands.CreateContractExpenditure;
+
+public record CreateContractExpenditureCommand : ExpenditureCommandBase;

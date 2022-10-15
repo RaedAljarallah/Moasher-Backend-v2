@@ -68,16 +68,6 @@ public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
         optionsBuilder.AddInterceptors(_auditingInterceptor);
     }
 
-    public void TrackModified(DbEntity entity)
-    {
-        Entry(entity).State = EntityState.Modified;
-    }
-
-    public void TrackAdded(DbEntity entity)
-    {
-        Entry(entity).State = EntityState.Added;
-    }
-    
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
         var events = this.GetDomainEvents();

@@ -1,4 +1,4 @@
-﻿using Moasher.Application.Features.Expenditures.Commands.CreateExpenditure;
+﻿using Moasher.Application.Features.Expenditures.Commands.CreateProjectExpenditure;
 
 namespace Moasher.Application.Features.Projects.Commands;
 
@@ -14,6 +14,6 @@ public abstract record ProjectCommandBase
     public ushort Duration { get; set; }
     public Guid InitiativeId { get; set; }
     public Guid PhaseEnumId { get; set; }
-    public IEnumerable<CreateExpenditureCommand> Expenditures { get; set; } =
-        Enumerable.Empty<CreateExpenditureCommand>();
+    public IEnumerable<CreateProjectExpenditureCommand> Expenditures { get; set; } =
+        Enumerable.Empty<CreateProjectExpenditureCommand>();
 }

@@ -36,10 +36,7 @@ public abstract class ContractCommandValidatorBase<TCommand> : AbstractValidator
         
         RuleFor(command => command.InitiativeId)
             .NotEqual(Guid.Empty).WithMessage(ValidationErrorMessages.NotEmpty("المبادرة"));
-        
-        RuleFor(command => command.ProjectId)
-            .NotEqual(Guid.Empty).WithMessage(ValidationErrorMessages.NotEmpty("المشروع"));
-        
+
         RuleFor(command => command.StatusEnumId)
             .NotEqual(Guid.Empty).WithMessage(ValidationErrorMessages.NotEmpty("الحالة"));
     }

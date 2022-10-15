@@ -19,9 +19,4 @@
       <ProjectReference Include="..\Moasher.Domain\Moasher.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Features\Contracts\Commands\DeleteContract" />
-      <Folder Include="Features\Contracts\Commands\UpdateContract" />
-    </ItemGroup>
-
 </Project>

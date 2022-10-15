@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
-using Moasher.Application.Features.Expenditures.Commands.CreateExpenditure;
+using Moasher.Application.Features.Expenditures.Commands.CreateProjectExpenditure;
 using Moasher.Application.Features.Projects.Commands.Common;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Events.Projects;
@@ -65,15 +65,19 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
             
             project.AddDomainEvent(new ProjectPhaseCompletedEvent(project));
         }
-        
+
+        var expenditurePlanChanged = false;
+        var originalExpenditures = new List<InitiativeExpenditure>();
         if (IsDifferentExpenditures(request, project))
         {
+            expenditurePlanChanged = true;
+            originalExpenditures = new List<InitiativeExpenditure>(project.Expenditures);
             _context.InitiativeExpenditures.RemoveRange(project.Expenditures);
             foreach (var expenditure in request.Expenditures)
             {
                 if (expenditure.PlannedAmount == 0) continue;
                 
-                var expenditureValidator = new CreateExpenditureCommandValidator();
+                var expenditureValidator = new CreateProjectExpenditureCommandValidator();
                 expenditureValidator.SetValidationArguments(request.PlannedContractingDate,
                     request.PlannedContractingDate.AddMonths(request.Duration));
         
@@ -88,9 +92,14 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
             }
         }
         
-        //_context.InitiativeExpenditures.AttachRange(project.Expenditures);
+        _mapper.Map(request, project);
+
+        if (!expenditurePlanChanged)
+        {
+            project.Expenditures = originalExpenditures;
+        }
+        
         _context.InitiativeProjects.Update(project);
-        //_context.TrackModified(project);
         await _context.SaveChangesAsync(cancellationToken);
         
         return _mapper.Map<ProjectDto>(project);
