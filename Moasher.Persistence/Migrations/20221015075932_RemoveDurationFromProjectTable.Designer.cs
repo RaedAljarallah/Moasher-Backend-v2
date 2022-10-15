@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Moasher.Persistence;
 
@@ -11,9 +12,10 @@ using Moasher.Persistence;
 namespace Moasher.Persistence.Migrations
 {
     [DbContext(typeof(MoasherDbContext))]
-    partial class MoasherDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221015075932_RemoveDurationFromProjectTable")]
+    partial class RemoveDurationFromProjectTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -596,9 +598,6 @@ namespace Moasher.Persistence.Migrations
                         .HasColumnType("decimal(18,6)");
 
                     b.Property<bool>("Approved")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("BalancedExpenditurePlan")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CalculateAmount")

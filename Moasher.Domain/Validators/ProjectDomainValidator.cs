@@ -13,18 +13,18 @@ public class ProjectDomainValidator : DomainValidator, IDomainValidator
     private readonly DateTimeOffset _plannedBidding;
     private readonly DateTimeOffset? _actualBidding;
     private readonly DateTimeOffset _plannedContracting;
-    private readonly ushort _duration;
+    private readonly DateTimeOffset _plannedContractEnd;
     private readonly decimal _estimatedAmount;
 
     public ProjectDomainValidator(Initiative initiative, string name, DateTimeOffset plannedBidding,
-        DateTimeOffset? actualBidding, DateTimeOffset plannedContracting, ushort duration, decimal estimatedAmount)
+        DateTimeOffset? actualBidding, DateTimeOffset plannedContracting, DateTimeOffset plannedContractEnd, decimal estimatedAmount)
     {
         _initiative = initiative;
         _name = name;
         _plannedBidding = plannedBidding;
         _actualBidding = actualBidding;
         _plannedContracting = plannedContracting;
-        _duration = duration;
+        _plannedContractEnd = plannedContractEnd;
         _estimatedAmount = estimatedAmount;
     }
 
@@ -54,8 +54,8 @@ public class ProjectDomainValidator : DomainValidator, IDomainValidator
         _initiative.BiddingBeforeInitiativeFinish(_plannedBidding, _actualBidding,
             nameof(InitiativeProject.PlannedBiddingDate), nameof(InitiativeProject.ActualBiddingDate), Errors);
 
-        _initiative.ContractEndsBeforeInitiativeFinish(_plannedContracting.AddMonths(_duration),
-            nameof(InitiativeProject.Duration), Errors);
+        _initiative.ContractEndsBeforeInitiativeFinish(_plannedContractEnd,
+            nameof(InitiativeProject.PlannedContractEndDate), Errors);
 
         return Errors;
     }

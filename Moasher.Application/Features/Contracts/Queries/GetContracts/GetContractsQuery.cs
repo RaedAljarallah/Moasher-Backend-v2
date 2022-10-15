@@ -18,6 +18,7 @@ public record GetContractsQuery : QueryParameterBase, IRequest<PaginatedList<Con
     public DateTimeOffset? StartTo { get; set; }
     public DateTimeOffset? EndFrom { get; set; }
     public DateTimeOffset? EndTo { get; set; }
+    public string? ExpenditurePlanStatus { get; set; }
     public Guid? StatusId { get; set; }
 }
 

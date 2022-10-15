@@ -22,13 +22,21 @@ public class ContractCreatedEventHandler : INotificationHandler<ContractCreatedE
             .ThenInclude(p => p.Expenditures)
             .Include(c => c.Project)
             .ThenInclude(p => p.ExpendituresBaseline)
+            .Include(c => c.Project)
+            .ThenInclude(p => p.Progress)
             .AsSplitQuery()
             .FirstOrDefaultAsync(c => c.Id == notification.Contract.Id, cancellationToken);
 
         if (contract is not null)
         {
+            var totalExpenditureAmount = contract.Project.Expenditures.Sum(e => e.PlannedAmount);
             contract.Project.Expenditures.ToList().ForEach(e => e.MoveToContract(contract));
             contract.Project.ExpendituresBaseline.ToList().ForEach(b => b.MoveToContract(contract));
+            contract.BalancedExpenditurePlan = totalExpenditureAmount == contract.Amount;
+            
+            var projectActiveProgressItem = contract.Project.Progress.FirstOrDefault(p => !p.Completed);
+            projectActiveProgressItem?.Complete(contract.CreatedAt, contract.CreatedBy);
+            
             await _context.SaveChangesAsync(cancellationToken);
         }
         

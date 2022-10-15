@@ -12,8 +12,8 @@ public class InitiativeProject : InitiativeRelatedDbEntity
     public DateTimeOffset? ActualBiddingDate { get; set; }
     public DateTimeOffset PlannedContractingDate { get; set; }
     public DateTimeOffset? ActualContractingDate { get; set; }
+    public DateTimeOffset PlannedContractEndDate { get; set; }
     public decimal EstimatedAmount { get; set; }
-    public ushort Duration { get; set; }
     public EnumValue Phase { get; private set; } = default!;
     public EnumType PhaseEnum
     {

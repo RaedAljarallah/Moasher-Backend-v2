@@ -15,6 +15,7 @@ public record ContractDto : DtoBase
     public decimal? CurrentYearExpenditure { get; set; }
     public decimal? TotalExpenditure { get; set; }
     public decimal PlannedExpenditureToDate { get; set; }
+    public bool BalancedExpenditurePlan { get; set; }
     public string EntityName { get; set; } = default!;
     public string InitiativeName { get; set; } = default!;
     public Guid InitiativeId { get; set; }

@@ -15,8 +15,9 @@ public class ProjectMappings : Profile
     {
         CreateMap<InitiativeProject, ProjectDto>()
             .IncludeBase<AuditableDbEntity, DtoBase>();
-        
-        CreateMap<CreateProjectCommand, InitiativeProject>();
+
+        CreateMap<CreateProjectCommand, InitiativeProject>()
+            .ForMember(p => p.Expenditures, opt => opt.Ignore());
 
         CreateMap<InitiativeProject, EditProjectDto>()
             .ForMember(p => p.Phase, opt => opt.MapFrom(p => p.PhaseEnum));
@@ -24,6 +25,8 @@ public class ProjectMappings : Profile
         CreateMap<UpdateProjectCommand, InitiativeProject>()
             .ForMember(p => p.Initiative, opt => opt.Ignore())
             .ForMember(p => p.InitiativeId, opt => opt.Ignore())
+            .ForMember(p => p.Expenditures, opt => opt.Ignore())
+            .ForMember(p => p.ExpendituresBaseline, opt => opt.Ignore())
             .ForMember(p => p.Id, opt => opt.Ignore());
     }
 }

@@ -144,13 +144,13 @@ public class EnumTypeUpdatedEventHandler : INotificationHandler<EnumTypeUpdatedE
         {
             var projects = await _context.InitiativeProjects
                 .Where(p => p.PhaseEnumId == enumType.Id)
-                // .Include(p => p.Progress)
+                .Include(p => p.Progress)
                 .ToListAsync(cancellationToken);
             
             projects.ForEach(p =>
             {
                 p.PhaseEnum = enumType;
-                // p.Progress.ToList().ForEach(pr => pr.PhaseEnum = enumType);
+                p.Progress.ToList().ForEach(pr => pr.PhaseEnum = enumType);
             });
             _context.InitiativeProjects.UpdateRange(projects);
         }

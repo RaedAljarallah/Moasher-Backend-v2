@@ -40,7 +40,8 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         }
 
         request.ValidateAndThrow(new ProjectDomainValidator(initiative, request.Name, request.PlannedBiddingDate,
-            request.ActualBiddingDate, request.PlannedContractingDate, request.Duration, request.EstimatedAmount));
+            request.ActualBiddingDate, request.PlannedContractingDate, request.PlannedContractEndDate,
+            request.EstimatedAmount));
 
         var phaseEnum = await _context.EnumTypes
             .AsNoTracking()
@@ -50,15 +51,14 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         {
             throw new ValidationException(nameof(request.PhaseEnumId), ProjectEnumsValidationMessages.WrongPhaseEnumId);
         }
-        
+
         var projectExpenditures = new List<InitiativeExpenditure>();
         foreach (var expenditure in request.Expenditures)
         {
             if (expenditure.PlannedAmount == 0) continue;
 
             var expenditureValidator = new CreateProjectExpenditureCommandValidator();
-            expenditureValidator.SetValidationArguments(request.PlannedContractingDate,
-                request.PlannedContractingDate.AddMonths(request.Duration));
+            expenditureValidator.SetValidationArguments(request.PlannedContractingDate, request.PlannedContractEndDate);
 
             var expenditureValidationResult = expenditureValidator.Validate(expenditure);
             if (!expenditureValidationResult.IsValid)
@@ -73,13 +73,13 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         var project = _mapper.Map<InitiativeProject>(request);
         project.PhaseEnum = phaseEnum;
         project.Initiative = initiative;
-        project.Expenditures.ToList().AddRange(projectExpenditures);
         projectExpenditures.ForEach(e =>
         {
+            project.Expenditures.Add(e);
             var baseline = InitiativeExpenditureBaseline.Map(e);
             project.ExpendituresBaseline.Add(baseline);
         });
-        
+
         project.AddDomainEvent(new ProjectCreatedEvent(project));
         initiative.Projects.Add(project);
         await _context.SaveChangesAsync(cancellationToken);

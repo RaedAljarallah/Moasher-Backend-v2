@@ -28,6 +28,7 @@ public class InitiativeContract : InitiativeRelatedDbEntity
     public bool CalculateAmount { get; set; }
     public decimal? TotalExpenditure { get; set; }
     public decimal? CurrentYearExpenditure { get; set; }
+    public bool BalancedExpenditurePlan { get; set; }
     public InitiativeProject Project { get; set; } = default!;
 
     public ICollection<InitiativeExpenditure> Expenditures { get; set; }

@@ -8,5 +8,6 @@ public abstract record ExpenditureCommandBase
     public Month Month { get; set; }
     public decimal PlannedAmount { get; set; }
     public decimal? ActualAmount { get; set; }
-    public Guid ProjectId { get; set; }
+    public Guid? ProjectId { get; set; }
+    public Guid? ContractId { get; set; }
 }

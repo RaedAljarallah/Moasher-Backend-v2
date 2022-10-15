@@ -55,6 +55,16 @@ public class GetContractsQueryParameter : IQueryParameterBuilder<InitiativeContr
             query = query.Where(c => c.EndDate <= _parameter.EndTo.Value);
         }
 
+        if (!string.IsNullOrWhiteSpace(_parameter.ExpenditurePlanStatus))
+        {
+            query = _parameter.ExpenditurePlanStatus.ToLower() switch
+            {
+                "matching" => query.Where(c => c.Amount == c.Expenditures.Sum(e => e.PlannedAmount)),
+                "notmatching" => query.Where(c => c.Amount != c.Expenditures.Sum(e => e.PlannedAmount)),
+                _ => query
+            };
+        }
+        
         if (_parameter.StatusId.HasValue)
         {
             query = query.Where(c => c.StatusEnumId == _parameter.StatusId);

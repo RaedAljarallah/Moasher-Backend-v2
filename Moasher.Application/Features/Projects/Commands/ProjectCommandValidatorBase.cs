@@ -24,13 +24,28 @@ public abstract class ProjectCommandValidatorBase<TCommand> : AbstractValidator<
                     .WithMessage("تاريخ التعاقد المخطط يجب أن يكون بعد تاريخ الطرح المخطط");
             });
 
+        RuleFor(command => command.PlannedContractEndDate)
+            .NotEmpty().WithMessage(ValidationErrorMessages.NotEmpty("تاريخ نهاية العقد المخطط"))
+            .DependentRules(() =>
+            {
+                RuleFor(command => command.PlannedContractEndDate)
+                    .GreaterThanOrEqualTo(command => command.PlannedContractingDate)
+                    .WithMessage("تاريخ نهاية العقد المخطط يجب أن يكون بعد تاريخ التعاقد المخطط");
+            });
+        
         RuleFor(command => command.EstimatedAmount)
             .InclusiveBetween(0, decimal.MaxValue)
             .WithMessage(ValidationErrorMessages.WrongFormat("القيمة التقديرية"));
 
         RuleFor(command => command.Expenditures)
             .Must(expenditures => expenditures.Any())
-            .WithMessage(ValidationErrorMessages.NotEmpty("خطة الصرف للمشروع"));
+            .WithMessage(ValidationErrorMessages.NotEmpty("خطة الصرف للمشروع"))
+            .DependentRules(() =>
+            {
+                RuleFor(command => command.Expenditures)
+                    .Must((command, expenditures) => expenditures.Sum(e => e.PlannedAmount) == command.EstimatedAmount)
+                    .WithMessage("التكاليف الموزعة للخطة غير مطابقة للقيمة التقديرية");
+            });
             
             
         RuleFor(command => command.PhaseEnumId)

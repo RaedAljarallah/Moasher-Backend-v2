@@ -48,7 +48,8 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
         
         initiative.Projects = initiative.Projects.Where(p => p.Id != request.Id).ToList();
         request.ValidateAndThrow(new ProjectDomainValidator(initiative, request.Name, request.PlannedBiddingDate,
-            request.ActualBiddingDate, request.PlannedContractingDate, request.Duration, request.EstimatedAmount));
+            request.ActualBiddingDate, request.PlannedContractingDate, request.PlannedContractEndDate,
+            request.EstimatedAmount));
         
         if (request.PhaseEnumId != project.PhaseEnumId)
         {
@@ -66,20 +67,15 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
             project.AddDomainEvent(new ProjectPhaseCompletedEvent(project));
         }
 
-        var expenditurePlanChanged = false;
-        var originalExpenditures = new List<InitiativeExpenditure>();
         if (IsDifferentExpenditures(request, project))
         {
-            expenditurePlanChanged = true;
-            originalExpenditures = new List<InitiativeExpenditure>(project.Expenditures);
             _context.InitiativeExpenditures.RemoveRange(project.Expenditures);
             foreach (var expenditure in request.Expenditures)
             {
                 if (expenditure.PlannedAmount == 0) continue;
                 
                 var expenditureValidator = new CreateProjectExpenditureCommandValidator();
-                expenditureValidator.SetValidationArguments(request.PlannedContractingDate,
-                    request.PlannedContractingDate.AddMonths(request.Duration));
+                expenditureValidator.SetValidationArguments(request.PlannedContractingDate, request.PlannedContractEndDate);
         
                 var expenditureValidationResult = expenditureValidator.Validate(expenditure);
                 if (!expenditureValidationResult.IsValid)
@@ -93,12 +89,6 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
         }
         
         _mapper.Map(request, project);
-
-        if (!expenditurePlanChanged)
-        {
-            project.Expenditures = originalExpenditures;
-        }
-        
         _context.InitiativeProjects.Update(project);
         await _context.SaveChangesAsync(cancellationToken);
         

@@ -16,11 +16,14 @@ public class ExpenditureMappings : Profile
             .IncludeBase<AuditableDbEntity, DtoBase>();
 
         CreateMap<CreateProjectExpenditureCommand, InitiativeExpenditure>()
-            .ForMember(p => p.ActualAmount, opt => opt.Ignore());
+            .ForMember(e => e.ActualAmount, opt => opt.Ignore())
+            .ForMember(e => e.Contract, opt => opt.Ignore())
+            .ForMember(e => e.ContractId, opt => opt.Ignore())
+            .ReverseMap();
 
-        CreateMap<CreateContractExpenditureCommand, InitiativeExpenditure>();
-
-        CreateMap<InitiativeExpenditure, CreateProjectExpenditureCommand>();
-        CreateMap<InitiativeExpenditure, CreateContractExpenditureCommand>();
+        CreateMap<CreateContractExpenditureCommand, InitiativeExpenditure>()
+            .ForMember(e => e.Project, opt => opt.Ignore())
+            .ForMember(e => e.ProjectId, opt => opt.Ignore())
+            .ReverseMap();
     }
 }

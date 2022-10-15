@@ -10,8 +10,8 @@ public abstract record ProjectCommandBase
     public DateTimeOffset PlannedBiddingDate { get; set; }
     public DateTimeOffset? ActualBiddingDate { get; set; }
     public DateTimeOffset PlannedContractingDate { get; set; }
+    public DateTimeOffset PlannedContractEndDate { get; set; }
     public decimal EstimatedAmount { get; set; }
-    public ushort Duration { get; set; }
     public Guid InitiativeId { get; set; }
     public Guid PhaseEnumId { get; set; }
     public IEnumerable<CreateProjectExpenditureCommand> Expenditures { get; set; } =
