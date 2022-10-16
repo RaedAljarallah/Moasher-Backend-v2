@@ -17,7 +17,8 @@ public class ProjectDomainValidator : DomainValidator, IDomainValidator
     private readonly decimal _estimatedAmount;
 
     public ProjectDomainValidator(Initiative initiative, string name, DateTimeOffset plannedBidding,
-        DateTimeOffset? actualBidding, DateTimeOffset plannedContracting, DateTimeOffset plannedContractEnd, decimal estimatedAmount)
+        DateTimeOffset? actualBidding, DateTimeOffset plannedContracting, DateTimeOffset plannedContractEnd,
+        decimal estimatedAmount)
     {
         _initiative = initiative;
         _name = name;
@@ -37,15 +38,6 @@ public class ProjectDomainValidator : DomainValidator, IDomainValidator
                 Errors[nameof(InitiativeProject.Name)] =
                     new[] {DomainValidationErrorMessages.Duplicated("اسم المشروع")};
             }
-        }
-
-        var amountSum = _initiative.Projects.Sum(p => p.EstimatedAmount);
-        if (amountSum + _estimatedAmount > _initiative.ApprovedCost)
-        {
-            Errors[nameof(InitiativeProject.EstimatedAmount)] = new[]
-            {
-                $"مجموع قيمة المشاريع المدخلة [{(amountSum + _estimatedAmount):N0}] أعلى من قيمة تكاليف المبادرة المعتمدة [{_initiative.ApprovedCosts:N0}]"
-            };
         }
 
         _initiative.BiddingAfterInitiativeStart(_plannedBidding, _actualBidding,

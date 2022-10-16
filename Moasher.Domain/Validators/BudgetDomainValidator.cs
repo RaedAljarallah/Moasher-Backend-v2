@@ -30,11 +30,11 @@ public class BudgetDomainValidator : DomainValidator, IDomainValidator
         }
         
         var amountSum = _initiative.Budgets.Sum(c => c.Amount);
-        if (amountSum + _amount > _initiative.ApprovedCost)
+        if (amountSum + _amount > (_initiative.ApprovedCost ?? 0))
         {
             Errors[nameof(InitiativeBudget.Amount)] = new[]
             {
-                $"مجموع قيمة الميزانيات المدخلة [{(amountSum + _amount):N0}] أعلى من قيمة تكاليف المبادرة المعتمدة [{_initiative.ApprovedCost:N0}]"
+                $"مجموع قيمة الميزانيات المدخلة [{(amountSum + _amount):N0}] أعلى من قيمة تكاليف المبادرة المعتمدة [{_initiative.ApprovedCost ?? 0:N0}]"
             };
         }
         

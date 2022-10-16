@@ -45,13 +45,13 @@ public class ContractDomainValidator : DomainValidator, IDomainValidator
                 }
             }
         }
-
+        
         var amountSum = _initiative.Contracts.Sum(c => c.Amount);
-        if (amountSum + _amount > _initiative.ApprovedCost)
+        if (amountSum + _amount > (_initiative.ApprovedCost ?? 0))
         {
             Errors[nameof(InitiativeContract.Amount)] = new[]
             {
-                $"مجموع قيمة العقود المدخلة [{(amountSum + _amount):N0}] أعلى من قيمة تكاليف المبادرة المعتمدة [{_initiative.ApprovedCosts:N0}]"
+                $"مجموع قيمة العقود المدخلة [{(amountSum + _amount):N0}] أعلى من قيمة تكاليف المبادرة المعتمدة [{_initiative.ApprovedCost ?? 0:N0}]"
             };
         }
         
