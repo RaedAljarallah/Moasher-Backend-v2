@@ -26,6 +26,13 @@ public class ContractUpdatedEventHandler : INotificationHandler<ContractUpdatedE
         
         if (initiative is not null)
         {
+            var contract = initiative.Contracts.FirstOrDefault(c => c.Id == notification.Contract.Id);
+            if (contract is not null)
+            {
+                contract.SetTotalExpenditure();
+                contract.SetCurrentYearExpenditure();
+            }
+            
             initiative.SetContractsAmount();
             initiative.SetTotalExpenditure();
             initiative.SetCurrentYearExpenditure();

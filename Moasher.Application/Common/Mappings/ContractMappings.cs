@@ -16,7 +16,7 @@ public class ContractMappings : Profile
     {
         CreateMap<InitiativeContract, ContractDto>()
             .IncludeBase<AuditableDbEntity, DtoBase>()
-            .ForMember(c => c.PlannedExpenditureToDate, opt => opt.MapFrom(c => c.PlannedExpenditureToDate()));
+            .ForMember(c => c.PlannedExpenditureToDate, opt => opt.MapFrom(c => c.GetPlannedExpenditureToDate()));
 
         CreateMap<CreateContractCommand, InitiativeContract>()
             .ForMember(c => c.Expenditures, opt => opt.Ignore())

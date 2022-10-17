@@ -14,7 +14,7 @@ public static class InitiativeContractExtensions
         contract.CurrentYearExpenditure = contract.GetCurrentYearExpenditure();
     }
 
-    public static decimal PlannedExpenditureToDate(this InitiativeContract contract)
+    public static decimal GetPlannedExpenditureToDate(this InitiativeContract contract)
     {
         if (!contract.Approved)
         {

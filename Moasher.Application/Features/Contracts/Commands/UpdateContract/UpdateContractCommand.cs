@@ -6,6 +6,7 @@ using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Features.Contracts.Commands.Common;
 using Moasher.Application.Features.Expenditures.Commands.CreateContractExpenditure;
+using Moasher.Domain.Common.Extensions;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Events.Contracts;
 using Moasher.Domain.Validators;
@@ -35,6 +36,7 @@ public class UpdateContractCommandHandler : IRequestHandler<UpdateContractComman
     {
         var initiative = await _context.Initiatives
             .AsNoTracking()
+            .Include(i => i.Budgets)
             .Include(i => i.Contracts)
             .ThenInclude(c => c.Expenditures)
             .FirstOrDefaultAsync(i => i.Id == request.InitiativeId, cancellationToken);
@@ -75,7 +77,7 @@ public class UpdateContractCommandHandler : IRequestHandler<UpdateContractComman
             _context.InitiativeExpenditures.RemoveRange(contract.Expenditures);
             foreach (var expenditure in request.Expenditures)
             {
-                if (expenditure.PlannedAmount == 0 && !expenditure.ActualAmount.HasValue)
+                if (expenditure.PlannedAmount == 0 && expenditure.ActualAmount is null or 0)
                 {
                     // a validation to skip the empty expenditures
                     continue;
@@ -91,7 +93,42 @@ public class UpdateContractCommandHandler : IRequestHandler<UpdateContractComman
                 }
 
                 var mappedExpenditure = _mapper.Map<InitiativeExpenditure>(expenditure);
+                if (mappedExpenditure.ActualAmount is 0)
+                {
+                    mappedExpenditure.ActualAmount = default;
+                }
+
                 contract.Expenditures.Add(mappedExpenditure);
+            }
+
+            // Validate actual expenditures against year budget
+            var budgets = initiative.Budgets
+                .GroupBy(b => b.ApprovalDate.Year)
+                .OrderBy(b => b.Key)
+                .Select(budget => new {Year = budget.Key, Amount = budget.Sum(b => b.Amount)})
+                .ToList();
+
+            var actualExpenditures = contract.Expenditures
+                .GroupBy(e => e.Year)
+                .OrderBy(e => e.Key)
+                .Select(expenditure => new
+                    {Year = expenditure.Key, ActualAmount = expenditure.Sum(e => e.ActualAmount ?? 0)})
+                .ToList();
+            
+            actualExpenditures.ForEach(expenditure =>
+            {
+                if (budgets.All(b => b.Year != expenditure.Year))
+                {
+                    throw new ValidationException(nameof(InitiativeContract.Expenditures),
+                        $"لا يمكن إضافة مصاريف فعلية لسنة {expenditure.Year} لعدم وجود ميزانية للسنة");
+                }
+            });
+
+            var totalActualExpenditures = initiative.TotalExpenditure + actualExpenditures.Sum(e => e.ActualAmount);
+            if (totalActualExpenditures > (initiative.TotalBudget ?? 0))
+            {
+                throw new ValidationException(nameof(InitiativeContract.Expenditures),
+                    $"إجمالي الصرف الفعلي المدخل [{totalActualExpenditures:N0}] أعلى من إجمالي ميزانية المبادرة [{initiative.TotalBudget ?? 0:N0}]");
             }
         }
 
@@ -100,7 +137,6 @@ public class UpdateContractCommandHandler : IRequestHandler<UpdateContractComman
         // It's safe to make BalancedExpenditurePlan 'true'
         // since we've validated the total expenditures amount against the contract amount
         contract.BalancedExpenditurePlan = true;
-        
         contract.AddDomainEvent(new ContractUpdatedEvent(contract));
         _context.InitiativeContracts.Update(contract);
         await _context.SaveChangesAsync(cancellationToken);
