@@ -7,14 +7,6 @@ namespace Moasher.Domain.Common.Extensions;
 
 public static class InitiativeExtensions
 {
-    private static decimal? GetCurrentYearBudget(this Initiative initiative)
-    {
-        return initiative.Budgets
-            .Where(b => b.Approved)
-            .Where(b => b.ApprovalDate.Year == DateTimeOffset.UtcNow.AddHours(3).Year)
-            .MaxBy(a => a.ApprovalDate)?.Amount;
-    }
-    
     public static void SetCurrentYearBudget(this Initiative initiative)
     {
         initiative.CurrentYearBudget = initiative.GetCurrentYearBudget();
@@ -72,6 +64,30 @@ public static class InitiativeExtensions
     public static void SetLatestAnalytics(this Initiative initiative)
     {
         initiative.LatestAnalyticsModel = initiative.GetLatestAnalytics();
+    }
+
+    public static decimal GetPlannedToDateExpenditure(this Initiative initiative)
+    {
+        var contractsExpenditure = initiative.Contracts.Sum(c => c.GetPlannedExpenditureToDate());
+        var projectsExpenditure = initiative.Projects.Sum(p => p.GetPlannedExpenditureToDate());
+        return contractsExpenditure + projectsExpenditure;
+    }
+
+    public static decimal GetPlannedToDateContractsAmount(this Initiative initiative)
+    {
+        return initiative.Projects
+            .Where(p => p.Approved)
+            .Where(p => !p.Contracted)
+            .Where(p => p.PlannedContractingDate <= DateTimeOffset.UtcNow.AddHours(3))
+            .Sum(p => p.EstimatedAmount);
+    }
+    
+    private static decimal? GetCurrentYearBudget(this Initiative initiative)
+    {
+        return initiative.Budgets
+            .Where(b => b.Approved)
+            .Where(b => b.ApprovalDate.Year == DateTimeOffset.UtcNow.AddHours(3).Year)
+            .MaxBy(a => a.ApprovalDate)?.Amount;
     }
     
     private static decimal? GetTotalBudget(this Initiative initiative)

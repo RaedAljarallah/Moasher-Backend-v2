@@ -15,4 +15,9 @@ public record InitiativeSummaryDto
     public decimal ContractsAmount { get; set; }
     public decimal TotalExpenditure { get; set; }
     public decimal CurrentYearExpenditure { get; set; }
+    public decimal EstimatedBudgetAtCompletion { get; set; }
+    public decimal PlannedToDateExpenditure { get; set; }
+    public decimal PlannedToDateContractsAmount { get; set; }
+    public int ToDateDueMilestones { get; set; }
+    public int ToDateAchievedMilestones { get; set; }
 }

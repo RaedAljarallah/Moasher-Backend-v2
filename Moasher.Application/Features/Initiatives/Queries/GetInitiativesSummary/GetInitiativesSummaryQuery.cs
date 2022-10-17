@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Application.Common.Services;
+using Moasher.Domain.Common.Extensions;
 
 namespace Moasher.Application.Features.Initiatives.Queries.GetInitiativesSummary;
 
@@ -31,7 +33,10 @@ public class GetInitiativesSummaryQueryHandler : IRequestHandler<GetInitiativesS
     {
         var initiatives = await _context.Initiatives
             .WithinParameters(new GetInitiativesSummaryQueryParameter(request))
+            .Include(i => i.Projects).ThenInclude(p => p.Expenditures)
+            .Include(i => i.Contracts).ThenInclude(p => p.Expenditures)
             .AsNoTracking()
+            .AsSplitQuery()
             .ToListAsync(cancellationToken);
         
         var summaryDto = new InitiativeSummaryDto();
@@ -39,21 +44,28 @@ public class GetInitiativesSummaryQueryHandler : IRequestHandler<GetInitiativesS
         {
             summaryDto.Statuses.Add(i.Status);
             summaryDto.FundStatuses.Add(i.FundStatus);
+            summaryDto.ApprovedCost += i.ApprovedCost ?? 0m;
+            summaryDto.RequiredCost += i.RequiredCost;
+            // EAC
+            summaryDto.ContractsAmount += i.ContractsAmount ?? 0m;
+            summaryDto.TotalExpenditure += i.TotalExpenditure ?? 0m;
+            summaryDto.PlannedToDateExpenditure += i.GetPlannedToDateExpenditure();
+            summaryDto.PlannedToDateContractsAmount += i.GetPlannedToDateContractsAmount();
             summaryDto.PlannedProgress += i.PlannedProgress ?? 0f;
             summaryDto.ActualProgress += i.ActualProgress ?? 0f;
-            summaryDto.RequiredCost += i.RequiredCost;
-            summaryDto.ApprovedCost += i.ApprovedCost ?? 0m;
             summaryDto.TotalBudget += i.TotalBudget ?? 0m;
             summaryDto.CurrentYearBudget += i.CurrentYearBudget ?? 0m;
-            // summaryDto.ContractsAmount += i.ContractsAmount ?? 0m;
-            // summaryDto.TotalExpenditure += i.TotalExpenditure ?? 0m;
-            // summaryDto.CurrentYearExpenditure += i.CurrentYearExpenditure ?? 0m;
+            summaryDto.CurrentYearExpenditure += i.CurrentYearExpenditure ?? 0m;
         });
         
         if (initiatives.Any())
         {
             summaryDto.PlannedProgress = summaryDto.PlannedProgress / (initiatives.Count * 100) * 100;
             summaryDto.ActualProgress = summaryDto.ActualProgress / (initiatives.Count * 100) * 100;
+
+            var earnedValue = (float) summaryDto.RequiredCost * (summaryDto.ActualProgress / 100);
+            summaryDto.EstimatedBudgetAtCompletion =
+                summaryDto.TotalExpenditure + (summaryDto.RequiredCost - (decimal)earnedValue);
         }
 
         return summaryDto;
