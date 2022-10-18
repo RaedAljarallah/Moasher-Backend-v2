@@ -22,10 +22,10 @@ public class BudgetDomainValidator : DomainValidator, IDomainValidator
     {
         foreach (var budget in _initiative.Budgets)
         {
-            if (budget.ApprovalDate == _approvalDate)
+            if (budget.ApprovalDate.Year == _approvalDate.Year)
             {
                 Errors[nameof(InitiativeBudget.ApprovalDate)] = new[]
-                    {DomainValidationErrorMessages.Duplicated("تاريخ اعتماد الميزانية")};
+                    {DomainValidationErrorMessages.Duplicated("سنة اعتماد الميزانية")};
             }
         }
         

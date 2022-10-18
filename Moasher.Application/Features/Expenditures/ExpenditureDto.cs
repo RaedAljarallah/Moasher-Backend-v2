@@ -11,8 +11,9 @@ public record ExpenditureDto : DtoBase
     public decimal InitialPlannedAmountCumulative { get; set; }
     public decimal PlannedAmount { get; set; }
     public decimal PlannedAmountCumulative { get; set; }
-    public decimal? ActualAmount { get; set; }
+    public decimal ActualAmount { get; set; }
     public decimal ActualAmountCumulative { get; set; }
+    public decimal Budget { get; set; }
     public Guid? ProjectId { get; set; }
     public Guid? ContractId { get; set; }
     public Guid? InitiativeId { get; set; }

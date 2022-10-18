@@ -10,6 +10,7 @@ namespace Moasher.Application.Features.Expenditures.Queries.GetExpenditures;
 public record GetExpendituresQuery : IRequest<IEnumerable<ExpenditureDto>>
 {
     public Guid InitiativeId { get; set; }
+    public ushort? Year { get; set; }
 }
 
 public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery, IEnumerable<ExpenditureDto>>
@@ -20,27 +21,37 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
     {
         _context = context;
     }
-    
-    public async Task<IEnumerable<ExpenditureDto>> Handle(GetExpendituresQuery request, CancellationToken cancellationToken)
+
+    public async Task<IEnumerable<ExpenditureDto>> Handle(GetExpendituresQuery request,
+        CancellationToken cancellationToken)
     {
         var initiative = await _context.Initiatives
             .AsNoTracking()
-            .Include(i => i.Projects)
-            .ThenInclude(p => p.Expenditures.Where(e => e.Approved))
-            .Include(i => i.Projects)
-            .ThenInclude(p => p.ExpendituresBaseline.Where(e => e.Approved))
-            .Include(i => i.Contracts)
-            .ThenInclude(c => c.Expenditures.Where(e => e.Approved))
-            .Include(i => i.Contracts)
-            .ThenInclude(c => c.ExpendituresBaseline.Where(e => e.Approved))
             .Select(initiative => new
             {
                 initiative.Id,
-                ProjectExpenditures = initiative.Projects.SelectMany(p => p.Expenditures).ToList(),
-                ProjectExpendituresBaseline = initiative.Projects.SelectMany(p => p.ExpendituresBaseline).ToList(),
-                ContractExpenditures = initiative.Contracts.SelectMany(p => p.Expenditures).ToList(),
-                ContractExpendituresBaseline = initiative.Contracts.SelectMany(p => p.ExpendituresBaseline).ToList(),
+                ProjectExpenditures = initiative.Projects.SelectMany(p => p.Expenditures
+                        .Where(e => e.Approved)
+                        .Where(e => !request.Year.HasValue || (request.Year.HasValue && e.Year == request.Year)))
+                    .ToList(),
+                ProjectExpendituresBaseline = initiative.Projects.SelectMany(p => p.ExpendituresBaseline
+                        .Where(e => e.Approved)
+                        .Where(e => !request.Year.HasValue || (request.Year.HasValue && e.Year == request.Year)))
+                    .ToList(),
+                ContractExpenditures = initiative.Contracts.SelectMany(p => p.Expenditures
+                        .Where(e => e.Approved)
+                        .Where(e => !request.Year.HasValue || (request.Year.HasValue && e.Year == request.Year)))
+                    .ToList(),
+                ContractExpendituresBaseline = initiative.Contracts.SelectMany(p => p.ExpendituresBaseline
+                        .Where(e => e.Approved)
+                        .Where(e => !request.Year.HasValue || (request.Year.HasValue && e.Year == request.Year)))
+                    .ToList(),
+                Budgets = initiative.Budgets
+                    .Where(b => b.Approved)
+                    .Where(b => !request.Year.HasValue || (request.Year.HasValue && b.ApprovalDate.Year == request.Year))
+                    .ToList()
             })
+            .AsSplitQuery()
             .FirstOrDefaultAsync(i => i.Id == request.InitiativeId, cancellationToken);
 
         if (initiative is null)
@@ -124,6 +135,7 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
                     PlannedAmountCumulative = plannedAmountCumulative + monthPlannedAmount,
                     ActualAmount = monthActualAmount,
                     ActualAmountCumulative = actualAmountCumulative + monthActualAmount,
+                    Budget = initiative.Budgets.Where(b => b.ApprovalDate.Year == year).Sum(b => b.Amount),
                     InitiativeId = initiative.Id
                 };
                 result.Add(dto);
