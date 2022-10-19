@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Moasher.Domain.Common.Abstracts;
+using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Domain.Entities;
 

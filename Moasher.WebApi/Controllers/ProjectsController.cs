@@ -4,6 +4,7 @@ using Moasher.Application.Features.Projects.Commands.DeleteProject;
 using Moasher.Application.Features.Projects.Commands.UpdateProject;
 using Moasher.Application.Features.Projects.Queries.EditProject;
 using Moasher.Application.Features.Projects.Queries.GetProjects;
+using Moasher.Application.Features.Projects.Queries.GetProjectsSummary;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -18,6 +19,17 @@ public class ProjectsController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetProjectsQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.Projects.Summary)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> All([FromQuery] GetProjectsSummaryQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        
+        return Ok(new {result});
     }
     
     [HttpPost(ApiEndpoints.Projects.Create)]

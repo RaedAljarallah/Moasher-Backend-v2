@@ -30,6 +30,7 @@ public class MoasherDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
     public DbSet<InitiativeBudget> InitiativeBudgets => Set<InitiativeBudget>();
     public DbSet<InitiativeContract> InitiativeContracts => Set<InitiativeContract>();
     public DbSet<InitiativeProject> InitiativeProjects => Set<InitiativeProject>();
+    public DbSet<InitiativeProjectBaseline> InitiativeProjectsBaseline => Set<InitiativeProjectBaseline>();
     public DbSet<InitiativeProjectProgress> InitiativeProjectProgress => Set<InitiativeProjectProgress>();
     public DbSet<InitiativeExpenditure> InitiativeExpenditures => Set<InitiativeExpenditure>();
     public DbSet<InitiativeExpenditureBaseline> InitiativeExpendituresBaseline => Set<InitiativeExpenditureBaseline>();

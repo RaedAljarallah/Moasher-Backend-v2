@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Moasher.Persistence;
 
@@ -11,9 +12,10 @@ using Moasher.Persistence;
 namespace Moasher.Persistence.Migrations
 {
     [DbContext(typeof(MoasherDbContext))]
-    partial class MoasherDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221019053600_AddProjectBaselineTable")]
+    partial class AddProjectBaselineTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1118,7 +1120,7 @@ namespace Moasher.Persistence.Migrations
                         .HasPrecision(18, 6)
                         .HasColumnType("decimal(18,6)");
 
-                    b.Property<DateTimeOffset>("InitialPlannedContractingDate")
+                    b.Property<DateTimeOffset>("InitialPlannedContractEndDate")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("LastModified")
@@ -1136,7 +1138,7 @@ namespace Moasher.Persistence.Migrations
                     b.HasIndex("ProjectId")
                         .IsUnique();
 
-                    b.ToTable("InitiativeProjectsBaseline");
+                    b.ToTable("InitiativeProjectBaseline");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProjectProgress", b =>

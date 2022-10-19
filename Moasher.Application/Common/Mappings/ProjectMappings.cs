@@ -27,6 +27,7 @@ public class ProjectMappings : Profile
             .ForMember(p => p.InitiativeId, opt => opt.Ignore())
             .ForMember(p => p.Expenditures, opt => opt.Ignore())
             .ForMember(p => p.ExpendituresBaseline, opt => opt.Ignore())
+            .ForMember(p => p.Baseline, opt => opt.Ignore())
             .ForMember(p => p.Id, opt => opt.Ignore());
     }
 }

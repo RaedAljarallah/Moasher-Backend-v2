@@ -28,8 +28,9 @@ public class GetInitiativesSummaryQueryHandler : IRequestHandler<GetInitiativesS
     {
         _context = context;
     }
-    
-    public async Task<InitiativeSummaryDto> Handle(GetInitiativesSummaryQuery request, CancellationToken cancellationToken)
+
+    public async Task<InitiativeSummaryDto> Handle(GetInitiativesSummaryQuery request,
+        CancellationToken cancellationToken)
     {
         var initiatives = await _context.Initiatives
             .WithinParameters(new GetInitiativesSummaryQueryParameter(request))
@@ -38,7 +39,7 @@ public class GetInitiativesSummaryQueryHandler : IRequestHandler<GetInitiativesS
             .AsNoTracking()
             .AsSplitQuery()
             .ToListAsync(cancellationToken);
-        
+
         var summaryDto = new InitiativeSummaryDto();
         initiatives.ForEach(i =>
         {
@@ -46,7 +47,6 @@ public class GetInitiativesSummaryQueryHandler : IRequestHandler<GetInitiativesS
             summaryDto.FundStatuses.Add(i.FundStatus);
             summaryDto.ApprovedCost += i.ApprovedCost ?? 0m;
             summaryDto.RequiredCost += i.RequiredCost;
-            // EAC
             summaryDto.ContractsAmount += i.ContractsAmount ?? 0m;
             summaryDto.TotalExpenditure += i.TotalExpenditure ?? 0m;
             summaryDto.PlannedToDateExpenditure += i.GetPlannedToDateExpenditure();
@@ -57,7 +57,7 @@ public class GetInitiativesSummaryQueryHandler : IRequestHandler<GetInitiativesS
             summaryDto.CurrentYearBudget += i.CurrentYearBudget ?? 0m;
             summaryDto.CurrentYearExpenditure += i.CurrentYearExpenditure ?? 0m;
         });
-        
+
         if (initiatives.Any())
         {
             summaryDto.PlannedProgress = summaryDto.PlannedProgress / (initiatives.Count * 100) * 100;
@@ -65,7 +65,7 @@ public class GetInitiativesSummaryQueryHandler : IRequestHandler<GetInitiativesS
 
             var earnedValue = (float) summaryDto.RequiredCost * (summaryDto.ActualProgress / 100);
             summaryDto.EstimatedBudgetAtCompletion =
-                summaryDto.TotalExpenditure + (summaryDto.RequiredCost - (decimal)earnedValue);
+                summaryDto.TotalExpenditure + (summaryDto.RequiredCost - (decimal) earnedValue);
         }
 
         return summaryDto;

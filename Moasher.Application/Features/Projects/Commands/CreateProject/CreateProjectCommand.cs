@@ -79,7 +79,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
             var baseline = InitiativeExpenditureBaseline.Map(e);
             project.ExpendituresBaseline.Add(baseline);
         });
-
+        project.Baseline = InitiativeProjectBaseline.Map(project);
         project.AddDomainEvent(new ProjectCreatedEvent(project));
         initiative.Projects.Add(project);
         await _context.SaveChangesAsync(cancellationToken);

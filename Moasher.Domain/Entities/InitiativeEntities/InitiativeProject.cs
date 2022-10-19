@@ -38,6 +38,7 @@ public class InitiativeProject : InitiativeRelatedDbEntity
     public InitiativeContract? Contract { get; set; }
     public Guid? ContractId { get; set; }
 
+    public InitiativeProjectBaseline Baseline { get; set; } = default!;
     public void Contracting(DateTimeOffset contractingDate)
     {
         Contracted = true;
