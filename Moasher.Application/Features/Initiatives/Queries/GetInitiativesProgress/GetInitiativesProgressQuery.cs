@@ -2,7 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Application.Common.Services;
 using Moasher.Domain.Common.Utilities;
+using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Enums;
 using Moasher.Domain.ValueObjects;
 
@@ -79,9 +81,9 @@ public class GetInitiativesProgressQueryHandler : IRequestHandler<GetInitiatives
 
         var result = new List<InitiativeProgressDto>();
         var months = Enum.GetValues<Month>().ToList();
-        var years = milestones.Select(m => m.Year)
-            .Concat(achievedMilestones.Select(m => m.Year))
-            .Distinct()
+        var startYear = initiatives.Min(i => i.ActualStart?.Year ?? i.PlannedStart.Year);
+        var lastYear = initiatives.Max(i => i.ActualFinish?.Year ?? i.PlannedFinish.Year);
+        var years = Enumerable.Range(startYear, Math.Min(DateTimeService.Now.Year, lastYear) - startYear + 1)
             .OrderBy(y => y)
             .ToList();
 

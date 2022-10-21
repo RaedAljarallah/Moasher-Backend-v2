@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Application.Common.Services;
 using Moasher.Domain.Enums;
 
 namespace Moasher.Application.Features.Projects.Queries.GetProjectsSummary;
@@ -28,6 +29,10 @@ public class GetProjectsSummaryQueryHandler : IRequestHandler<GetProjectsSummary
             .Select(initiative => new
             {
                 initiative.Id,
+                initiative.PlannedStart,
+                initiative.PlannedFinish,
+                initiative.ActualStart,
+                initiative.ActualFinish,
                 Projects = initiative.Projects
                     .Where(p => p.Approved)
                     .Where(p => !request.Year.HasValue ||
@@ -45,7 +50,7 @@ public class GetProjectsSummaryQueryHandler : IRequestHandler<GetProjectsSummary
                     .ToList(),
                 ApprovedCosts = initiative.ApprovedCosts
                     .Where(a => a.Approved)
-                    .Where(a => !request.Year.HasValue || (request.Year.HasValue && a.ApprovalDate.Year == request.Year))
+                    .Where(a => !request.Year.HasValue || (request.Year.HasValue && a.ApprovalDate.Year <= request.Year))
                     .ToList()
             })
             .AsSplitQuery()
@@ -100,13 +105,13 @@ public class GetProjectsSummaryQueryHandler : IRequestHandler<GetProjectsSummary
                 contract.Key.Month,
                 Amount = contract.Sum(c => c.Amount)
             }).ToList();
-
+    
+        
         var result = new List<ProjectsSummaryDto>();
         var months = Enum.GetValues<Month>().ToList();
-        var years = projects.Select(p => p.Year)
-            .Concat(baselines.Select(b => b.Year))
-            .Concat(contracts.Select(c => c.Year))
-            .Distinct()
+        var startYear = initiative.ActualStart?.Year ?? initiative.PlannedStart.Year;
+        var lastYear = initiative.ActualFinish?.Year ?? initiative.PlannedFinish.Year;
+        var years = Enumerable.Range(startYear, Math.Min(DateTimeService.Now.Year, lastYear) - startYear + 1)
             .OrderBy(y => y)
             .ToList();
         
@@ -133,7 +138,7 @@ public class GetProjectsSummaryQueryHandler : IRequestHandler<GetProjectsSummary
                     PlannedAmountCumulative = plannedAmountCumulative + monthPlannedAmount,
                     ActualAmount = monthActualAmount,
                     ActualAmountCumulative = actualAmountCumulative + monthActualAmount,
-                    ApprovedCost = initiative.ApprovedCosts.Where(a => a.ApprovalDate.Year == year).Sum(a => a.Amount),
+                    ApprovedCost = initiative.ApprovedCosts.Where(a => a.ApprovalDate.Year <= year).Sum(a => a.Amount),
                     InitiativeId = initiative.Id
                 };
                 result.Add(dto);

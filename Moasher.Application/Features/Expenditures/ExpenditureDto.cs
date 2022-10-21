@@ -5,7 +5,7 @@ namespace Moasher.Application.Features.Expenditures;
 
 public record ExpenditureDto : DtoBase
 {
-    public ushort Year { get; set; }
+    public int Year { get; set; }
     public Month Month { get; set; }
     public decimal InitialPlannedAmount { get; set; }
     public decimal InitialPlannedAmountCumulative { get; set; }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Application.Common.Services;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Enums;
 
@@ -30,6 +31,10 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
             .Select(initiative => new
             {
                 initiative.Id,
+                initiative.PlannedStart,
+                initiative.PlannedFinish,
+                initiative.ActualStart,
+                initiative.ActualFinish,
                 ProjectExpenditures = initiative.Projects.SelectMany(p => p.Expenditures
                         .Where(e => e.Approved)
                         .Where(e => !request.Year.HasValue || (request.Year.HasValue && e.Year == request.Year)))
@@ -105,11 +110,12 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
 
         var result = new List<ExpenditureDto>();
         var months = Enum.GetValues<Month>().ToList();
-        var years = expenditures.Select(e => e.Year)
-            .Concat(expendituresBaseline.Select(b => b.Year))
-            .Distinct()
-            .OrderBy(e => e)
+        var startYear = initiative.ActualStart?.Year ?? initiative.PlannedStart.Year;
+        var lastYear = initiative.ActualFinish?.Year ?? initiative.PlannedFinish.Year;
+        var years = Enumerable.Range(startYear, Math.Min(DateTimeService.Now.Year, lastYear) - startYear + 1)
+            .OrderBy(y => y)
             .ToList();
+        
         var initialPlannedAmountCumulative = 0m;
         var plannedAmountCumulative = 0m;
         var actualAmountCumulative = 0m;
