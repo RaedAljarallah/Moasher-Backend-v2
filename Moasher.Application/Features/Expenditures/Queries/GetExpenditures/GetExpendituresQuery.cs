@@ -10,7 +10,8 @@ namespace Moasher.Application.Features.Expenditures.Queries.GetExpenditures;
 
 public record GetExpendituresQuery : IRequest<IEnumerable<ExpenditureDto>>
 {
-    public Guid InitiativeId { get; set; }
+    public Guid? InitiativeId { get; set; }
+    public Guid? EntityId { get; set; }
     public ushort? Year { get; set; }
 }
 
@@ -26,8 +27,10 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
     public async Task<IEnumerable<ExpenditureDto>> Handle(GetExpendituresQuery request,
         CancellationToken cancellationToken)
     {
-        var initiative = await _context.Initiatives
+        var initiatives = await _context.Initiatives
             .AsNoTracking()
+            .Where(i => !request.InitiativeId.HasValue || request.InitiativeId == i.Id)
+            .Where(i => !request.EntityId.HasValue || request.EntityId == i.EntityId)
             .Select(initiative => new
             {
                 initiative.Id,
@@ -58,19 +61,20 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
                     .ToList()
             })
             .AsSplitQuery()
-            .FirstOrDefaultAsync(i => i.Id == request.InitiativeId, cancellationToken);
+            .ToListAsync(cancellationToken);
 
-        if (initiative is null)
+        if (!initiatives.Any())
         {
-            throw new NotFoundException();
+            return new List<ExpenditureDto>();
         }
 
         var expenditures =
             new List<InitiativeExpenditure>(
-                initiative.ProjectExpenditures.Count + initiative.ContractExpenditures.Count);
+                initiatives.SelectMany(i => i.ProjectExpenditures).Count() +
+                initiatives.SelectMany(i => i.ContractExpenditures).Count());
 
-        expenditures.AddRange(initiative.ProjectExpenditures);
-        expenditures.AddRange(initiative.ContractExpenditures);
+        expenditures.AddRange(initiatives.SelectMany(i => i.ProjectExpenditures));
+        expenditures.AddRange(initiatives.SelectMany(i => i.ContractExpenditures));
 
         var concatExpenditures = expenditures
             .GroupBy(e => new
@@ -89,10 +93,11 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
             }).ToList();
 
         var expendituresBaseline = new List<InitiativeExpenditureBaseline>(
-            initiative.ProjectExpendituresBaseline.Count + initiative.ContractExpendituresBaseline.Count);
+            initiatives.SelectMany(i => i.ProjectExpendituresBaseline).Count() + 
+            initiatives.SelectMany(i => i.ContractExpendituresBaseline).Count());
 
-        expendituresBaseline.AddRange(initiative.ProjectExpendituresBaseline);
-        expendituresBaseline.AddRange(initiative.ContractExpendituresBaseline);
+        expendituresBaseline.AddRange(initiatives.SelectMany(i => i.ProjectExpendituresBaseline));
+        expendituresBaseline.AddRange(initiatives.SelectMany(i => i.ContractExpendituresBaseline));
 
         var concatExpendituresBaseline = expendituresBaseline
             .GroupBy(e => new
@@ -110,8 +115,8 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
             }).ToList();
 
         var result = new List<ExpenditureDto>();
-        var startDate = initiative.ActualStart ?? initiative.PlannedStart;
-        var endDate = initiative.ActualFinish ?? initiative.PlannedFinish;
+        var startDate = initiatives.Min(i => i.ActualStart ?? i.PlannedStart);
+        var endDate = initiatives.Max(i => i.ActualFinish ?? i.PlannedFinish);
         var endOfCurrentYearDate =
             new DateTimeOffset(new DateTime(DateTimeService.Now.Year, 12, 31), TimeSpan.FromHours(3));
         var yearsMonthsRange = DateTimeService
@@ -142,8 +147,7 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
                     PlannedAmountCumulative = plannedAmountCumulative + monthPlannedAmount,
                     ActualAmount = monthActualAmount,
                     ActualAmountCumulative = actualAmountCumulative + monthActualAmount,
-                    Budget = initiative.Budgets.Where(b => b.ApprovalDate.Year == range.Year).Sum(b => b.Amount),
-                    InitiativeId = initiative.Id
+                    Budget = initiatives.SelectMany(i => i.Budgets.Where(b => b.ApprovalDate.Year == range.Year)).Sum(b => b.Amount),
                 };
                 result.Add(dto);
                 initialPlannedAmountCumulative = dto.InitialPlannedAmountCumulative;

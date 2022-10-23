@@ -9,7 +9,8 @@ namespace Moasher.Application.Features.Projects.Queries.GetProjectsSummary;
 
 public record GetProjectsSummaryQuery : IRequest<IEnumerable<ProjectsSummaryDto>>
 {
-    public Guid InitiativeId { get; set; }
+    public Guid? InitiativeId { get; set; }
+    public Guid? EntityId { get; set; }
     public ushort? Year { get; set; }
 }
 
@@ -24,8 +25,10 @@ public class GetProjectsSummaryQueryHandler : IRequestHandler<GetProjectsSummary
     
     public async Task<IEnumerable<ProjectsSummaryDto>> Handle(GetProjectsSummaryQuery request, CancellationToken cancellationToken)
     {
-        var initiative = await _context.Initiatives
+        var initiatives = await _context.Initiatives
             .AsNoTracking()
+            .Where(i => !request.InitiativeId.HasValue || request.InitiativeId == i.Id)
+            .Where(i => !request.EntityId.HasValue || request.EntityId == i.EntityId)
             .Select(initiative => new
             {
                 initiative.Id,
@@ -54,14 +57,15 @@ public class GetProjectsSummaryQueryHandler : IRequestHandler<GetProjectsSummary
                     .ToList()
             })
             .AsSplitQuery()
-            .FirstOrDefaultAsync(i => i.Id == request.InitiativeId, cancellationToken);
+            .ToListAsync(cancellationToken);
         
-        if (initiative is null)
+        if (!initiatives.Any())
         {
-            throw new NotFoundException();
+            return new List<ProjectsSummaryDto>();
         }
 
-        var projects = initiative.Projects
+        var projects = initiatives
+            .SelectMany(i => i.Projects)
             .GroupBy(p => new
             {
                 p.PlannedContractingDate.Year,
@@ -76,7 +80,8 @@ public class GetProjectsSummaryQueryHandler : IRequestHandler<GetProjectsSummary
                 Amount = project.Sum(p => p.EstimatedAmount)
             }).ToList();
 
-        var baselines = initiative.Baselines
+        var baselines = initiatives
+            .SelectMany(i => i.Baselines)
             .GroupBy(b => new
             {
                 b.InitialPlannedContractingDate.Year,
@@ -91,7 +96,8 @@ public class GetProjectsSummaryQueryHandler : IRequestHandler<GetProjectsSummary
                 Amount = baseline.Sum(b => b.InitialEstimatedAmount)
             }).ToList();
 
-        var contracts = initiative.Contracts
+        var contracts = initiatives
+            .SelectMany(i => i.Contracts)
             .GroupBy(c => new
             {
                 c.StartDate.Year,
@@ -108,8 +114,8 @@ public class GetProjectsSummaryQueryHandler : IRequestHandler<GetProjectsSummary
     
         
         var result = new List<ProjectsSummaryDto>();
-        var startDate = initiative.ActualStart ?? initiative.PlannedStart;
-        var endDate = initiative.ActualFinish ?? initiative.PlannedFinish;
+        var startDate = initiatives.Min(i => i.ActualStart ?? i.PlannedStart);
+        var endDate = initiatives.Max(i => i.ActualFinish ?? i.PlannedFinish);
         var endOfCurrentYearDate =
             new DateTimeOffset(new DateTime(DateTimeService.Now.Year, 12, 31), TimeSpan.FromHours(3));
         var yearsMonthsRange = DateTimeService
@@ -138,8 +144,7 @@ public class GetProjectsSummaryQueryHandler : IRequestHandler<GetProjectsSummary
                     PlannedAmountCumulative = plannedAmountCumulative + monthPlannedAmount,
                     ActualAmount = monthActualAmount,
                     ActualAmountCumulative = actualAmountCumulative + monthActualAmount,
-                    ApprovedCost = initiative.ApprovedCosts.Where(a => a.ApprovalDate.Year <= range.Year).Sum(a => a.Amount),
-                    InitiativeId = initiative.Id
+                    ApprovedCost = initiatives.SelectMany(i => i.ApprovedCosts.Where(a => a.ApprovalDate.Year <= range.Year)).Sum(a => a.Amount)
                 };
                 result.Add(dto);
                 initialPlannedAmountCumulative = dto.InitialPlannedAmountCumulative;
