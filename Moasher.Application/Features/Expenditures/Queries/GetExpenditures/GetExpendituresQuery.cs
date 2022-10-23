@@ -109,6 +109,9 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
             }).ToList();
 
         var result = new List<ExpenditureDto>();
+        var startDate = initiative.ActualStart ?? initiative.PlannedStart;
+        var endDate = initiative.ActualFinish ?? initiative.PlannedFinish;
+        
         var months = Enum.GetValues<Month>().ToList();
         var startYear = initiative.ActualStart?.Year ?? initiative.PlannedStart.Year;
         var lastYear = initiative.ActualFinish?.Year ?? initiative.PlannedFinish.Year;
