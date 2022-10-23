@@ -108,37 +108,37 @@ public class GetProjectsSummaryQueryHandler : IRequestHandler<GetProjectsSummary
     
         
         var result = new List<ProjectsSummaryDto>();
-        var months = Enum.GetValues<Month>().ToList();
-        var startYear = initiative.ActualStart?.Year ?? initiative.PlannedStart.Year;
-        var lastYear = initiative.ActualFinish?.Year ?? initiative.PlannedFinish.Year;
-        var years = Enumerable.Range(startYear, Math.Min(DateTimeService.Now.Year, lastYear) - startYear + 1)
-            .OrderBy(y => y)
-            .ToList();
+        var startDate = initiative.ActualStart ?? initiative.PlannedStart;
+        var endDate = initiative.ActualFinish ?? initiative.PlannedFinish;
+        var endOfCurrentYearDate =
+            new DateTimeOffset(new DateTime(DateTimeService.Now.Year, 12, 31), TimeSpan.FromHours(3));
+        var yearsMonthsRange = DateTimeService
+            .GetYearsMonthsRange(startDate, endDate < endOfCurrentYearDate ? endDate : endOfCurrentYearDate).ToList();
         
         var initialPlannedAmountCumulative = 0m;
         var plannedAmountCumulative = 0m;
         var actualAmountCumulative = 0m;
-        years.ForEach(year =>
+        yearsMonthsRange.ForEach(range =>
         {
-            var yearProjects = projects.Where(p => p.Year == year).ToList();
-            var yearBaseline = baselines.Where(b => b.Year == year).ToList();
-            var yearContracts = contracts.Where(c => c.Year == year).ToList();
-            months.ForEach(month =>
+            var yearProjects = projects.Where(p => p.Year == range.Year).ToList();
+            var yearBaseline = baselines.Where(b => b.Year == range.Year).ToList();
+            var yearContracts = contracts.Where(c => c.Year == range.Year).ToList();
+            range.Months.ToList().ForEach(month =>
             {
-                var monthInitialPlannedAmount = yearBaseline.FirstOrDefault(b => b.Month == (int) month)?.Amount ?? 0;
-                var monthPlannedAmount = yearProjects.FirstOrDefault(p => p.Month == (int) month)?.Amount ?? 0;
-                var monthActualAmount = yearContracts.FirstOrDefault(c => c.Month == (int) month)?.Amount ?? 0;
+                var monthInitialPlannedAmount = yearBaseline.FirstOrDefault(b => b.Month == month)?.Amount ?? 0;
+                var monthPlannedAmount = yearProjects.FirstOrDefault(p => p.Month == month)?.Amount ?? 0;
+                var monthActualAmount = yearContracts.FirstOrDefault(c => c.Month == month)?.Amount ?? 0;
                 var dto = new ProjectsSummaryDto
                 {
-                    Year = year,
-                    Month = month,
+                    Year = range.Year,
+                    Month = (Month) month,
                     InitialPlannedAmount = monthInitialPlannedAmount,
                     InitialPlannedAmountCumulative = initialPlannedAmountCumulative + monthInitialPlannedAmount,
                     PlannedAmount = monthPlannedAmount,
                     PlannedAmountCumulative = plannedAmountCumulative + monthPlannedAmount,
                     ActualAmount = monthActualAmount,
                     ActualAmountCumulative = actualAmountCumulative + monthActualAmount,
-                    ApprovedCost = initiative.ApprovedCosts.Where(a => a.ApprovalDate.Year <= year).Sum(a => a.Amount),
+                    ApprovedCost = initiative.ApprovedCosts.Where(a => a.ApprovalDate.Year <= range.Year).Sum(a => a.Amount),
                     InitiativeId = initiative.Id
                 };
                 result.Add(dto);

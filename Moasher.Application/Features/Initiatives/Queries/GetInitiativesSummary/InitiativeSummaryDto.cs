@@ -18,6 +18,4 @@ public record InitiativeSummaryDto
     public decimal EstimatedBudgetAtCompletion { get; set; }
     public decimal PlannedToDateExpenditure { get; set; }
     public decimal PlannedToDateContractsAmount { get; set; }
-    public int ToDateDueMilestones { get; set; }
-    public int ToDateAchievedMilestones { get; set; }
 }

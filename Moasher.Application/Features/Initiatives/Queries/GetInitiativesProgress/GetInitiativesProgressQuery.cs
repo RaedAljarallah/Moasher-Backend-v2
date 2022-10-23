@@ -98,7 +98,7 @@ public class GetInitiativesProgressQueryHandler : IRequestHandler<GetInitiatives
                 var dto = new InitiativeProgressDto
                 {
                     Year = range.Year,
-                    Month = (Month)month,
+                    Month = (Month) month,
                     PlannedProgressCumulative = plannedProgressCumulative + monthPlannedProgress,
                     ActualProgressCumulative = actualProgressCumulative + monthActualProgress,
                 };

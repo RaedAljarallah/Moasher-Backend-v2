@@ -53,7 +53,8 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
                     .ToList(),
                 Budgets = initiative.Budgets
                     .Where(b => b.Approved)
-                    .Where(b => !request.Year.HasValue || (request.Year.HasValue && b.ApprovalDate.Year == request.Year))
+                    .Where(b => !request.Year.HasValue ||
+                                (request.Year.HasValue && b.ApprovalDate.Year == request.Year))
                     .ToList()
             })
             .AsSplitQuery()
@@ -111,23 +112,20 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
         var result = new List<ExpenditureDto>();
         var startDate = initiative.ActualStart ?? initiative.PlannedStart;
         var endDate = initiative.ActualFinish ?? initiative.PlannedFinish;
-        
-        var months = Enum.GetValues<Month>().ToList();
-        var startYear = initiative.ActualStart?.Year ?? initiative.PlannedStart.Year;
-        var lastYear = initiative.ActualFinish?.Year ?? initiative.PlannedFinish.Year;
-        var years = Enumerable.Range(startYear, Math.Min(DateTimeService.Now.Year, lastYear) - startYear + 1)
-            .OrderBy(y => y)
-            .ToList();
-        
+        var endOfCurrentYearDate =
+            new DateTimeOffset(new DateTime(DateTimeService.Now.Year, 12, 31), TimeSpan.FromHours(3));
+        var yearsMonthsRange = DateTimeService
+            .GetYearsMonthsRange(startDate, endDate < endOfCurrentYearDate ? endDate : endOfCurrentYearDate).ToList();
         var initialPlannedAmountCumulative = 0m;
         var plannedAmountCumulative = 0m;
         var actualAmountCumulative = 0m;
-        years.ForEach(year =>
+        yearsMonthsRange.ForEach(range =>
         {
-            var yearExpenditures = concatExpenditures.Where(e => e.Year == year).ToList();
-            var yearExpendituresBaseline = concatExpendituresBaseline.Where(b => b.Year == year).ToList();
-            months.ForEach(month =>
+            var yearExpenditures = concatExpenditures.Where(e => e.Year == range.Year).ToList();
+            var yearExpendituresBaseline = concatExpendituresBaseline.Where(b => b.Year == range.Year).ToList();
+            range.Months.ToList().ForEach(rangeMonth =>
             {
+                var month = (Month) rangeMonth;
                 var monthInitialPlannedAmount =
                     yearExpendituresBaseline.FirstOrDefault(b => b.Month == month)?.InitialPlannedAmount ?? 0;
 
@@ -136,7 +134,7 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
                 var monthActualAmount = monthExpenditures?.ActualAmount ?? 0;
                 var dto = new ExpenditureDto
                 {
-                    Year = year,
+                    Year = range.Year,
                     Month = month,
                     InitialPlannedAmount = monthInitialPlannedAmount,
                     InitialPlannedAmountCumulative = initialPlannedAmountCumulative + monthInitialPlannedAmount,
@@ -144,7 +142,7 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
                     PlannedAmountCumulative = plannedAmountCumulative + monthPlannedAmount,
                     ActualAmount = monthActualAmount,
                     ActualAmountCumulative = actualAmountCumulative + monthActualAmount,
-                    Budget = initiative.Budgets.Where(b => b.ApprovalDate.Year == year).Sum(b => b.Amount),
+                    Budget = initiative.Budgets.Where(b => b.ApprovalDate.Year == range.Year).Sum(b => b.Amount),
                     InitiativeId = initiative.Id
                 };
                 result.Add(dto);
