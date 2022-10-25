@@ -14,6 +14,8 @@ public record GetMilestonesQuery : SchedulableQueryParametersDto, IRequest<Pagin
     public string? Name { get; set; }
     public Guid? InitiativeId { get; set; }
     public Guid? EntityId { get; set; }
+    public Guid? ProgramId { get; set; }
+    public Guid? PortfolioId { get; set; }
     public Guid? ContractId { get; set; }
     public Guid? L1Id { get; set; }
     public Guid? L2Id { get; set; }

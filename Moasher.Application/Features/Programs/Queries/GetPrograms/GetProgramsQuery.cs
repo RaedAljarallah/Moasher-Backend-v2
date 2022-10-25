@@ -31,10 +31,11 @@ public class GetProgramsQueryHandler : IRequestHandler<GetProgramsQuery, Paginat
     
     public async Task<PaginatedList<ProgramDto>> Handle(GetProgramsQuery request, CancellationToken cancellationToken)
     {
-        return await _context.Programs
+        return await _context.Programs.OrderBy(p => p.Name).ThenBy(p => p.Code)
             .AsNoTracking()
             .WithinParameters(new GetProgramsQueryParameter(request))
             .ProjectTo<ProgramDto>(_mapper.ConfigurationProvider)
+            .AsSplitQuery()
             .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

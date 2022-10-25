@@ -12,6 +12,8 @@ public record GetExpendituresQuery : IRequest<IEnumerable<ExpenditureDto>>
 {
     public Guid? InitiativeId { get; set; }
     public Guid? EntityId { get; set; }
+    public Guid? ProgramId { get; set; }
+    public Guid? PortfolioId { get; set; }
     public ushort? Year { get; set; }
 }
 
@@ -31,6 +33,8 @@ public class GetExpendituresQueryHandler : IRequestHandler<GetExpendituresQuery,
             .AsNoTracking()
             .Where(i => !request.InitiativeId.HasValue || request.InitiativeId == i.Id)
             .Where(i => !request.EntityId.HasValue || request.EntityId == i.EntityId)
+            .Where(i => !request.ProgramId.HasValue || request.ProgramId == i.ProgramId)
+            .Where(i => !request.PortfolioId.HasValue || request.PortfolioId == i.PortfolioId)
             .Select(initiative => new
             {
                 initiative.Id,

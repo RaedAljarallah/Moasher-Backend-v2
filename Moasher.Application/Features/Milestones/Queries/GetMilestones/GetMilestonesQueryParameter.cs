@@ -39,6 +39,15 @@ public class GetMilestonesQueryParameter : IQueryParameterBuilder<InitiativeMile
             query = query.Where(m => m.Initiative.EntityId == _parameter.EntityId);
         }
 
+        if (_parameter.ProgramId.HasValue)
+        {
+            query = query.Where(m => m.Initiative.ProgramId == _parameter.ProgramId);
+        }
+
+        if (_parameter.PortfolioId.HasValue)
+        {
+            query = query.Where(m => m.Initiative.PortfolioId == _parameter.PortfolioId);
+        }
         // TODO: Uncomment
         // if (_parameter.ContractId.HasValue)
         // {

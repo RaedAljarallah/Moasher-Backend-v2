@@ -35,10 +35,11 @@ public class GetEntitiesQueryHandler : IRequestHandler<GetEntitiesQuery, Paginat
     
     public async Task<PaginatedList<EntityDto>> Handle(GetEntitiesQuery request, CancellationToken cancellationToken)
     {
-        return await _context.Entities
+        return await _context.Entities.OrderBy(e => e.Name).ThenBy(e => e.Code)
             .AsNoTracking()
             .WithinParameters(new GetEntitiesQueryParameter(request))
             .ProjectTo<EntityDto>(_mapper.ConfigurationProvider)
+            .AsSplitQuery()
             .ToPaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }
