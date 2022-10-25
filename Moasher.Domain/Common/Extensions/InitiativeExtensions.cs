@@ -49,7 +49,7 @@ public static class InitiativeExtensions
         initiative.SetProgress();
         if (!initiative.Milestones.Any(m => m.Approved))
         {
-            initiative.StatusEnum = null;
+            initiative.StatusEnum = statusTypes.FirstOrDefault(e => e.IsDefault);
         }
         else
         {

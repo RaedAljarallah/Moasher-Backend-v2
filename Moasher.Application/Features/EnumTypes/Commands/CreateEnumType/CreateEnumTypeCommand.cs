@@ -25,11 +25,17 @@ public class CreateEnumTypeCommandHandler : IRequestHandler<CreateEnumTypeComman
     {
         var enumTypes = await _context.EnumTypes
             .AsNoTracking()
-            .Where(e => e.Category == request.Category.ToString())
+            .Where(e => e.Category.ToLower() == request.Category.ToString().ToLower())
             .ToListAsync(cancellationToken);
         
-        request.ValidateAndThrow(new EnumTypeDomainValidator(enumTypes, request.Name, request.Category));
+        request.ValidateAndThrow(new EnumTypeDomainValidator(enumTypes, request.Name, request.Category, request.IsDefault));
         var enumType = _mapper.Map<EnumType>(request);
+        if (request.IsDefault)
+        {
+            enumType.LimitFrom = default!;
+            enumType.LimitTo = default!;
+            enumType.CanBeDeleted = false;
+        }
         _context.EnumTypes.Add(enumType);
         await _context.SaveChangesAsync(cancellationToken);
         

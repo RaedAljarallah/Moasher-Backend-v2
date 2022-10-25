@@ -8,6 +8,7 @@ using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Entities.KPIEntities;
 using Moasher.Domain.Entities.StrategicObjectiveEntities;
+using Moasher.Domain.Enums;
 using Moasher.Persistence.Extensions;
 using Moasher.Persistence.Interceptors;
 

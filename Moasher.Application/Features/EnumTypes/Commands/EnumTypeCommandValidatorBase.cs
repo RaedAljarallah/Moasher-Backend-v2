@@ -22,26 +22,17 @@ public abstract class EnumTypeCommandValidatorBase<TCommand> : ValidatorBase<TCo
             .NotEmpty().WithMessage(ValidationErrorMessages.NotEmpty("الفئة"))
             .IsInEnum().WithMessage(ValidationErrorMessages.WrongFormat("الفئة"));
         
-        When(command => command.Category == EnumTypeCategory.InitiativeStatus, () =>
+        When(command => command.Category == EnumTypeCategory.InitiativeStatus && command.IsDefault is false, () =>
         {
-            RuleFor(command => command.Metadata)
-                .NotEmpty().WithMessage(ValidationErrorMessages.NotEmpty("فرق نسبة التقدم"));
-            RuleFor(command => command.Metadata)
-                .Must(metadata => metadata.ContainsKey("diff"))
-                .WithMessage("رمز فرق نسبة التقدم يجب أن يكون diff")
-                .DependentRules(() =>
-                {
-                    RuleFor(command => command.Metadata)
-                        .Must(metadata => float.TryParse(metadata["diff"], out _))
-                        .WithMessage(ValidationErrorMessages.WrongFormat("فرق نسبة التقدم"))
-                        .DependentRules(() =>
-                        {
-                            RuleFor(command => float.Parse(command.Metadata["diff"]))
-                                .InclusiveBetween(0.1f, 100)
-                                .WithName("metadata")
-                                .WithMessage("فرق نسبة التقدم يجب أن يكون بين 0.1 - 100");
-                        });
-                });
+            RuleFor(command => command.LimitFrom)
+                .NotEmpty().WithMessage(ValidationErrorMessages.NotEmpty("فرق نسبة التقدم"))
+                .InclusiveBetween(0, 100)
+                .WithMessage("فرق نسبة التقدم يجب أن يكون بين 0 - 100");
+            
+            RuleFor(command => command.LimitTo)
+                .NotEmpty().WithMessage(ValidationErrorMessages.NotEmpty("فرق نسبة التقدم"))
+                .InclusiveBetween(0, 100)
+                .WithMessage("فرق نسبة التقدم يجب أن يكون بين 0 - 100");
         });
     }
 }

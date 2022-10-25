@@ -29,7 +29,7 @@ public class UpdateEnumTypeCommandHandler : IRequestHandler<UpdateEnumTypeComman
     {
         var enumTypes = await _context.EnumTypes
             .AsNoTracking()
-            .Where(e => e.Category == request.Category.ToString())
+            .Where(e => e.Category.ToLower() == request.Category.ToString().ToLower())
             .ToListAsync(cancellationToken);
         var enumType = enumTypes.FirstOrDefault(e => e.Id == request.Id);
         if (enumType is null)
@@ -37,11 +37,22 @@ public class UpdateEnumTypeCommandHandler : IRequestHandler<UpdateEnumTypeComman
             throw new NotFoundException();
         }
         
-        request.ValidateAndThrow(new EnumTypeDomainValidator(enumTypes.Where(e => e.Id != request.Id).ToList(), request.Name, request.Category));
+        request.ValidateAndThrow(new EnumTypeDomainValidator(enumTypes.Where(e => e.Id != request.Id).ToList(), request.Name, request.Category, request.IsDefault));
         var hasEvent = request.Name != enumType.Name || request.Style != enumType.Style;
+
+        if (!request.IsDefault && enumType.IsDefault)
+        {
+            throw new ValidationException("يجب أن يكون هناك قيمة إفتراضية");
+        }
         
         _mapper.Map(request, enumType);
-        enumType.Metadata = request.Metadata;
+        if (request.IsDefault)
+        {
+            enumType.LimitFrom = default!;
+            enumType.LimitTo = default!;
+            enumType.CanBeDeleted = false;
+        }
+
         if (hasEvent)
         {
             enumType.AddDomainEvent(new EnumTypeUpdatedEvent(enumType));

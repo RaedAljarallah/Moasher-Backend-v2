@@ -1,34 +1,28 @@
 ﻿using Moasher.Application.Common.Abstracts;
 using Moasher.Domain.Entities.InitiativeEntities;
 
-namespace Moasher.Application.Features.Initiatives.Queries.GetInitiativesProgress;
+namespace Moasher.Application.Features.Initiatives.Queries.GetInitiativesStatusProgress;
 
-public class GetInitiativesProgressQueryParameter : IQueryParameterBuilder<Initiative>
+public class GetInitiativesStatusProgressQueryParameter : IQueryParameterBuilder<Initiative>
 {
-    private readonly GetInitiativesProgressQuery _parameter;
+    private readonly GetInitiativesStatusProgressQuery _parameter;
 
-    public GetInitiativesProgressQueryParameter(GetInitiativesProgressQuery parameter)
+    public GetInitiativesStatusProgressQueryParameter(GetInitiativesStatusProgressQuery parameter)
     {
         _parameter = parameter;
     }
-    
     public IQueryable<Initiative> Build(IQueryable<Initiative> query)
     {
-        if (_parameter.InitiativeId.HasValue)
-        {
-            query = query.Where(i => i.Id == _parameter.InitiativeId);
-        }
-
         if (_parameter.EntityId.HasValue)
         {
             query = query.Where(i => i.EntityId == _parameter.EntityId);
         }
-
+        
         if (_parameter.PortfolioId.HasValue)
         {
             query = query.Where(i => i.PortfolioId == _parameter.PortfolioId);
         }
-
+        
         if (_parameter.ProgramId.HasValue)
         {
             query = query.Where(i => i.ProgramId == _parameter.ProgramId);

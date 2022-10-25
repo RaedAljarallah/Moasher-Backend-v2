@@ -26,18 +26,11 @@ public class InitiativeStatusUpdateEventHandler : INotificationHandler<Initiativ
 
         if (initiative is not null)
         {
-            if (initiative.Milestones.Any())
-            {
-                var statusEnums = await _context.EnumTypes
-                    .Where(e => e.Category == EnumTypeCategory.InitiativeStatus.ToString())
-                    .ToListAsync(cancellationToken);
+            var statusEnums = await _context.EnumTypes
+                .Where(e => e.Category == EnumTypeCategory.InitiativeStatus.ToString())
+                .ToListAsync(cancellationToken);
 
-                initiative.SetStatus(statusEnums);
-            }
-            else
-            {
-                initiative.StatusEnum = null;
-            }
+            initiative.SetStatus(statusEnums);
 
             _context.Initiatives.Update(initiative);
             await _context.SaveChangesAsync(cancellationToken);

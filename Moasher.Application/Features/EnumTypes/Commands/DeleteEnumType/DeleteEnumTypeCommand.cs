@@ -34,7 +34,14 @@ public class DeleteEnumTypeCommandHandler : IRequestHandler<DeleteEnumTypeComman
         }
         
         _context.EnumTypes.Remove(enumType);
-        await _context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch
+        {
+            throw new ValidationException("لا يمكن حذف العنصر لوجود عناصر آخرى مرتبطة به");
+        }
         
         return Unit.Value;
     }

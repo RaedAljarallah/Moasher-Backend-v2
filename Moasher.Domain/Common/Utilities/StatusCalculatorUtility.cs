@@ -14,9 +14,9 @@ internal static class StatusCalculatorUtility
         {
             return status;
         }
-        statusTypes = types.OrderBy(e => float.Parse(e.Metadata?["diff"] ?? throw new InvalidOperationException())).ToList();
         var diff = progress.Planned - progress.Actual;
-
-        return statusTypes.FirstOrDefault(type => diff <= float.Parse(type.Metadata?["diff"] ?? throw new InvalidOperationException()));
+        var orderedTypes = types.Where(t => !t.IsDefault).OrderBy(t => t.LimitFrom).ToList();
+        return orderedTypes.FirstOrDefault(t => diff >= t.LimitFrom && diff <= t.LimitTo) ??
+               types.FirstOrDefault(e => e.IsDefault);
     }
 }

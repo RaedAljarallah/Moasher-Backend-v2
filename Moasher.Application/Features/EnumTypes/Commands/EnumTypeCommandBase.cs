@@ -10,5 +10,7 @@ public abstract record EnumTypeCommandBase
     public string Name { get => _name; set => _name = value.Trim(); }
     public string Style { get => _style; set => _style = value.Trim(); }
     public EnumTypeCategory Category { get; set; }
-    public IDictionary<string, string> Metadata { get; set; } = new Dictionary<string, string>();
+    public bool IsDefault { get; set; }
+    public float? LimitFrom { get; set; }
+    public float? LimitTo { get; set; }
 }

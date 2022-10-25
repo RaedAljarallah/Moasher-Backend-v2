@@ -26,18 +26,11 @@ public class KPIStatusUpdateEventHandler : INotificationHandler<KPIStatusUpdateE
 
         if (kpi is not null)
         {
-            if (kpi.Values.Any())
-            {
-                var statusEnums = await _context.EnumTypes
-                    .Where(e => e.Category == EnumTypeCategory.KPIStatus.ToString())
-                    .ToListAsync(cancellationToken);
+            var statusEnums = await _context.EnumTypes
+                .Where(e => e.Category == EnumTypeCategory.KPIStatus.ToString())
+                .ToListAsync(cancellationToken);
             
-                kpi.SetStatus(statusEnums);
-            }
-            else
-            {
-                kpi.StatusEnum = null;
-            }
+            kpi.SetStatus(statusEnums);
 
             _context.KPIs.Update(kpi);
             await _context.SaveChangesAsync(cancellationToken);

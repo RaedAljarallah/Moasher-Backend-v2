@@ -7,6 +7,7 @@ using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Features.Initiatives.Commands.Common;
 using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.Enums;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Initiatives.Commands.CreateInitiative;
@@ -51,6 +52,16 @@ public class CreateInitiativeCommandHandler : IRequestHandler<CreateInitiativeCo
         {
             throw new ValidationException(nameof(request.StatusEnumId),
                 InitiativeDependenciesValidationMessages.WrongStatusEnumId);
+        }
+
+        // Set The default status
+        if (statusEnum is null)
+        {
+            var defaultStatusEnum = await _context.EnumTypes
+                .Where(e => e.Category.ToLower() == EnumTypeCategory.InitiativeStatus.ToString().ToLower())
+                .Where(e => e.IsDefault)
+                .FirstOrDefaultAsync(cancellationToken);
+            statusEnum = defaultStatusEnum;
         }
         #endregion
         

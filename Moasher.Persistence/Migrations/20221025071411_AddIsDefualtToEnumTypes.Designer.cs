@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Moasher.Persistence;
 
@@ -11,9 +12,10 @@ using Moasher.Persistence;
 namespace Moasher.Persistence.Migrations
 {
     [DbContext(typeof(MoasherDbContext))]
-    partial class MoasherDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221025071411_AddIsDefualtToEnumTypes")]
+    partial class AddIsDefualtToEnumTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -283,11 +285,8 @@ namespace Moasher.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<float?>("LimitFrom")
-                        .HasColumnType("real");
-
-                    b.Property<float?>("LimitTo")
-                        .HasColumnType("real");
+                    b.Property<string>("Metadata")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -304,11 +303,11 @@ namespace Moasher.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("358be129-37c5-402d-bbdf-dc82633415c3"),
+                            Id = new Guid("d0fd13dd-a1e1-4e56-9e22-9c160b1f67e3"),
                             Approved = true,
                             CanBeDeleted = false,
                             Category = "InitiativeStatus",
-                            CreatedAt = new DateTimeOffset(new DateTime(2022, 10, 25, 16, 0, 44, 207, DateTimeKind.Unspecified).AddTicks(1567), new TimeSpan(0, 3, 0, 0, 0)),
+                            CreatedAt = new DateTimeOffset(new DateTime(2022, 10, 25, 13, 14, 10, 623, DateTimeKind.Unspecified).AddTicks(9661), new TimeSpan(0, 3, 0, 0, 0)),
                             CreatedBy = "System",
                             IsDefault = true,
                             Name = "لا توجد جالة",

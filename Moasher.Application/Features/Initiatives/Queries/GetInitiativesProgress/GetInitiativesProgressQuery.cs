@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Common.Services;
@@ -12,10 +13,7 @@ namespace Moasher.Application.Features.Initiatives.Queries.GetInitiativesProgres
 
 public record GetInitiativesProgressQuery : IRequest<IEnumerable<InitiativeProgressDto>>
 {
-    public Guid? InitiativeId { get; set; }
-    public Guid? EntityId { get; set; }
-    public Guid? PortfolioId { get; set; }
-    public Guid? ProgramId { get; set; }
+    public Guid Id { get; set; }
 }
 
 public class GetInitiativesProgressQueryHandler : IRequestHandler<GetInitiativesProgressQuery,
@@ -31,20 +29,19 @@ public class GetInitiativesProgressQueryHandler : IRequestHandler<GetInitiatives
     public async Task<IEnumerable<InitiativeProgressDto>> Handle(GetInitiativesProgressQuery request,
         CancellationToken cancellationToken)
     {
-        var initiatives = await _context.Initiatives
-            .WithinParameters(new GetInitiativesProgressQueryParameter(request))
+        var initiative = await _context.Initiatives
             .AsNoTracking()
             .Include(i => i.Milestones)
             .AsSplitQuery()
-            .ToListAsync(cancellationToken);
+            .FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken);
 
-        if (!initiatives.Any())
+        if (initiative is null)
         {
-            return new List<InitiativeProgressDto>();
+            throw new NotFoundException();
         }
-        
-        var milestones = initiatives
-            .SelectMany(i => i.Milestones)
+
+        var milestones = initiative
+            .Milestones
             .GroupBy(m => new
             {
                 m.PlannedFinish.Year,
@@ -56,11 +53,11 @@ public class GetInitiativesProgressQueryHandler : IRequestHandler<GetInitiatives
             {
                 milestone.Key.Year,
                 milestone.Key.Month,
-                PlannedProgress = milestone.Sum(m => m.Weight),
+                PlannedProgress = milestone.Sum(m => m.Weight)
             }).ToList();
 
-        var achievedMilestones = initiatives
-            .SelectMany(i => i.Milestones.Where(m => m.ActualFinish.HasValue))
+        var achievedMilestones = initiative
+            .Milestones.Where(m => m.ActualFinish.HasValue)
             .GroupBy(m => new
             {
                 m.ActualFinish!.Value.Year,
@@ -80,25 +77,23 @@ public class GetInitiativesProgressQueryHandler : IRequestHandler<GetInitiatives
             .ToListAsync(cancellationToken);
 
         var result = new List<InitiativeProgressDto>();
-        var startDate = initiatives.Min(i => i.ActualStart ?? i.PlannedStart);
-        var endDate = initiatives.Max(i => i.ActualFinish ?? i.PlannedFinish);
+        var startDate = initiative.ActualStart ?? initiative.PlannedStart;
+        var endDate = initiative.ActualFinish ?? initiative.PlannedFinish;
         var yearsMonthsRange = DateTimeService.GetYearsMonthsRange(startDate, endDate).ToList();
         var plannedProgressCumulative = 0f;
         var actualProgressCumulative = 0f;
         yearsMonthsRange.ForEach(range =>
         {
-            var yearMilestones = milestones.Where(m => m.Year == range.Year).ToList();
+            var yearPlannedMilestones = milestones.Where(m => m.Year == range.Year).ToList();
             var yearAchievedMilestones = achievedMilestones.Where(m => m.Year == range.Year).ToList();
             range.Months.ToList().ForEach(month =>
             {
-                var monthPlannedProgress =
-                    (yearMilestones.FirstOrDefault(m => m.Month == month)?.PlannedProgress ?? 0) / (initiatives.Count * 100) * 100;
-                var monthActualProgress =
-                    (yearAchievedMilestones.FirstOrDefault(m => m.Month == month)?.ActualProgress ?? 0) / (initiatives.Count * 100) * 100;
+                var monthPlannedProgress = yearPlannedMilestones.FirstOrDefault(m => m.Month == month)?.PlannedProgress ?? 0;
+                var monthActualProgress = yearAchievedMilestones.FirstOrDefault(m => m.Month == month)?.ActualProgress ?? 0;
                 var dto = new InitiativeProgressDto
                 {
                     Year = range.Year,
-                    Month = (Month)month,
+                    Month = (Month) month,
                     PlannedProgressCumulative = plannedProgressCumulative + monthPlannedProgress,
                     ActualProgressCumulative = actualProgressCumulative + monthActualProgress,
                 };

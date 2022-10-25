@@ -19,7 +19,7 @@ public static class KPIExtensions
         kpi.SetProgress();
         if (!kpi.Values.Any(v => v.Approved))
         {
-            kpi.StatusEnum = null;
+            kpi.StatusEnum = statusTypes.FirstOrDefault(e => e.IsDefault);
         }
         else
         {

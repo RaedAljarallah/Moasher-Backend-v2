@@ -20,5 +20,6 @@ public static class Startup
             });
         });
         services.AddScoped<IMoasherDbContext>(sp => sp.GetRequiredService<MoasherDbContext>());
+        //services.AddScoped<MoasherDbContextInitializer>();
     }
 }
