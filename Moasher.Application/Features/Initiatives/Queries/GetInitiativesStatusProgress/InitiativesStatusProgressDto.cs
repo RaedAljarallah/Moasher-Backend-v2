@@ -7,7 +7,7 @@ public record InitiativesStatusProgressDto
 {
     public int Year { get; set; }
     public Month Month { get; set; }
-    public IEnumerable<StatusProgressDto> Progress { get; set; } = Enumerable.Empty<StatusProgressDto>();
+    public List<StatusProgressDto> Progress { get; set; } = new();
 }
 
 public record StatusProgressDto

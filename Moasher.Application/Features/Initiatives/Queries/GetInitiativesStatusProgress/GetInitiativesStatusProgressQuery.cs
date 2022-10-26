@@ -75,10 +75,11 @@ public class GetInitiativesStatusProgressQueryHandler : IRequestHandler<GetIniti
                 milestone.Key.Year,
                 milestone.Key.Month,
                 milestone.Key.InitiativeId,
+                milestone.Select(m => m.Initiative).First().CalculateStatus,
+                LatestStatusId = milestone.Select(m => m.Initiative).First().StatusEnumId,
                 ActualProgress = milestone.Sum(m => m.Weight)
             }).ToList();
 
-        var gg = milestones.Where(m => m.Year == 2022).Where(m => m.Month == 10).ToList();
         var statusEnums = await _context.EnumTypes
             .Where(e => e.Category.ToLower() == EnumTypeCategory.InitiativeStatus.ToString().ToLower())
             .ToListAsync(cancellationToken);
@@ -91,8 +92,7 @@ public class GetInitiativesStatusProgressQueryHandler : IRequestHandler<GetIniti
         var yearsMonthsRange = DateTimeService
             .GetYearsMonthsRange(startDate, endDate < endOfCurrentYearDate ? endDate : endOfCurrentYearDate).ToList();
         var initiativesId = initiatives.Select(i => i.Id).ToList();
-        var plannedProgressCumulative = 0f;
-        var actualProgressCumulative = 0f;
+
         yearsMonthsRange.ForEach(range =>
         {
             var yearPlannedMilestones = milestones.Where(m => m.Year == range.Year).ToList();
@@ -104,20 +104,61 @@ public class GetInitiativesStatusProgressQueryHandler : IRequestHandler<GetIniti
                 var statuses = new List<EnumType?>();
                 initiativesId.ForEach(initiativeId =>
                 {
-                    var initiativeMonthPlannedProgressCumulative = monthPlannedMilestones
-                        .Where(m => m.InitiativeId == initiativeId)
-                        .Sum(m => m.PlannedProgress);
-                    var initiativeMonthActualProgressCumulative = monthAchievedMilestones
-                        .Where(m => m.InitiativeId == initiativeId)
-                        .Sum(m => m.ActualProgress);
+                    var initiative = initiatives.First(i => i.Id == initiativeId);
+                    var initiativeStartDate = initiative.ActualStart ?? initiative.PlannedStart;
+                    var initiativeEndDate = initiative.ActualFinish ?? initiative.PlannedFinish;
 
-                    var monthStatus = InitiativeUtility.CalculateStatus(
-                        new Progress(initiativeMonthPlannedProgressCumulative, initiativeMonthActualProgressCumulative),
-                        statusEnums);
+                    var limitFrom = new DateOnly(initiativeStartDate.Year, initiativeStartDate.Month, 1);
+                    var limitTo = new DateOnly(initiativeEndDate.Year, initiativeEndDate.Month, 1);
+                    var limit = new DateOnly(range.Year, month, 1);
+
+                    if (limitFrom > limit || limitTo < limit) return;
+
+                    var initiativeMonthPlannedProgressCumulative = monthPlannedMilestones
+                        .Where(m => m.InitiativeId == initiativeId).ToList();
+                        
+                    var initiativeMonthActualProgressCumulative = monthAchievedMilestones
+                        .Where(m => m.InitiativeId == initiativeId).ToList();
+
+                    if (!initiative.CalculateStatus)
+                    {
+                        statuses.Add(statusEnums.FirstOrDefault(e => e.Id == initiative.StatusEnumId));
+                        return;
+                    }
+
+                    if (!initiativeMonthPlannedProgressCumulative.Any() &&
+                        !initiativeMonthActualProgressCumulative.Any())
+                    {
+                        statuses.Add(statusEnums.FirstOrDefault(e => e.IsDefault));
+                        return;
+                    }
+                    
+                    var plannedProgress = initiativeMonthPlannedProgressCumulative.Sum(p => p.PlannedProgress);
+                    var actualProgress = initiativeMonthActualProgressCumulative.Sum(p => p.ActualProgress);
+                    var monthStatus = InitiativeUtility.CalculateStatus(new Progress(plannedProgress, actualProgress), statusEnums);
                     statuses.Add(monthStatus);
                 });
+                
+                var dto = new InitiativesStatusProgressDto
+                {
+                    Year = range.Year,
+                    Month = (Month) month
+                };
+                
+                statusEnums.ForEach(status =>
+                {
+                    dto.Progress.Add(new StatusProgressDto
+                    {
+                        Status = new EnumValue(status.Name, status.Style),
+                        Count = statuses.Count(e => e?.Id == status.Id)
+                    });
+                });
+                
+                result.Add(dto);
             });
         });
+        
         return result;
     }
+    
 }
