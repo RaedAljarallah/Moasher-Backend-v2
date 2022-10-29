@@ -21,6 +21,8 @@ public class KPI : AuditableDbEntity
     public string OwnerEmail { get; set; } = default!;
     public string OwnerPhoneNumber { get; set; } = default!;
     public string? OwnerPosition { get; set; }
+    public DateTimeOffset StartDate { get; set; }
+    public DateTimeOffset EndDate { get; set; }
     public Frequency Frequency { get; set; }
     public Polarity Polarity { get; set; }
     public ValidationStatus ValidationStatus { get; set; }

@@ -22,7 +22,7 @@ public class CreateKPIValueCommandHandler : IRequestHandler<CreateKPIValueComman
         _context = context;
         _mapper = mapper;
     }
-    
+
     public async Task<KPIValueDto> Handle(CreateKPIValueCommand request, CancellationToken cancellationToken)
     {
         var kpi = await _context.KPIs
@@ -33,9 +33,10 @@ public class CreateKPIValueCommandHandler : IRequestHandler<CreateKPIValueComman
         {
             throw new NotFoundException();
         }
-        
-        request.ValidateAndThrow(new KPIValueDomainValidator(kpi.Values.ToList(), request.Year, request.MeasurementPeriod));
-        
+
+        request.ValidateAndThrow(new KPIValueDomainValidator(kpi, kpi.Values.ToList(), request.Year,
+            request.MeasurementPeriod, request.PlannedFinish, request.ActualFinish));
+
         var value = _mapper.Map<KPIValue>(request);
         value.KPI = kpi;
         value.AddDomainEvent(new KPIValueCreatedEvent(value));

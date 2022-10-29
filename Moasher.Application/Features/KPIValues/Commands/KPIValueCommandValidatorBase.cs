@@ -33,8 +33,8 @@ public abstract class KPIValueCommandValidatorBase<TCommand> : AbstractValidator
         
         RuleFor(command => command.PlannedFinish)
             .NotEmpty().WithMessage(ValidationErrorMessages.NotEmpty("تاريخ الإنجاز المخطط"))
-            .Must((date, command) => date.Year <= command.Year)
-            .WithMessage("سنة تاريخ القياس المخطط يجب أن تكون أكبر أو تساوي سنة القيمة");
+            .Must((date, command) => date.Year == command.Year)
+            .WithMessage("سنة تاريخ الإنجاز المخطط يجب أن تكون في نفس سنة القيمة");
         
         RuleFor(command => command.ActualFinish)
             .NotNull().WithMessage(ValidationErrorMessages.NotEmpty("تاريخ الإنجاز الفعلي"))

@@ -62,7 +62,19 @@ public abstract class KPICommandValidatorBase<TCommand> : ValidatorBase<TCommand
         RuleFor(command => command.ValidationStatus)
             .NotEmpty().WithMessage(ValidationErrorMessages.NotEmpty("حالة توثيق المؤشر"))
             .IsInEnum().WithMessage(ValidationErrorMessages.WrongFormat("حالة توثيق المؤشر"));
-            
+
+        RuleFor(command => command.StartDate)
+            .NotEmpty().WithMessage(ValidationErrorMessages.NotEmpty("تاريخ بداية القياس"));
+
+        RuleFor(command => command.EndDate)
+            .NotEmpty().WithMessage(ValidationErrorMessages.NotEmpty("تاريخ نهاية القياس"))
+            .DependentRules(() =>
+            {
+                RuleFor(command => command.EndDate)
+                    .GreaterThan(command => command.StartDate)
+                    .WithMessage("تاريخ نهاية القياس يجب أن يكون بعد تاريخ بداية القياس");
+            });
+        
         RuleFor(command => command.BaselineValue)
             .InclusiveBetween(float.MinValue, float.MaxValue)
             .WithMessage(ValidationErrorMessages.WrongFormat("قيمة خط الأساس"))

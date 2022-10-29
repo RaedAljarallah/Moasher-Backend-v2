@@ -20,6 +20,8 @@ public struct ApiEndpoints
     {
         private const string Base = "kpis";
         public const string All = Base;
+        public const string Progress = $"{Base}/progress";
+        public const string StatusProgress = $"{Base}/status-progress";
         public const string Details = $"{Base}/{{id}}";
         public const string Create = Base;
         public const string Update = $"{Base}/{{id}}";

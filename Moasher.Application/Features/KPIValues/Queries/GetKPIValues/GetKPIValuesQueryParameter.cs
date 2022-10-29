@@ -31,6 +31,12 @@ public class GetKPIValuesQueryParameter : IQueryParameterBuilder<KPIValue>
             query = query.Where(v => v.KPI.EntityId == _parameter.EntityId);
         }
 
+        if (_parameter.ProgramId.HasValue)
+        {
+            query = query.Where(v => v.KPI.LevelThreeStrategicObjective.Initiatives
+                .Select(i => i.ProgramId).Contains(_parameter.ProgramId.Value));
+        }
+        
         if (_parameter.L1Id.HasValue)
         {
             query = query.Where(v => v.KPI.LevelOneStrategicObjectiveId == _parameter.L1Id);

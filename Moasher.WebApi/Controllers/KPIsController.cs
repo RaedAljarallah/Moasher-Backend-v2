@@ -3,7 +3,9 @@ using Moasher.Application.Features.KPIs.Commands.CreateKPI;
 using Moasher.Application.Features.KPIs.Commands.DeleteKPI;
 using Moasher.Application.Features.KPIs.Commands.UpdateKPI;
 using Moasher.Application.Features.KPIs.Queries.EditKPI;
+using Moasher.Application.Features.KPIs.Queries.GetKPIProgress;
 using Moasher.Application.Features.KPIs.Queries.GetKPIs;
+using Moasher.Application.Features.KPIs.Queries.GetKPIsStatusProgress;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -18,6 +20,28 @@ public class KPIsController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetKPIsQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.KPIs.Progress)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> Progress([FromQuery] GetKPIProgressQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        
+        return Ok(new {result});
+    }
+    
+    [HttpGet(ApiEndpoints.KPIs.StatusProgress)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> StatusProgress([FromQuery] GetKPIsStatusProgressQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        
+        return Ok(new {result});
     }
     
     [HttpPost(ApiEndpoints.KPIs.Create)]

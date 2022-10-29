@@ -13,6 +13,7 @@ public record GetKPIValuesQuery : SchedulableQueryParametersDto, IRequest<Pagina
 {
     public Guid? KPIId { get; set; }
     public Guid? EntityId { get; set; }
+    public Guid? ProgramId { get; set; }
     public Guid? L1Id { get; set; }
     public Guid? L2Id { get; set; }
     public Guid? L3Id { get; set; }

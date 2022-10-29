@@ -16,6 +16,12 @@ internal static class StatusCalculatorUtility
         }
         var diff = progress.Planned - progress.Actual;
         var orderedTypes = types.Where(t => !t.IsDefault).OrderBy(t => t.LimitFrom).ToList();
+
+        if (diff < 1)
+        {
+            return orderedTypes.FirstOrDefault() ?? types.FirstOrDefault(e => e.IsDefault);
+        }
+        
         return orderedTypes.FirstOrDefault(t => diff >= t.LimitFrom && diff <= t.LimitTo) ??
                types.FirstOrDefault(e => e.IsDefault);
     }

@@ -4,6 +4,7 @@ using Moasher.Application.Features.Initiatives.Commands.DeleteInitiative;
 using Moasher.Application.Features.Initiatives.Commands.UpdateInitiative;
 using Moasher.Application.Features.Initiatives.Queries.EditInitiative;
 using Moasher.Application.Features.Initiatives.Queries.GetInitiativeDetails;
+using Moasher.Application.Features.Initiatives.Queries.GetInitiativeProgress;
 using Moasher.Application.Features.Initiatives.Queries.GetInitiatives;
 using Moasher.Application.Features.Initiatives.Queries.GetInitiativesProgress;
 using Moasher.Application.Features.Initiatives.Queries.GetInitiativesStatusProgress;
@@ -28,7 +29,7 @@ public class InitiativesController : ApiControllerBase
     [UnauthorizedResponseType]
     [OkResponseType]
     [Produces("application/json")]
-    public async Task<IActionResult> All([FromQuery] GetInitiativesProgressQuery query, CancellationToken cancellationToken)
+    public async Task<IActionResult> Progress([FromQuery] GetInitiativeProgressQuery query, CancellationToken cancellationToken)
     {
         var result = await Sender.Send(query, cancellationToken);
         
@@ -39,7 +40,7 @@ public class InitiativesController : ApiControllerBase
     [UnauthorizedResponseType]
     [OkResponseType]
     [Produces("application/json")]
-    public async Task<IActionResult> All([FromQuery] GetInitiativesStatusProgressQuery query, CancellationToken cancellationToken)
+    public async Task<IActionResult> StatusProgress([FromQuery] GetInitiativesStatusProgressQuery query, CancellationToken cancellationToken)
     {
         var result = await Sender.Send(query, cancellationToken);
         
