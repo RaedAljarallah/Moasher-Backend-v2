@@ -1,32 +1,31 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
-using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Common.Services;
+using Moasher.Application.Features.Initiatives.Queries.GetInitiativesProgress;
 using Moasher.Domain.Common.Utilities;
-using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Enums;
 using Moasher.Domain.ValueObjects;
 
-namespace Moasher.Application.Features.Initiatives.Queries.GetInitiativesProgress;
+namespace Moasher.Application.Features.Initiatives.Queries.GetInitiativeProgress;
 
-public record GetInitiativesProgressQuery : IRequest<IEnumerable<InitiativeProgressDto>>
+public record GetInitiativeProgressQuery : IRequest<IEnumerable<InitiativeProgressDto>>
 {
     public Guid Id { get; set; }
 }
 
-public class GetInitiativesProgressQueryHandler : IRequestHandler<GetInitiativesProgressQuery,
+public class GetInitiativeProgressQueryHandler : IRequestHandler<GetInitiativeProgressQuery,
     IEnumerable<InitiativeProgressDto>>
 {
     private readonly IMoasherDbContext _context;
 
-    public GetInitiativesProgressQueryHandler(IMoasherDbContext context)
+    public GetInitiativeProgressQueryHandler(IMoasherDbContext context)
     {
         _context = context;
     }
 
-    public async Task<IEnumerable<InitiativeProgressDto>> Handle(GetInitiativesProgressQuery request,
+    public async Task<IEnumerable<InitiativeProgressDto>> Handle(GetInitiativeProgressQuery request,
         CancellationToken cancellationToken)
     {
         var initiative = await _context.Initiatives

@@ -75,8 +75,6 @@ public class GetInitiativesStatusProgressQueryHandler : IRequestHandler<GetIniti
                 milestone.Key.Year,
                 milestone.Key.Month,
                 milestone.Key.InitiativeId,
-                milestone.Select(m => m.Initiative).First().CalculateStatus,
-                LatestStatusId = milestone.Select(m => m.Initiative).First().StatusEnumId,
                 ActualProgress = milestone.Sum(m => m.Weight)
             }).ToList();
 
@@ -116,7 +114,7 @@ public class GetInitiativesStatusProgressQueryHandler : IRequestHandler<GetIniti
 
                     var initiativeMonthPlannedProgressCumulative = monthPlannedMilestones
                         .Where(m => m.InitiativeId == initiativeId).ToList();
-                        
+
                     var initiativeMonthActualProgressCumulative = monthAchievedMilestones
                         .Where(m => m.InitiativeId == initiativeId).ToList();
 
@@ -132,33 +130,36 @@ public class GetInitiativesStatusProgressQueryHandler : IRequestHandler<GetIniti
                         statuses.Add(statusEnums.FirstOrDefault(e => e.IsDefault));
                         return;
                     }
-                    
+
                     var plannedProgress = initiativeMonthPlannedProgressCumulative.Sum(p => p.PlannedProgress);
                     var actualProgress = initiativeMonthActualProgressCumulative.Sum(p => p.ActualProgress);
-                    var monthStatus = InitiativeUtility.CalculateStatus(new Progress(plannedProgress, actualProgress), statusEnums);
+                    var monthStatus =
+                        InitiativeUtility.CalculateStatus(new Progress(plannedProgress, actualProgress), statusEnums);
                     statuses.Add(monthStatus);
                 });
-                
+
                 var dto = new InitiativesStatusProgressDto
                 {
                     Year = range.Year,
                     Month = (Month) month
                 };
-                
-                statusEnums.ForEach(status =>
-                {
-                    dto.Progress.Add(new StatusProgressDto
+
+                statusEnums.OrderByDescending(e => e.IsDefault)
+                    .ThenByDescending(e => e.LimitFrom)
+                    .ToList()
+                    .ForEach(status =>
                     {
-                        Status = new EnumValue(status.Name, status.Style),
-                        Count = statuses.Count(e => e?.Id == status.Id)
+                        dto.Progress.Add(new StatusProgressDto
+                        {
+                            Status = new EnumValue(status.Name, status.Style),
+                            Count = statuses.Count(e => e?.Id == status.Id)
+                        });
                     });
-                });
-                
+
                 result.Add(dto);
             });
         });
-        
+
         return result;
     }
-    
 }

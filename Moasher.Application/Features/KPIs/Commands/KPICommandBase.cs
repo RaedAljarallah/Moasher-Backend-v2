@@ -28,6 +28,8 @@ public abstract record KPICommandBase
     public Frequency Frequency { get; set; }
     public Polarity Polarity { get; set; }
     public ValidationStatus ValidationStatus { get; set; }
+    public DateTimeOffset StartDate { get; set; }
+    public DateTimeOffset EndDate { get; set; }
     public float? BaselineValue { get; set; }
     public short? BaselineYear { get; set; }
     public bool Visible { get; set; }

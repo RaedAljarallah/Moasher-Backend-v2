@@ -29,6 +29,8 @@ public class KPIValueCommandBaseHandler : IRequestHandler<UpdateKPIValueCommand,
     {
         var values = await _context.KPIValues
             .Where(v => v.KPIId == request.KPIId)
+            .Include(v => v.KPI)
+            .AsSplitQuery()
             .ToListAsync(cancellationToken);
 
         var value = values.FirstOrDefault(v => v.Id == request.Id);
@@ -36,9 +38,9 @@ public class KPIValueCommandBaseHandler : IRequestHandler<UpdateKPIValueCommand,
         {
             throw new NotFoundException();
         }
-
-        request.ValidateAndThrow(new KPIValueDomainValidator(values.Where(v => v.Id != request.Id).ToList(),
-            request.Year, request.MeasurementPeriod));
+        
+        request.ValidateAndThrow(new KPIValueDomainValidator(value.KPI, values.Where(v => v.Id != request.Id).ToList(),
+            request.Year, request.MeasurementPeriod, request.PlannedFinish, request.ActualFinish));
 
         _mapper.Map(request, value);
         value.AddDomainEvent(new KPIValueUpdatedEvent(value));
