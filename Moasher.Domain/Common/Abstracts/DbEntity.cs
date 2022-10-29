@@ -1,6 +1,8 @@
-﻿namespace Moasher.Domain.Common.Abstracts;
+﻿using Moasher.Domain.Common.Interfaces;
 
-public abstract class DbEntity
+namespace Moasher.Domain.Common.Abstracts;
+
+public abstract class DbEntity : IDbEntity
 {
     private readonly List<DomainEvent> _domainEvents = new();
     

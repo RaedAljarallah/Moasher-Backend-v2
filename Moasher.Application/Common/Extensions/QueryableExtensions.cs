@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Abstracts;
 using Moasher.Application.Common.Types;
 using Moasher.Domain.Common.Abstracts;
+using Moasher.Domain.Common.Interfaces;
 
 namespace Moasher.Application.Common.Extensions;
 
@@ -11,13 +12,13 @@ public static class QueryableExtensions
 {
     public static IQueryable<TEntity> WithinParameters<TEntity>(this IQueryable<TEntity> query,
         IQueryParameterBuilder<TEntity> parameters)
-        where TEntity : DbEntity
+        where TEntity : IDbEntity
     {
         return parameters.Build(query);
     }
 
     public static IQueryable<TEntity> Like<TEntity>(this IQueryable<TEntity> query, string searchQuery,
-        params string[] fields) where TEntity : DbEntity
+        params string[] fields) where TEntity : IDbEntity
     {
         var predicate = fields.Aggregate(string.Empty, (current, field) => !string.IsNullOrEmpty(current)
             ? $"{current} || {field}.Contains(@0)"

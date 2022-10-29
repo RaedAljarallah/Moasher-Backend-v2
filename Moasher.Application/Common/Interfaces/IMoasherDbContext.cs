@@ -31,5 +31,6 @@ public interface IMoasherDbContext
     public DbSet<Portfolio> Portfolios { get; }
     public DbSet<StrategicObjective> StrategicObjectives { get; }
     public DbSet<EnumType> EnumTypes { get; }
+    public DbSet<User> Users { get; }
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
