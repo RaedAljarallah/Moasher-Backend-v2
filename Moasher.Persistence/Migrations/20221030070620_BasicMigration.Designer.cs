@@ -12,8 +12,8 @@ using Moasher.Persistence;
 namespace Moasher.Persistence.Migrations
 {
     [DbContext(typeof(MoasherDbContext))]
-    [Migration("20221019053600_AddProjectBaselineTable")]
-    partial class AddProjectBaselineTable
+    [Migration("20221030070620_BasicMigration")]
+    partial class BasicMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,6 +50,64 @@ namespace Moasher.Persistence.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("cdf48cb9-7c3e-470a-9aff-c3738fa5148a"),
+                            ConcurrencyStamp = "b2e1487e-dd30-4cee-b1f3-341a3dd54a83",
+                            Name = "SuperAdmin",
+                            NormalizedName = "SUPERADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("11d1c3b2-b8d2-474b-bb31-c5c5c8ed14cb"),
+                            ConcurrencyStamp = "b564ab93-8152-4bd5-9885-884716e94ab0",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("e520a586-07df-4d31-8861-52aaecbde1f8"),
+                            ConcurrencyStamp = "9d436616-0aba-4a02-9a44-5fa3960678c4",
+                            Name = "DataAssurance",
+                            NormalizedName = "DATAASSURANCE"
+                        },
+                        new
+                        {
+                            Id = new Guid("f4c3ec3a-01bf-410a-ac90-9789a4260a47"),
+                            ConcurrencyStamp = "adcfdf3c-5816-452e-8952-79f12e44e107",
+                            Name = "FinancialOperator",
+                            NormalizedName = "FINANCIALOPERATOR"
+                        },
+                        new
+                        {
+                            Id = new Guid("069730c0-2dfa-4041-bb53-b0b1e253c798"),
+                            ConcurrencyStamp = "649dd7c1-a0cc-4e47-92eb-d32acaf53ec7",
+                            Name = "ExecutionOperator",
+                            NormalizedName = "EXECUTIONOPERATOR"
+                        },
+                        new
+                        {
+                            Id = new Guid("7c2a62e5-1aa7-4b94-b15f-ea0acc48be32"),
+                            ConcurrencyStamp = "a9fbdeac-df51-4d0f-b104-fc6ea00217f3",
+                            Name = "KPIsOperator",
+                            NormalizedName = "KPISOPERATOR"
+                        },
+                        new
+                        {
+                            Id = new Guid("f7d2c15b-c82b-4fe3-9c53-114833e3010b"),
+                            ConcurrencyStamp = "9fe3b6b7-c841-43f5-a84e-0fd609b30fea",
+                            Name = "EntityUser",
+                            NormalizedName = "ENTITYUSER"
+                        },
+                        new
+                        {
+                            Id = new Guid("a8aa5387-28ef-4ed1-88f4-60806e0fd9d6"),
+                            ConcurrencyStamp = "179d48c8-a128-4010-92d5-0c4314d72993",
+                            Name = "FullAccessViewer",
+                            NormalizedName = "FULLACCESSVIEWER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -275,6 +333,9 @@ namespace Moasher.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
                     b.Property<DateTimeOffset?>("LastModified")
                         .HasColumnType("datetimeoffset");
 
@@ -282,8 +343,11 @@ namespace Moasher.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("Metadata")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float?>("LimitFrom")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("LimitTo")
+                        .HasColumnType("real");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1120,7 +1184,7 @@ namespace Moasher.Persistence.Migrations
                         .HasPrecision(18, 6)
                         .HasColumnType("decimal(18,6)");
 
-                    b.Property<DateTimeOffset>("InitialPlannedContractEndDate")
+                    b.Property<DateTimeOffset>("InitialPlannedContractingDate")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("LastModified")
@@ -1138,7 +1202,7 @@ namespace Moasher.Persistence.Migrations
                     b.HasIndex("ProjectId")
                         .IsUnique();
 
-                    b.ToTable("InitiativeProjectBaseline");
+                    b.ToTable("InitiativeProjectsBaseline");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProjectProgress", b =>
@@ -1368,6 +1432,9 @@ namespace Moasher.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTimeOffset>("EndDate")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<Guid>("EntityId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1449,6 +1516,9 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<byte>("Polarity")
                         .HasColumnType("tinyint");
+
+                    b.Property<DateTimeOffset>("StartDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<Guid?>("StatusEnumId")
                         .HasColumnType("uniqueidentifier");
@@ -1727,6 +1797,8 @@ namespace Moasher.Persistence.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -2454,6 +2526,17 @@ namespace Moasher.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("KPI");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.User", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.Entity", "Entity")
+                        .WithMany()
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Entity");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.Entity", b =>

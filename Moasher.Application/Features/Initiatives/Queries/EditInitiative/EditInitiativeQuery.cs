@@ -32,6 +32,7 @@ public class EditInitiativeQueryHandler : IRequestHandler<EditInitiativeQuery, E
             .Include(i => i.Program)
             .Include(i => i.Portfolio)
             .Include(i => i.LevelThreeStrategicObjective)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken);
 
         if (initiative is null)

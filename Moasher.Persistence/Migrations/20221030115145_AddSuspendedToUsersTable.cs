@@ -1,16 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Moasher.Persistence.Migrations
 {
-    public partial class AddBalancedExpenditurePlanToContractTable : Migration
+    public partial class AddSuspendedToUsersTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
-                name: "BalancedExpenditurePlan",
-                table: "InitiativeContracts",
+                name: "Suspended",
+                table: "Users",
                 type: "bit",
                 nullable: false,
                 defaultValue: false);
@@ -19,8 +20,8 @@ namespace Moasher.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "BalancedExpenditurePlan",
-                table: "InitiativeContracts");
+                name: "Suspended",
+                table: "Users");
         }
     }
 }

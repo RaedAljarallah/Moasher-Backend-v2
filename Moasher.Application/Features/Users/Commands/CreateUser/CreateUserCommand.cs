@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Constants;
 using Moasher.Application.Common.Exceptions;
-using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Features.Users.Commands.Common;
 using Moasher.Domain.Entities;
@@ -17,28 +15,25 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
 {
     private readonly IMoasherDbContext _context;
     private readonly IMapper _mapper;
-    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-    private readonly UserManager<User> _userManager;
+    private readonly IIdentityService _identityService;
 
     public CreateUserCommandHandler(IMoasherDbContext context, IMapper mapper,
-        RoleManager<IdentityRole<Guid>> roleManager, UserManager<User> userManager)
+        IIdentityService identityService)
     {
         _context = context;
         _mapper = mapper;
-        _roleManager = roleManager;
-        _userManager = userManager;
+        _identityService = identityService;
     }
 
     public async Task<UserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        var isValidRole = await _roleManager.RoleExistsAsync(request.Role);
+        var isValidRole = await _identityService.RoleExistsAsync(request.Role, cancellationToken);
         if (!isValidRole)
         {
             throw new ValidationException(nameof(User.Role), UserValidationMessages.WrongRole);
         }
 
-        var isUserExists = await _context.Users
-            .AnyAsync(u => u.NormalizedEmail == _userManager.NormalizeEmail(request.Email), cancellationToken);
+        var isUserExists = await _identityService.UserExistsAsync(request.Email, cancellationToken);
         if (isUserExists)
         {
             throw new ValidationException(nameof(User.Email), UserValidationMessages.Duplicated);
@@ -63,21 +58,9 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
         user.EmailConfirmed = true;
         user.MustChangePassword = true;
         user.UserName = request.Email;
-
-        var tempPassword = _userManager.GeneratePassword();
-        var createUserResult = await _userManager.CreateAsync(user, tempPassword);
-        if (!createUserResult.Succeeded)
-        {
-            throw new ValidationException(createUserResult.Errors.ToValidationErrors());
-        }
-
-        var addToRoleResult = await _userManager.AddToRoleAsync(user, request.Role);
-        if (!addToRoleResult.Succeeded)
-        {
-            await _userManager.DeleteAsync(user);
-            throw new ValidationException(addToRoleResult.Errors.ToValidationErrors());
-        }
-
-        return _mapper.Map<UserDto>(user);
+        
+        var createdUser = await _identityService.CreateUserAsync(user, request.Role, cancellationToken);
+        createdUser.Entity = entity;
+        return _mapper.Map<UserDto>(createdUser);
     }
 }

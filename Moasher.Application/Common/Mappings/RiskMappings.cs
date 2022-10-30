@@ -16,8 +16,6 @@ public class RiskMappings : Profile
         CreateMap<InitiativeRisk, RiskDto>()
             .IncludeBase<AuditableDbEntity, DtoBase>();
         
-        // CreateMap<InitiativeRisk, RiskSummaryDto>();
-
         CreateMap<CreateRiskCommand, InitiativeRisk>();
 
         CreateMap<InitiativeRisk, EditRiskDto>()

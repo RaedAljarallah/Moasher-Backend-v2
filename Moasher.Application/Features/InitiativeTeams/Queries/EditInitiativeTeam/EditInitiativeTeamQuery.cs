@@ -27,6 +27,7 @@ public class EditInitiativeTeamQueryHandler : IRequestHandler<EditInitiativeTeam
         var teamMember = await _context.InitiativeTeams
             .AsNoTracking()
             .Include(t => t.RoleEnum)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
         
         if (teamMember is null)

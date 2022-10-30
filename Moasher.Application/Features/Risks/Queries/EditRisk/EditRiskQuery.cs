@@ -31,6 +31,7 @@ public class EditRiskQueryHandler : IRequestHandler<EditRiskQuery, EditRiskDto>
             .Include(r => r.ProbabilityEnum)
             .Include(r => r.ImpactEnum)
             .Include(r => r.ScopeEnum)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
 
         if (risk is null)

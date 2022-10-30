@@ -29,6 +29,7 @@ public class EditKPIQueryHandler : IRequestHandler<EditKPIQuery, EditKPIDto>
             .Include(k => k.StatusEnum)
             .Include(k => k.Entity)
             .Include(k => k.LevelThreeStrategicObjective)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(k => k.Id == request.Id, cancellationToken);
         
         if (kpi is null)

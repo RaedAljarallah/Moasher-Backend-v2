@@ -37,7 +37,9 @@ namespace Moasher.Persistence.Migrations
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Style = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Metadata = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LimitFrom = table.Column<float>(type: "real", nullable: true),
+                    LimitTo = table.Column<float>(type: "real", nullable: true),
+                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
                     CanBeDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
@@ -126,9 +128,9 @@ namespace Moasher.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MustChangePassword = table.Column<bool>(type: "bit", nullable: false),
+                    EntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -147,6 +149,12 @@ namespace Moasher.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Entities_EntityId",
+                        column: x => x.EntityId,
+                        principalTable: "Entities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -276,6 +284,8 @@ namespace Moasher.Persistence.Migrations
                     OwnerEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OwnerPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OwnerPosition = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    EndDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     Frequency = table.Column<byte>(type: "tinyint", nullable: false),
                     Polarity = table.Column<byte>(type: "tinyint", nullable: false),
                     ValidationStatus = table.Column<byte>(type: "tinyint", nullable: false),
@@ -492,6 +502,7 @@ namespace Moasher.Persistence.Migrations
                     CalculateAmount = table.Column<bool>(type: "bit", nullable: false),
                     TotalExpenditure = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: true),
                     CurrentYearExpenditure = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: true),
+                    BalancedExpenditurePlan = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -843,8 +854,8 @@ namespace Moasher.Persistence.Migrations
                     ActualBiddingDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     PlannedContractingDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     ActualContractingDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    PlannedContractEndDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     EstimatedAmount = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false),
-                    Duration = table.Column<int>(type: "int", nullable: false),
                     Phase_Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Phase_Style = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhaseEnumId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -943,6 +954,77 @@ namespace Moasher.Persistence.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "InitiativeProjectProgress",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Phase_Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phase_Style = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhaseEnumId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PhaseStartedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    PhaseEndedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    PhaseStartedBy = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    PhaseEndedBy = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Completed = table.Column<bool>(type: "bit", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InitiativeProjectProgress", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InitiativeProjectProgress_EnumTypes_PhaseEnumId",
+                        column: x => x.PhaseEnumId,
+                        principalTable: "EnumTypes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_InitiativeProjectProgress_InitiativeProjects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "InitiativeProjects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InitiativeProjectsBaseline",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    InitialPlannedContractingDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    InitialEstimatedAmount = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Approved = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InitiativeProjectsBaseline", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InitiativeProjectsBaseline_InitiativeProjects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "InitiativeProjects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { new Guid("069730c0-2dfa-4041-bb53-b0b1e253c798"), "649dd7c1-a0cc-4e47-92eb-d32acaf53ec7", "ExecutionOperator", "EXECUTIONOPERATOR" },
+                    { new Guid("11d1c3b2-b8d2-474b-bb31-c5c5c8ed14cb"), "b564ab93-8152-4bd5-9885-884716e94ab0", "Admin", "ADMIN" },
+                    { new Guid("7c2a62e5-1aa7-4b94-b15f-ea0acc48be32"), "a9fbdeac-df51-4d0f-b104-fc6ea00217f3", "KPIsOperator", "KPISOPERATOR" },
+                    { new Guid("a8aa5387-28ef-4ed1-88f4-60806e0fd9d6"), "179d48c8-a128-4010-92d5-0c4314d72993", "FullAccessViewer", "FULLACCESSVIEWER" },
+                    { new Guid("cdf48cb9-7c3e-470a-9aff-c3738fa5148a"), "b2e1487e-dd30-4cee-b1f3-341a3dd54a83", "SuperAdmin", "SUPERADMIN" },
+                    { new Guid("e520a586-07df-4d31-8861-52aaecbde1f8"), "9d436616-0aba-4a02-9a44-5fa3960678c4", "DataAssurance", "DATAASSURANCE" },
+                    { new Guid("f4c3ec3a-01bf-410a-ac90-9789a4260a47"), "adcfdf3c-5816-452e-8952-79f12e44e107", "FinancialOperator", "FINANCIALOPERATOR" },
+                    { new Guid("f7d2c15b-c82b-4fe3-9c53-114833e3010b"), "9fe3b6b7-c841-43f5-a84e-0fd609b30fea", "EntityUser", "ENTITYUSER" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Analytics_InitiativeId",
                 table: "Analytics",
@@ -1029,6 +1111,16 @@ namespace Moasher.Persistence.Migrations
                 column: "InitiativeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_InitiativeProjectProgress_PhaseEnumId",
+                table: "InitiativeProjectProgress",
+                column: "PhaseEnumId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InitiativeProjectProgress_ProjectId",
+                table: "InitiativeProjectProgress",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_InitiativeProjects_ContractId",
                 table: "InitiativeProjects",
                 column: "ContractId",
@@ -1044,6 +1136,12 @@ namespace Moasher.Persistence.Migrations
                 name: "IX_InitiativeProjects_PhaseEnumId",
                 table: "InitiativeProjects",
                 column: "PhaseEnumId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InitiativeProjectsBaseline_ProjectId",
+                table: "InitiativeProjectsBaseline",
+                column: "ProjectId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_InitiativeRisks_ImpactEnumId",
@@ -1168,6 +1266,11 @@ namespace Moasher.Persistence.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Users_EntityId",
+                table: "Users",
+                column: "EntityId");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "Users",
                 column: "NormalizedUserName",
@@ -1203,6 +1306,12 @@ namespace Moasher.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "InitiativeMilestones");
+
+            migrationBuilder.DropTable(
+                name: "InitiativeProjectProgress");
+
+            migrationBuilder.DropTable(
+                name: "InitiativeProjectsBaseline");
 
             migrationBuilder.DropTable(
                 name: "InitiativeRisks");

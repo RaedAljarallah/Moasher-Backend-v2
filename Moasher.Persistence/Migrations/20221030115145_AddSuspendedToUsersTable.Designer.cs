@@ -12,8 +12,8 @@ using Moasher.Persistence;
 namespace Moasher.Persistence.Migrations
 {
     [DbContext(typeof(MoasherDbContext))]
-    [Migration("20221015075932_RemoveDurationFromProjectTable")]
-    partial class RemoveDurationFromProjectTable
+    [Migration("20221030115145_AddSuspendedToUsersTable")]
+    partial class AddSuspendedToUsersTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,34 +23,6 @@ namespace Moasher.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("Roles", (string)null);
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
@@ -275,6 +247,9 @@ namespace Moasher.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
                     b.Property<DateTimeOffset?>("LastModified")
                         .HasColumnType("datetimeoffset");
 
@@ -282,8 +257,11 @@ namespace Moasher.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("Metadata")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float?>("LimitFrom")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("LimitTo")
+                        .HasColumnType("real");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -598,6 +576,9 @@ namespace Moasher.Persistence.Migrations
                         .HasColumnType("decimal(18,6)");
 
                     b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("BalancedExpenditurePlan")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CalculateAmount")
@@ -1096,6 +1077,48 @@ namespace Moasher.Persistence.Migrations
                     b.ToTable("InitiativeProjects");
                 });
 
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProjectBaseline", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<decimal>("InitialEstimatedAmount")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<DateTimeOffset>("InitialPlannedContractingDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId")
+                        .IsUnique();
+
+                    b.ToTable("InitiativeProjectsBaseline");
+                });
+
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProjectProgress", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1323,6 +1346,9 @@ namespace Moasher.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTimeOffset>("EndDate")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<Guid>("EntityId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1404,6 +1430,9 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<byte>("Polarity")
                         .HasColumnType("tinyint");
+
+                    b.Property<DateTimeOffset>("StartDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<Guid?>("StatusEnumId")
                         .HasColumnType("uniqueidentifier");
@@ -1569,6 +1598,104 @@ namespace Moasher.Persistence.Migrations
                     b.ToTable("Programs");
                 });
 
+            modelBuilder.Entity("Moasher.Domain.Entities.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LocalizedName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("Roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("069f764f-3efb-46b6-8bf5-315b494b2306"),
+                            ConcurrencyStamp = "0f548cf5-d567-4d6e-a0c9-f3dfd7ca6090",
+                            LocalizedName = "مدير النظام",
+                            Name = "SuperAdmin",
+                            NormalizedName = "SUPERADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("8f9d8b23-6b4b-44cb-8a1a-6422e70f2026"),
+                            ConcurrencyStamp = "648d9de9-3f3b-4e6d-bbf0-10e7825aa558",
+                            LocalizedName = "مشرف",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("3f309ca9-942d-470f-9827-a021ae979e18"),
+                            ConcurrencyStamp = "465e2c73-4815-4ab2-b042-8ba67096f79a",
+                            LocalizedName = "مدقق بيانات",
+                            Name = "DataAssurance",
+                            NormalizedName = "DATAASSURANCE"
+                        },
+                        new
+                        {
+                            Id = new Guid("7481702c-cc10-486a-9fd2-60a044c4d771"),
+                            ConcurrencyStamp = "b1d20528-b57a-4586-b551-39c93f2857f0",
+                            LocalizedName = "مسؤول مالي",
+                            Name = "FinancialOperator",
+                            NormalizedName = "FINANCIALOPERATOR"
+                        },
+                        new
+                        {
+                            Id = new Guid("9b3901be-1cce-4c95-ac4b-3891f80d4ad5"),
+                            ConcurrencyStamp = "0a7cde68-5bf3-4344-ba32-be72be0ff2e5",
+                            LocalizedName = "مسؤول تنفيذ",
+                            Name = "ExecutionOperator",
+                            NormalizedName = "EXECUTIONOPERATOR"
+                        },
+                        new
+                        {
+                            Id = new Guid("96ecf487-9997-4b82-800a-3245ce5ceca6"),
+                            ConcurrencyStamp = "e5b786a4-dd1d-49b2-9973-8a0f72dba6bf",
+                            LocalizedName = "مسؤول مؤشرات أداء",
+                            Name = "KPIsOperator",
+                            NormalizedName = "KPISOPERATOR"
+                        },
+                        new
+                        {
+                            Id = new Guid("02eba107-9b94-486c-b00c-971656055df8"),
+                            ConcurrencyStamp = "b42e8393-f243-4e8a-bc84-3342feb1c019",
+                            LocalizedName = "مستخدم جهة",
+                            Name = "EntityUser",
+                            NormalizedName = "ENTITYUSER"
+                        },
+                        new
+                        {
+                            Id = new Guid("5b3b22a0-5504-4122-8090-51e8c9704405"),
+                            ConcurrencyStamp = "d91ae6e9-7419-4028-8723-a511bc030006",
+                            LocalizedName = "مستعرض جميع البيانات",
+                            Name = "FullAccessViewer",
+                            NormalizedName = "FULLACCESSVIEWER"
+                        });
+                });
+
             modelBuilder.Entity("Moasher.Domain.Entities.StrategicObjectiveEntities.StrategicObjective", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1674,6 +1801,9 @@ namespace Moasher.Persistence.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Suspended")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -1682,6 +1812,8 @@ namespace Moasher.Persistence.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -1696,7 +1828,7 @@ namespace Moasher.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                    b.HasOne("Moasher.Domain.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1723,7 +1855,7 @@ namespace Moasher.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                    b.HasOne("Moasher.Domain.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2113,6 +2245,17 @@ namespace Moasher.Persistence.Migrations
                     b.Navigation("PhaseEnum");
                 });
 
+            modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProjectBaseline", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.InitiativeEntities.InitiativeProject", "Project")
+                        .WithOne("Baseline")
+                        .HasForeignKey("Moasher.Domain.Entities.InitiativeEntities.InitiativeProjectBaseline", "ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProjectProgress", b =>
                 {
                     b.HasOne("Moasher.Domain.Entities.EnumType", "PhaseEnum")
@@ -2400,6 +2543,17 @@ namespace Moasher.Persistence.Migrations
                     b.Navigation("KPI");
                 });
 
+            modelBuilder.Entity("Moasher.Domain.Entities.User", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.Entity", "Entity")
+                        .WithMany()
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Entity");
+                });
+
             modelBuilder.Entity("Moasher.Domain.Entities.Entity", b =>
                 {
                     b.Navigation("Initiatives");
@@ -2444,6 +2598,9 @@ namespace Moasher.Persistence.Migrations
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProject", b =>
                 {
+                    b.Navigation("Baseline")
+                        .IsRequired();
+
                     b.Navigation("Expenditures");
 
                     b.Navigation("ExpendituresBaseline");

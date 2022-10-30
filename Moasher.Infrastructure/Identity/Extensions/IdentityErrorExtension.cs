@@ -1,7 +1,7 @@
 ﻿using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 
-namespace Moasher.Application.Common.Extensions;
+namespace Moasher.Infrastructure.Identity.Extensions;
 
 public static class IdentityErrorExtension
 {

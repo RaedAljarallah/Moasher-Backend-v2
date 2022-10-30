@@ -23,5 +23,62 @@ public static class AppRoles
         KPIsOperator
     });
 
+    public static IReadOnlyList<string> AllRoles { get; } = new ReadOnlyCollection<string>(new[]
+    {
+        SuperAdmin,
+        Admin,
+        DataAssurance,
+        FinancialOperator,
+        ExecutionOperator,
+        KPIsOperator,
+        EntityUser,
+        FullAccessViewer
+    });
+    
     public static bool IsOrganizationRole(string roleName) => OrganizationRoles.Any(r => r == roleName);
+
+    public static string GetLocalizedName(string roleName)
+    {
+        if (string.Equals(SuperAdmin, roleName, StringComparison.CurrentCultureIgnoreCase))
+        {
+            return "مدير النظام";
+        }
+        
+        if (string.Equals(Admin, roleName, StringComparison.CurrentCultureIgnoreCase))
+        {
+            return "مشرف";
+        }
+        
+        if (string.Equals(DataAssurance, roleName, StringComparison.CurrentCultureIgnoreCase))
+        {
+            return "مدقق بيانات";
+        }
+        
+        if (string.Equals(FinancialOperator, roleName, StringComparison.CurrentCultureIgnoreCase))
+        {
+            return "مسؤول مالي";
+        }
+        
+        if (string.Equals(ExecutionOperator, roleName, StringComparison.CurrentCultureIgnoreCase))
+        {
+            return "مسؤول تنفيذ";
+        }
+        
+        if (string.Equals(KPIsOperator, roleName, StringComparison.CurrentCultureIgnoreCase))
+        {
+            return "مسؤول مؤشرات أداء";
+        }
+        
+        if (string.Equals(EntityUser, roleName, StringComparison.CurrentCultureIgnoreCase))
+        {
+            return "مستخدم جهة";
+        }
+        
+        if (string.Equals(FullAccessViewer, roleName, StringComparison.CurrentCultureIgnoreCase))
+        {
+            return "مستعرض جميع البيانات";
+        }
+
+        return string.Empty;
+    }
 }

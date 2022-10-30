@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Domain.Entities;
 using Moasher.Persistence.Interceptors;
 
 namespace Moasher.Persistence;
@@ -21,5 +23,8 @@ public static class Startup
         });
         services.AddScoped<IMoasherDbContext>(sp => sp.GetRequiredService<MoasherDbContext>());
         //services.AddScoped<MoasherDbContextInitializer>();
+
+        var identityBuilder = new IdentityBuilder(typeof(User), typeof(Role), services);
+        identityBuilder.AddEntityFrameworkStores<MoasherDbContext>();
     }
 }

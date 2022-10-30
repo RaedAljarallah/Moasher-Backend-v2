@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Moasher.Domain.Entities;
 
-namespace Moasher.Application.Common.Extensions;
+namespace Moasher.Infrastructure.Identity.Extensions;
 
 public static class UserManagerExtensions
 {

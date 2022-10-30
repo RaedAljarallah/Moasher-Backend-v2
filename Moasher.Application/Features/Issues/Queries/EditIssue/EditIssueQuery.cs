@@ -29,6 +29,7 @@ public class EditIssueQueryHandler : IRequestHandler<EditIssueQuery, EditIssueDt
             .Include(i => i.ScopeEnum)
             .Include(i => i.StatusEnum)
             .Include(i => i.ImpactEnum)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken);
 
         if (issue is null)

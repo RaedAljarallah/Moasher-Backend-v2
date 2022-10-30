@@ -11,4 +11,9 @@ public class User : IdentityUser<Guid>, IDbEntity
     public bool MustChangePassword { get; set; }
     public Entity Entity { get; set; } = default!;
     public Guid EntityId { get; set; }
+    public bool Suspended { get; set; }
+
+    public bool IsActive() => EmailConfirmed && !MustChangePassword;
+
+    public bool IsSuspended() => (LockoutEnd.HasValue && LockoutEnd.Value >= DateTimeOffset.UtcNow) || Suspended;
 }

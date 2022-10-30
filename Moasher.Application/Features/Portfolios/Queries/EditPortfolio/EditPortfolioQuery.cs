@@ -27,6 +27,7 @@ public class EditPortfolioQueryHandler : IRequestHandler<EditPortfolioQuery, Edi
         var portfolio = await _context.Portfolios
             .AsNoTracking()
             .Include(p => p.Initiatives)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
         
         if (portfolio is null)
