@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moasher.Application.Features.Users.Commands.CreateUser;
 using Moasher.Application.Features.Users.Commands.DeleteUser;
+using Moasher.Application.Features.Users.Commands.ResetUserPassword;
 using Moasher.Application.Features.Users.Commands.UpdateUser;
 using Moasher.Application.Features.Users.Commands.UpdateUserSuspensionStatus;
 using Moasher.Application.Features.Users.Queries.EditUser;
@@ -77,6 +78,23 @@ public class UsersController : ApiControllerBase
         }
         
         return Ok(await Sender.Send(command, cancellationToken));
+    }
+
+    [HttpPost(ApiEndpoints.Users.ResetPassword)]
+    [BadRequestResponseType]
+    [UnauthorizedResponseType]
+    [NotFoundResponseType]
+    [NoContentResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> ResetPassword(Guid id, ResetUserPasswordCommand command, CancellationToken cancellationToken)
+    {
+        if (!id.Equals(command.Id))
+        {
+            return BadRequest();
+        }
+
+        await Sender.Send(command, cancellationToken);
+        return NoContent();
     }
     
     [HttpDelete(ApiEndpoints.Users.Delete)]
