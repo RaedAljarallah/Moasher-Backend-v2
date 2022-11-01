@@ -55,6 +55,12 @@ public class EntityUpdatedEventHandler : INotificationHandler<EntityUpdatedEvent
         
             _context.Initiatives.UpdateRange(entity.Initiatives);
             _context.KPIs.UpdateRange(entity.KPIs);
+
+            var searchRecord = await _context.SearchRecords.FirstOrDefaultAsync(s => s.RelativeId == entityId, cancellationToken);
+            if (searchRecord is not null)
+            {
+                searchRecord.Title = entity.Name;
+            }
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

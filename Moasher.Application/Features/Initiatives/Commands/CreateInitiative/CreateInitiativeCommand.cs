@@ -8,6 +8,7 @@ using Moasher.Application.Features.Initiatives.Commands.Common;
 using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Enums;
+using Moasher.Domain.Events.Initiatives;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Initiatives.Commands.CreateInitiative;
@@ -142,6 +143,7 @@ public class CreateInitiativeCommandHandler : IRequestHandler<CreateInitiativeCo
         initiative.LevelFourStrategicObjective = l4StrategicObjective;
         
         _context.Initiatives.Add(initiative);
+        initiative.AddDomainEvent(new InitiativeCreatedEvent(initiative));
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<InitiativeDto>(initiative);

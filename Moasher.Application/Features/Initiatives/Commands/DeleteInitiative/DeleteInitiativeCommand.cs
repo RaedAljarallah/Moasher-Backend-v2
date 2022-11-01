@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Domain.Events.Initiatives;
 
 namespace Moasher.Application.Features.Initiatives.Commands.DeleteInitiative;
 
@@ -29,6 +30,7 @@ public class DeleteInitiativeCommandHandler : IRequestHandler<DeleteInitiativeCo
             throw new NotFoundException();
         }
         
+        initiative.AddDomainEvent(new InitiativeDeletedEvent(initiative));
         _context.Analytics.RemoveRange(initiative.Analytics);
         _context.Initiatives.Remove(initiative);
         await _context.SaveChangesAsync(cancellationToken);

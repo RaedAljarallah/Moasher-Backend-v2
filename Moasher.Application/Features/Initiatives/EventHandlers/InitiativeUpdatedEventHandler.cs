@@ -48,6 +48,12 @@ public class InitiativeUpdatedEventHandler : INotificationHandler<InitiativeUpda
             initiative.Analytics.ToList().ForEach(a => a.Initiative = initiative);
             
             _context.Initiatives.Update(initiative);
+            
+            var searchRecord = await _context.SearchRecords.FirstOrDefaultAsync(s => s.RelativeId == initiativeId, cancellationToken);
+            if (searchRecord is not null)
+            {
+                searchRecord.Title = initiative.Name;
+            }
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

@@ -6,6 +6,7 @@ using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Features.KPIs.Commands.Common;
 using Moasher.Domain.Entities.KPIEntities;
+using Moasher.Domain.Events.KPIs;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.KPIs.Commands.CreateKPI;
@@ -86,6 +87,7 @@ public class CreateKPICommandHandler : IRequestHandler<CreateKPICommand, KPIDto>
         kpi.LevelFourStrategicObjective = l4StrategicObjective;
         
         _context.KPIs.Add(kpi);
+        kpi.AddDomainEvent(new KPICreatedEvent(kpi));
         await _context.SaveChangesAsync(cancellationToken);
         
         return _mapper.Map<KPIDto>(kpi);

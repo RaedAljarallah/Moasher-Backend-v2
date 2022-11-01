@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Domain.Events.Programs;
 
 namespace Moasher.Application.Features.Programs.Commands.DeleteProgram;
 
@@ -27,6 +28,7 @@ public class DeleteProgramCommandHandler : IRequestHandler<DeleteProgramCommand,
             throw new NotFoundException();
         }
 
+        program.AddDomainEvent(new ProgramDeletedEvent(program));
         _context.Programs.Remove(program);
         await _context.SaveChangesAsync(cancellationToken);
         

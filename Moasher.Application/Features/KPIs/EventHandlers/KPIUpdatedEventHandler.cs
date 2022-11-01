@@ -31,6 +31,13 @@ public class KPIUpdatedEventHandler : INotificationHandler<KPIUpdatedEvent>
             
             _context.KPIValues.UpdateRange(kpi.Values);
             _context.Analytics.UpdateRange(kpi.Analytics);
+            
+            var searchRecord = await _context.SearchRecords.FirstOrDefaultAsync(s => s.RelativeId == kpiId, cancellationToken);
+            if (searchRecord is not null)
+            {
+                searchRecord.Title = kpi.Name;
+            }
+            
             await _context.SaveChangesAsync(cancellationToken);
         }
         

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Entities;
+using Moasher.Domain.Events.Entities;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Entities.Commands.CreateEntity;
@@ -28,6 +29,7 @@ public class CreateEntityCommandHandler : IRequestHandler<CreateEntityCommand, E
         
         var entity = _mapper.Map<Entity>(request);
         _context.Entities.Add(entity);
+        entity.AddDomainEvent(new EntityCreatedEvent(entity));
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<EntityDto>(entity);

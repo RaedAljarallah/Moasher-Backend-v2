@@ -226,4 +226,10 @@ public struct ApiEndpoints
         private const string Base = "roles";
         public const string All = Base;
     }
+    
+    public struct Search
+    {
+        private const string Base = "search";
+        public const string All = Base;
+    }
 }

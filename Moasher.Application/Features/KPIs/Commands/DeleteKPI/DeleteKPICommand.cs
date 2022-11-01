@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Domain.Events.KPIs;
 
 namespace Moasher.Application.Features.KPIs.Commands.DeleteKPI;
 
@@ -30,6 +31,7 @@ public class DeleteKPICommandHandler : IRequestHandler<DeleteKPICommand, Unit>
             throw new NotFoundException();
         }
         
+        kpi.AddDomainEvent(new KPIDeletedEvent(kpi));
         _context.Analytics.RemoveRange(kpi.Analytics);
         _context.KPIs.Remove(kpi);
         await _context.SaveChangesAsync(cancellationToken);

@@ -29,6 +29,12 @@ public class ProgramUpdatedEventHandler : INotificationHandler<ProgramUpdatedEve
             });
             
             _context.Initiatives.UpdateRange(program.Initiatives);
+            
+            var searchRecord = await _context.SearchRecords.FirstOrDefaultAsync(s => s.RelativeId == programId, cancellationToken);
+            if (searchRecord is not null)
+            {
+                searchRecord.Title = program.Name;
+            }
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Domain.Events.Entities;
 
 namespace Moasher.Application.Features.Entities.Commands.DeleteEntity;
 
@@ -32,6 +33,7 @@ public class DeleteEntityCommandHandler : IRequestHandler<DeleteEntityCommand, U
             throw new ValidationException("لا يمكن حذف الجهة المالكة للنظام");
         }
         
+        entity.AddDomainEvent(new EntityDeletedEvent(entity));
         _context.Entities.Remove(entity);
         await _context.SaveChangesAsync(cancellationToken);
         

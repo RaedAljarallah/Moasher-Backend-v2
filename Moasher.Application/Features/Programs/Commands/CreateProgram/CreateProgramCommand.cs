@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Entities;
+using Moasher.Domain.Events.Programs;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Programs.Commands.CreateProgram;
@@ -27,6 +28,7 @@ public class CreateProgramCommandHandler : IRequestHandler<CreateProgramCommand,
         request.ValidateAndThrow(new ProgramDomainValidator(programs, request.Name, request.Code));
         var program = _mapper.Map<Program>(request);
         _context.Programs.Add(program);
+        program.AddDomainEvent(new ProgramCreatedEvent(program));
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<ProgramDto>(program);
