@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Moasher.Infrastructure.Authentication.IdentityServer;
 using Moasher.Infrastructure.BackgroundJobs;
+using Moasher.Infrastructure.Files;
 using Moasher.Infrastructure.Identity;
 
 namespace Moasher.Infrastructure;
@@ -13,5 +14,6 @@ public static class Startup
         services.AddIdentity(config);
         //services.AddIdentityServer(config);
         services.AddBackgroundJobs(config);
+        services.AddFiles(config);
     }
 }

@@ -2,6 +2,7 @@
 using Moasher.Application.Features.Entities.Commands.CreateEntity;
 using Moasher.Application.Features.Entities.Commands.DeleteEntity;
 using Moasher.Application.Features.Entities.Commands.UpdateEntity;
+using Moasher.Application.Features.Entities.Queries.ExportEntities;
 using Moasher.Application.Features.Entities.Queries.GetEntities;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -19,6 +20,16 @@ public class EntitiesController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
     
+    [HttpGet(ApiEndpoints.Entities.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportEntitiesQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
+    }
+
     [HttpPost(ApiEndpoints.Entities.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
