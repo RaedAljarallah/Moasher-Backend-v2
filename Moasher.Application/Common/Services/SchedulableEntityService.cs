@@ -1,6 +1,7 @@
 ﻿using Moasher.Application.Common.Abstracts;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Enums;
+using Moasher.Domain.Types;
 
 namespace Moasher.Application.Common.Services;
 
@@ -8,7 +9,7 @@ public static class SchedulableEntityService
 {
     public static string? GetStatus(DateTimeOffset plannedFinish, DateTimeOffset? actualFinish)
     {
-        var currentDate = DateTimeService.Now.Date;
+        var currentDate = LocalDateTime.Now.Date;
         if (plannedFinish >= currentDate && !actualFinish.HasValue)
         {
             return SchedulableStatus.Planned.ToString().ToLower();

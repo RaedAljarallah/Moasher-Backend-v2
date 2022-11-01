@@ -9,4 +9,5 @@ public record EditUserDto : UserCommandBase
     public Guid Id { get; set; }
     public EntityDto Entity { get; set; } = default!;
     public string LocalizedRole => AppRoles.GetLocalizedName(Role);
+    public bool Suspended { get; set; }
 }

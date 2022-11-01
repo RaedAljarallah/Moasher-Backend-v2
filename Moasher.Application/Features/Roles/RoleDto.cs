@@ -2,7 +2,7 @@
 
 public record RoleDto
 {
-    public string Id { get; set; } = default!;
+    public string Id => Name.ToUpper();
     public string Name { get; set; } = default!;
     public string LocalizedName { get; set; } = default!;
 }

@@ -1,14 +1,13 @@
 ﻿using Moasher.Domain.Enums;
+using Moasher.Domain.Types;
 
 namespace Moasher.Application.Common.Services;
 
 public static class DateTimeService
 {
-    public static DateTimeOffset Now => DateTimeOffset.UtcNow.AddHours(3);
-
     public static int GetCurrentQuarter()
     {
-        return Math.Abs((Now.Month - 1) / 3) + 1;
+        return Math.Abs((LocalDateTime.Now.Month - 1) / 3) + 1;
     }
 
     public static int GetMonthQuarter(int month)

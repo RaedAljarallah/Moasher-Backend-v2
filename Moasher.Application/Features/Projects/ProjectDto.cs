@@ -1,6 +1,5 @@
 ﻿using Moasher.Application.Common.Abstracts;
-using Moasher.Application.Common.Services;
-using Moasher.Application.Features.Expenditures;
+using Moasher.Domain.Types;
 using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Application.Features.Projects;
@@ -22,13 +21,13 @@ public record ProjectDto : DtoBase
     private string GetStatus()
     {
         var statusList = new List<string>();
-        if ((PlannedBiddingDate < DateTimeService.Now && !ActualBiddingDate.HasValue) 
-            || (ActualBiddingDate > PlannedBiddingDate && PlannedContractingDate >= DateTimeService.Now))
+        if ((PlannedBiddingDate < LocalDateTime.Now && !ActualBiddingDate.HasValue) 
+            || (ActualBiddingDate > PlannedBiddingDate && PlannedContractingDate >= LocalDateTime.Now))
         {
             statusList.Add("LateOnBidding");
         }
 
-        if (PlannedContractingDate < DateTimeService.Now)
+        if (PlannedContractingDate < LocalDateTime.Now)
         {
             statusList.Add("LateOnContracting");
         }

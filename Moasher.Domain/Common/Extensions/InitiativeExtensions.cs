@@ -1,6 +1,7 @@
 ﻿using Moasher.Domain.Common.Utilities;
 using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.Types;
 using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Domain.Common.Extensions;
@@ -78,7 +79,7 @@ public static class InitiativeExtensions
         return initiative.Projects
             .Where(p => p.Approved)
             .Where(p => !p.Contracted)
-            .Where(p => p.PlannedContractingDate <= DateTimeOffset.UtcNow.AddHours(3))
+            .Where(p => p.PlannedContractingDate <= LocalDateTime.Now)
             .Sum(p => p.EstimatedAmount);
     }
     
@@ -86,7 +87,7 @@ public static class InitiativeExtensions
     {
         return initiative.Budgets
             .Where(b => b.Approved)
-            .Where(b => b.ApprovalDate.Year == DateTimeOffset.UtcNow.AddHours(3).Year)
+            .Where(b => b.ApprovalDate.Year == LocalDateTime.Now.Year)
             .MaxBy(a => a.ApprovalDate)?.Amount;
     }
     
@@ -128,7 +129,7 @@ public static class InitiativeExtensions
                 actualProgress += milestone.Weight;
             }
 
-            if (milestone.PlannedFinish.Date <= DateTimeOffset.UtcNow.AddHours(3).Date)
+            if (milestone.PlannedFinish.Date <= LocalDateTime.Now.Date)
             {
                 plannedProgress += milestone.Weight;
             }

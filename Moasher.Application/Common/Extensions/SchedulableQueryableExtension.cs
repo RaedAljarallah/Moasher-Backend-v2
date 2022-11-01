@@ -2,6 +2,7 @@
 using Moasher.Application.Common.Services;
 using Moasher.Domain.Common.Interfaces;
 using Moasher.Domain.Enums;
+using Moasher.Domain.Types;
 
 namespace Moasher.Application.Common.Extensions;
 
@@ -70,7 +71,7 @@ public static class SchedulableQueryableExtension
     private static IQueryable<ISchedulable> Planned(this IQueryable<ISchedulable> query)
         {
             return query
-                .Where(m => m.PlannedFinish >= DateTimeService.Now)
+                .Where(m => m.PlannedFinish >= LocalDateTime.Now)
                 .Where(m => !m.ActualFinish.HasValue);
         }
 
@@ -82,7 +83,7 @@ public static class SchedulableQueryableExtension
         private static IQueryable<ISchedulable> Late(this IQueryable<ISchedulable> query)
         {
             return query
-                .Where(m => m.PlannedFinish < DateTimeService.Now)
+                .Where(m => m.PlannedFinish < LocalDateTime.Now)
                 .Where(m => !m.ActualFinish.HasValue);
         }
 
@@ -103,7 +104,7 @@ public static class SchedulableQueryableExtension
         private static IQueryable<ISchedulable> DueUntil(this IQueryable<ISchedulable> query, DateTimeOffset dueDate)
         {
             return query
-                .Where(m => m.PlannedFinish >= DateTimeService.Now)
+                .Where(m => m.PlannedFinish >= LocalDateTime.Now)
                 .Where(m => m.PlannedFinish <= dueDate)
                 .Where(m => !m.ActualFinish.HasValue);
         }

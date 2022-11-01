@@ -23,6 +23,11 @@ public class IdentityService : IIdentityService
         return _roleManager.RoleExistsAsync(roleName);
     }
 
+    public Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken = default)
+    {
+        return _userManager.GetUsersInRoleAsync(roleName);
+    }
+
     public Task<bool> UserExistsAsync(string userEmail, CancellationToken cancellationToken)
     {
         return _userManager.Users.AnyAsync(u => u.NormalizedEmail == _userManager.NormalizeEmail(userEmail),
@@ -38,16 +43,11 @@ public class IdentityService : IIdentityService
         {
             ThrowValidationError(createUserResult.Errors);
         }
-        
-        var addToRoleResult = await _userManager.AddToRoleAsync(user, role);
-        if (!addToRoleResult.Succeeded)
-        {
-            await DeleteUserAsync(user, cancellationToken);
-            ThrowValidationError(addToRoleResult.Errors);
-        }
+
+        await AddToRole(user, role, cancellationToken);
         return user;
     }
-
+    
     public async Task<User?> GetUserById(Guid id, CancellationToken cancellationToken = default)
     {
         return await _userManager.FindByIdAsync(id.ToString());
@@ -80,9 +80,44 @@ public class IdentityService : IIdentityService
         return updatesUser.Suspended;
     }
 
+    public async Task<string> UpdateUserRoleAsync(User user, string newRole, CancellationToken cancellationToken = default)
+    {
+        var userCurrentRole = (await _userManager.GetRolesAsync(user)).First();
+        if (!string.Equals(newRole, userCurrentRole, StringComparison.CurrentCultureIgnoreCase))
+        {
+            var removeCurrentRoleResult = await _userManager.RemoveFromRoleAsync(user, userCurrentRole);
+            if (!removeCurrentRoleResult.Succeeded)
+            {
+                ThrowValidationError(removeCurrentRoleResult.Errors);
+            }
+
+            await AddToRole(user, newRole, cancellationToken);
+        }
+
+        return _roleManager.NormalizeKey(newRole);
+    }
+
+    public async Task ResetUserPassword(User user, CancellationToken cancellationToken = default)
+    {
+        var tempPassword = _userManager.PasswordHasher.HashPassword(user, _userManager.GeneratePassword());
+        user.PasswordHash = tempPassword;
+        user.MustChangePassword = true;
+        await UpdateUserAsync(user, cancellationToken);
+    }
+
     public IQueryable<Role> Roles => _roleManager.Roles;
     public IQueryable<User> Users => _userManager.Users;
 
+    private async Task AddToRole(User user, string role, CancellationToken cancellationToken)
+    {
+        var addToRoleResult = await _userManager.AddToRoleAsync(user, role);
+        if (!addToRoleResult.Succeeded)
+        {
+            await DeleteUserAsync(user, cancellationToken);
+            ThrowValidationError(addToRoleResult.Errors);
+        }
+    }
+    
     private static void ThrowValidationError(IEnumerable<IdentityError> errors)
     {
         throw new ValidationException(errors.ToValidationErrors());

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Moasher.Application.Common.Services;
 using Moasher.Domain.Common.Abstracts;
+using Moasher.Domain.Types;
 
 namespace Moasher.Persistence.Interceptors;
 
@@ -26,11 +27,11 @@ public class AuditingInterceptor : SaveChangesInterceptor
                 case EntityState.Added:
                     // TODO: Replace dummy value
                     entry.Entity.CreatedBy = "Test@Test.com";
-                    entry.Entity.CreatedAt = DateTimeService.Now;
+                    entry.Entity.CreatedAt = LocalDateTime.Now;
                     break;
                 case EntityState.Modified:
                     entry.Entity.LastModifiedBy = "Test@Test.com";
-                    entry.Entity.LastModified = DateTimeService.Now;
+                    entry.Entity.LastModified = LocalDateTime.Now;
                     break;
             }
             // TODO: Replace dummy value with edit request handler

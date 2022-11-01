@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moasher.Application.Features.Users.Commands.CreateUser;
+using Moasher.Application.Features.Users.Commands.DeleteUser;
+using Moasher.Application.Features.Users.Commands.UpdateUser;
 using Moasher.Application.Features.Users.Commands.UpdateUserSuspensionStatus;
 using Moasher.Application.Features.Users.Queries.EditUser;
 using Moasher.Application.Features.Users.Queries.GetUsers;
@@ -45,10 +47,27 @@ public class UsersController : ApiControllerBase
         return Ok(await Sender.Send(query, cancellationToken));
     }
     
-    [HttpPost(ApiEndpoints.Users.UpdateSuspensionStatus)]
+    [HttpPut(ApiEndpoints.Users.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
-    [CreatedResponseType]
+    [NotFoundResponseType]
+    [OkResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> Update(Guid id, UpdateUserCommand command, CancellationToken cancellationToken)
+    {
+        if (!id.Equals(command.Id))
+        {
+            return BadRequest();
+        }
+
+        return Ok(await Sender.Send(command, cancellationToken));
+    }
+    
+    [HttpPut(ApiEndpoints.Users.UpdateSuspensionStatus)]
+    [BadRequestResponseType]
+    [UnauthorizedResponseType]
+    [NotFoundResponseType]
+    [OkResponseType]
     [Produces("application/json")]
     public async Task<IActionResult> UpdateSuspension(Guid id, UpdateUserSuspensionStatusCommand command, CancellationToken cancellationToken)
     {
@@ -58,5 +77,15 @@ public class UsersController : ApiControllerBase
         }
         
         return Ok(await Sender.Send(command, cancellationToken));
+    }
+    
+    [HttpDelete(ApiEndpoints.Users.Delete)]
+    [NotFoundResponseType]
+    [ConflictResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        await Sender.Send(new DeleteUserCommand { Id = id }, cancellationToken);
+        return NoContent();
     }
 }

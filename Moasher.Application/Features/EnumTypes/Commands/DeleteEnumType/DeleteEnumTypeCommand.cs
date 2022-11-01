@@ -30,7 +30,7 @@ public class DeleteEnumTypeCommandHandler : IRequestHandler<DeleteEnumTypeComman
 
         if (enumType.CanBeDeleted is false)
         {
-            throw new ValidationException("لا يمكن حذف هذا المدخل");
+            throw new ConflictException("لا يمكن حذف هذا المدخل");
         }
         
         _context.EnumTypes.Remove(enumType);
@@ -40,7 +40,7 @@ public class DeleteEnumTypeCommandHandler : IRequestHandler<DeleteEnumTypeComman
         }
         catch
         {
-            throw new ValidationException("لا يمكن حذف العنصر لوجود عناصر آخرى مرتبطة به");
+            throw new ConflictException("لا يمكن حذف العنصر لوجود عناصر آخرى مرتبطة به");
         }
         
         return Unit.Value;

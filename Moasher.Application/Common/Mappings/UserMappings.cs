@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Moasher.Application.Features.Users;
 using Moasher.Application.Features.Users.Commands.CreateUser;
+using Moasher.Application.Features.Users.Commands.UpdateUser;
 using Moasher.Application.Features.Users.Queries.EditUser;
 using Moasher.Domain.Entities;
 
@@ -18,5 +19,8 @@ public class UserMappings : Profile
         CreateMap<CreateUserCommand, User>();
 
         CreateMap<User, EditUserDto>();
+
+        CreateMap<UpdateUserCommand, User>()
+            .ForMember(u => u.Id, opt => opt.Ignore());
     }
 }

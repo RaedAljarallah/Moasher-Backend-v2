@@ -64,6 +64,7 @@ public class MoasherDbContext : IdentityDbContext<User, Role, Guid>, IMoasherDbC
         builder.ApplyConfigurationsFromAssembly(typeof(MoasherDbContext).Assembly);
         
         builder.SeedRoles();
+        builder.SeedOrganizerEntity();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

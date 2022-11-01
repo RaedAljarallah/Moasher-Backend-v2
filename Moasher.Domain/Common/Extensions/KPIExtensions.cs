@@ -1,6 +1,7 @@
 ﻿using Moasher.Domain.Common.Utilities;
 using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.KPIEntities;
+using Moasher.Domain.Types;
 using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Domain.Common.Extensions;
@@ -51,7 +52,7 @@ public static class KPIExtensions
                 variance += value.TargetValue - (value.ActualValue ?? 0f);
             }
 
-            if (value.PlannedFinish.Date <= DateTimeOffset.UtcNow.AddHours(3).Date)
+            if (value.PlannedFinish.Date <= LocalDateTime.Now.Date)
             {
                 plannedValuesSum += value.TargetValue;
             }

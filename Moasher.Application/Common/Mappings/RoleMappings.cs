@@ -8,7 +8,6 @@ public class RoleMappings : Profile
 {
     public RoleMappings()
     {
-        CreateMap<Role, RoleDto>()
-            .ForMember(r => r.Id, opt => opt.MapFrom(r => r.Name));
+        CreateMap<Role, RoleDto>();
     }
 }

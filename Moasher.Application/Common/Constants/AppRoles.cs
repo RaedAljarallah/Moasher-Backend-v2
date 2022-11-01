@@ -34,8 +34,13 @@ public static class AppRoles
         EntityUser,
         FullAccessViewer
     });
-    
+
     public static bool IsOrganizationRole(string roleName) => OrganizationRoles.Any(r => r == roleName);
+
+    public static string GetSuperAdminRole() => SuperAdmin;
+
+    public static bool IsSuperAdminRole(string role) =>
+        string.Equals(SuperAdmin, role, StringComparison.CurrentCultureIgnoreCase);
 
     public static string GetLocalizedName(string roleName)
     {
@@ -43,37 +48,37 @@ public static class AppRoles
         {
             return "مدير النظام";
         }
-        
+
         if (string.Equals(Admin, roleName, StringComparison.CurrentCultureIgnoreCase))
         {
             return "مشرف";
         }
-        
+
         if (string.Equals(DataAssurance, roleName, StringComparison.CurrentCultureIgnoreCase))
         {
             return "مدقق بيانات";
         }
-        
+
         if (string.Equals(FinancialOperator, roleName, StringComparison.CurrentCultureIgnoreCase))
         {
             return "مسؤول مالي";
         }
-        
+
         if (string.Equals(ExecutionOperator, roleName, StringComparison.CurrentCultureIgnoreCase))
         {
             return "مسؤول تنفيذ";
         }
-        
+
         if (string.Equals(KPIsOperator, roleName, StringComparison.CurrentCultureIgnoreCase))
         {
             return "مسؤول مؤشرات أداء";
         }
-        
+
         if (string.Equals(EntityUser, roleName, StringComparison.CurrentCultureIgnoreCase))
         {
             return "مستخدم جهة";
         }
-        
+
         if (string.Equals(FullAccessViewer, roleName, StringComparison.CurrentCultureIgnoreCase))
         {
             return "مستعرض جميع البيانات";

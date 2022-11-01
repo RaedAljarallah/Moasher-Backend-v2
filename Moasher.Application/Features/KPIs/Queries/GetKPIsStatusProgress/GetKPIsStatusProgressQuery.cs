@@ -7,6 +7,7 @@ using Moasher.Application.Features.Initiatives.Queries.GetInitiativesStatusProgr
 using Moasher.Domain.Common.Utilities;
 using Moasher.Domain.Entities;
 using Moasher.Domain.Enums;
+using Moasher.Domain.Types;
 using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Application.Features.KPIs.Queries.GetKPIsStatusProgress;
@@ -86,7 +87,7 @@ public class
         var startDate = kpis.Min(k => k.StartDate);
         var endDate = kpis.Max(k => k.EndDate);
         var endOfCurrentYearDate =
-            new DateTimeOffset(new DateTime(DateTimeService.Now.Year, 12, 31), TimeSpan.FromHours(3));
+            new DateTimeOffset(new DateTime(LocalDateTime.Now.Year, 12, 31), TimeSpan.FromHours(3));
         var yearsMonthsRange = DateTimeService
             .GetYearsMonthsRange(startDate, endDate < endOfCurrentYearDate ? endDate : endOfCurrentYearDate).ToList();
         var kpisId = kpis.Select(k => k.Id).ToList();

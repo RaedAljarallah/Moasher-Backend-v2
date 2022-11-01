@@ -4,6 +4,7 @@ using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Common.Services;
 using Moasher.Domain.Enums;
+using Moasher.Domain.Types;
 
 namespace Moasher.Application.Features.Projects.Queries.GetProjectsSummary;
 
@@ -121,7 +122,7 @@ public class GetProjectsSummaryQueryHandler : IRequestHandler<GetProjectsSummary
         var startDate = initiatives.Min(i => i.ActualStart ?? i.PlannedStart);
         var endDate = initiatives.Max(i => i.ActualFinish ?? i.PlannedFinish);
         var endOfCurrentYearDate =
-            new DateTimeOffset(new DateTime(DateTimeService.Now.Year, 12, 31), TimeSpan.FromHours(3));
+            new DateTimeOffset(new DateTime(LocalDateTime.Now.Year, 12, 31), TimeSpan.FromHours(3));
         var yearsMonthsRange = DateTimeService
             .GetYearsMonthsRange(startDate, endDate < endOfCurrentYearDate ? endDate : endOfCurrentYearDate).ToList();
         

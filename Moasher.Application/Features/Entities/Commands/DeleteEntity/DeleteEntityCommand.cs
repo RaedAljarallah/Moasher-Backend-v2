@@ -27,6 +27,11 @@ public class DeleteEntityCommandHandler : IRequestHandler<DeleteEntityCommand, U
             throw new NotFoundException();
         }
 
+        if (entity.IsOrganizer)
+        {
+            throw new ValidationException("لا يمكن حذف الجهة المالكة للنظام");
+        }
+        
         _context.Entities.Remove(entity);
         await _context.SaveChangesAsync(cancellationToken);
         

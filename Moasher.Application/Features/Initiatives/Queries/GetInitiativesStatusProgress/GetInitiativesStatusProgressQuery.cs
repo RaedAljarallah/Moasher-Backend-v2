@@ -6,6 +6,7 @@ using Moasher.Application.Common.Services;
 using Moasher.Domain.Common.Utilities;
 using Moasher.Domain.Entities;
 using Moasher.Domain.Enums;
+using Moasher.Domain.Types;
 using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Application.Features.Initiatives.Queries.GetInitiativesStatusProgress;
@@ -86,7 +87,7 @@ public class GetInitiativesStatusProgressQueryHandler : IRequestHandler<GetIniti
         var startDate = initiatives.Min(i => i.ActualStart ?? i.PlannedStart);
         var endDate = initiatives.Max(i => i.ActualFinish ?? i.PlannedFinish);
         var endOfCurrentYearDate =
-            new DateTimeOffset(new DateTime(DateTimeService.Now.Year, 12, 31), TimeSpan.FromHours(3));
+            new DateTimeOffset(new DateTime(LocalDateTime.Now.Year, 12, 31), TimeSpan.FromHours(3));
         var yearsMonthsRange = DateTimeService
             .GetYearsMonthsRange(startDate, endDate < endOfCurrentYearDate ? endDate : endOfCurrentYearDate).ToList();
         var initiativesId = initiatives.Select(i => i.Id).ToList();

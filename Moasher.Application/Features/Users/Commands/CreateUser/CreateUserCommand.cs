@@ -27,18 +27,18 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
 
     public async Task<UserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        var isValidRole = await _identityService.RoleExistsAsync(request.Role, cancellationToken);
-        if (!isValidRole)
-        {
-            throw new ValidationException(nameof(User.Role), UserValidationMessages.WrongRole);
-        }
-
         var isUserExists = await _identityService.UserExistsAsync(request.Email, cancellationToken);
         if (isUserExists)
         {
             throw new ValidationException(nameof(User.Email), UserValidationMessages.Duplicated);
         }
-
+        
+        var isValidRole = await _identityService.RoleExistsAsync(request.Role, cancellationToken);
+        if (!isValidRole)
+        {
+            throw new ValidationException(nameof(User.Role), UserValidationMessages.WrongRole);
+        }
+        
         var entity = await _context.Entities
             .AsNoTracking()
             .FirstOrDefaultAsync(e => e.Id == request.EntityId, cancellationToken);
@@ -48,8 +48,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
             throw new ValidationException(nameof(User.EntityId), UserValidationMessages.WrongEntity);
         }
 
-        var isOrganizationRole = AppRoles.IsOrganizationRole(request.Role);
-        if (isOrganizationRole != entity.IsOrganizer)
+        if (!entity.IsOrganizer && AppRoles.IsOrganizationRole(request.Role))
         {
             throw new ValidationException(nameof(User.Role), UserValidationMessages.WrongRoleSelection);
         }
@@ -61,6 +60,8 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
         
         var createdUser = await _identityService.CreateUserAsync(user, request.Role, cancellationToken);
         createdUser.Entity = entity;
+        
+        // TODO: Send Email To User
         return _mapper.Map<UserDto>(createdUser);
     }
 }

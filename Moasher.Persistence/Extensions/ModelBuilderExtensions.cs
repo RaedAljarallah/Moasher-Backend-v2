@@ -16,4 +16,17 @@ public static class ModelBuilderExtensions
         });
         builder.Entity<Role>().HasData(appRoles);
     }
+
+    public static void SeedOrganizerEntity(this ModelBuilder builder)
+    {
+        builder.Entity<Entity>().HasData(new Entity
+        {
+            Id = Guid.NewGuid(),
+            Code = "VRO",
+            Name = "مكتب تحقيق الرؤية",
+            IsOrganizer = true,
+            CreatedAt = DateTimeOffset.UtcNow.AddHours(3),
+            CreatedBy = "System"
+        });
+    }
 }
