@@ -3,6 +3,7 @@ using Moasher.Application.Features.Contracts.Commands.CreateContract;
 using Moasher.Application.Features.Contracts.Commands.DeleteContract;
 using Moasher.Application.Features.Contracts.Commands.UpdateContract;
 using Moasher.Application.Features.Contracts.Queries.EditContract;
+using Moasher.Application.Features.Contracts.Queries.ExportContracts;
 using Moasher.Application.Features.Contracts.Queries.GetContracts;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -18,6 +19,16 @@ public class ContractsController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetContractsQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.Contracts.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportContractsQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpPost(ApiEndpoints.Contracts.Create)]

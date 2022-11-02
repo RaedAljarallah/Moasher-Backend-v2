@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using Moasher.WebApi.Filters;
 
 namespace Moasher.WebApi;
@@ -36,7 +37,8 @@ public static class Startup
                 .WithOrigins(config.GetSection("CorsConfigurations:Origins").Get<string[]>())
                 .AllowAnyMethod()
                 .AllowAnyHeader()
-                .AllowCredentials();
+                .AllowCredentials()
+                .WithExposedHeaders(HeaderNames.ContentDisposition);
         }));
     }
 }

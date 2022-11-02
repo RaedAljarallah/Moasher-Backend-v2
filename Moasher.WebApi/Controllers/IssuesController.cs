@@ -3,6 +3,7 @@ using Moasher.Application.Features.Issues.Commands.CreateIssue;
 using Moasher.Application.Features.Issues.Commands.DeleteIssue;
 using Moasher.Application.Features.Issues.Commands.UpdateIssue;
 using Moasher.Application.Features.Issues.Queries.EditIssue;
+using Moasher.Application.Features.Issues.Queries.ExportIssues;
 using Moasher.Application.Features.Issues.Queries.GetIssues;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -18,6 +19,16 @@ public class IssuesController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetIssuesQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.Issues.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportIssuesQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpPost(ApiEndpoints.Issues.Create)]

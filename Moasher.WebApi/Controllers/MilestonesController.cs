@@ -2,6 +2,7 @@
 using Moasher.Application.Features.Milestones.Commands.CreateMilestone;
 using Moasher.Application.Features.Milestones.Commands.DeleteMilestone;
 using Moasher.Application.Features.Milestones.Commands.UpdateMilestone;
+using Moasher.Application.Features.Milestones.Queries.ExportMilestones;
 using Moasher.Application.Features.Milestones.Queries.GetMilestones;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -17,6 +18,16 @@ public class MilestonesController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetMilestonesQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.Milestones.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportMilestonesQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpPost(ApiEndpoints.Milestones.Create)]

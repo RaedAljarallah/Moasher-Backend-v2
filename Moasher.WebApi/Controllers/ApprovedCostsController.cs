@@ -2,6 +2,7 @@
 using Moasher.Application.Features.ApprovedCosts.Commands.CreateApprovedCost;
 using Moasher.Application.Features.ApprovedCosts.Commands.DeleteApprovedCost;
 using Moasher.Application.Features.ApprovedCosts.Commands.UpdateApprovedCost;
+using Moasher.Application.Features.ApprovedCosts.Queries.ExportApprovedCosts;
 using Moasher.Application.Features.ApprovedCosts.Queries.GetApprovedCosts;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -17,6 +18,16 @@ public class ApprovedCostsController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetApprovedCostsQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.ApprovedCosts.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportApprovedCostsQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpPost(ApiEndpoints.ApprovedCosts.Create)]

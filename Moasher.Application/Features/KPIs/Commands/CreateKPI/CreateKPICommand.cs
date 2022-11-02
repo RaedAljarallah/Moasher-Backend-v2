@@ -6,6 +6,7 @@ using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Features.KPIs.Commands.Common;
 using Moasher.Domain.Entities.KPIEntities;
+using Moasher.Domain.Enums;
 using Moasher.Domain.Events.KPIs;
 using Moasher.Domain.Validators;
 
@@ -35,6 +36,15 @@ public class CreateKPICommandHandler : IRequestHandler<CreateKPICommand, KPIDto>
         {
             throw new ValidationException(nameof(request.StatusEnumId),
                 KPIDependenciesValidationMessages.WrongStatusEnumId);
+        }
+        // Set The default status
+        if (statusEnum is null)
+        {
+            var defaultStatusEnum = await _context.EnumTypes
+                .Where(e => e.Category.ToLower() == EnumTypeCategory.KPIStatus.ToString().ToLower())
+                .Where(e => e.IsDefault)
+                .FirstOrDefaultAsync(cancellationToken);
+            statusEnum = defaultStatusEnum;
         }
         #endregion
         

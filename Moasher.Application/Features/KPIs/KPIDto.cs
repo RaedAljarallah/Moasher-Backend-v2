@@ -15,6 +15,8 @@ public record KPIDto : DtoBase
     public Frequency Frequency { get; set; }
     public Polarity Polarity { get; set; }
     public ValidationStatus ValidationStatus { get; set; }
+    public DateTimeOffset StartDate { get; set; }
+    public DateTimeOffset EndDate { get; set; }
     public string? Formula { get; set; }
     public float? BaselineValue { get; set; }
     public short? BaselineYear { get; set; }

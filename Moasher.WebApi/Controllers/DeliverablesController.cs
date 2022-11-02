@@ -2,6 +2,7 @@
 using Moasher.Application.Features.Deliverables.Commands.CreateDeliverable;
 using Moasher.Application.Features.Deliverables.Commands.DeleteDeliverable;
 using Moasher.Application.Features.Deliverables.Commands.UpdateDeliverable;
+using Moasher.Application.Features.Deliverables.Queries.ExportDeliverables;
 using Moasher.Application.Features.Deliverables.Queries.GetDeliverables;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -17,6 +18,16 @@ public class DeliverablesController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetDeliverablesQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.Deliverables.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportDeliverablesQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpPost(ApiEndpoints.Deliverables.Create)]

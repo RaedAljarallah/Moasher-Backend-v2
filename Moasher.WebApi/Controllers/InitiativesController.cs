@@ -3,6 +3,7 @@ using Moasher.Application.Features.Initiatives.Commands.CreateInitiative;
 using Moasher.Application.Features.Initiatives.Commands.DeleteInitiative;
 using Moasher.Application.Features.Initiatives.Commands.UpdateInitiative;
 using Moasher.Application.Features.Initiatives.Queries.EditInitiative;
+using Moasher.Application.Features.Initiatives.Queries.ExportInitiatives;
 using Moasher.Application.Features.Initiatives.Queries.GetInitiativeDetails;
 using Moasher.Application.Features.Initiatives.Queries.GetInitiativeProgress;
 using Moasher.Application.Features.Initiatives.Queries.GetInitiatives;
@@ -23,6 +24,16 @@ public class InitiativesController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetInitiativesQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.Initiatives.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportInitiativesQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpGet(ApiEndpoints.Initiatives.Progress)]

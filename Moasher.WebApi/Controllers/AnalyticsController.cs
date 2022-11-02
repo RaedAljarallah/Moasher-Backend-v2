@@ -2,6 +2,7 @@
 using Moasher.Application.Features.Analytics.Commands.CreateAnalytic;
 using Moasher.Application.Features.Analytics.Commands.DeleteAnalytic;
 using Moasher.Application.Features.Analytics.Commands.UpdateAnalytic;
+using Moasher.Application.Features.Analytics.Queries.ExportAnalytics;
 using Moasher.Application.Features.Analytics.Queries.GetAnalytics;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -17,6 +18,16 @@ public class AnalyticsController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetAnalyticsQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.Analytics.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportAnalyticsQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpPost(ApiEndpoints.Analytics.Create)]

@@ -2,6 +2,7 @@
 using Moasher.Application.Features.Programs.Commands.CreateProgram;
 using Moasher.Application.Features.Programs.Commands.DeleteProgram;
 using Moasher.Application.Features.Programs.Commands.UpdateProgram;
+using Moasher.Application.Features.Programs.Queries.ExportPrograms;
 using Moasher.Application.Features.Programs.Queries.GetPrograms;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -17,6 +18,16 @@ public class ProgramsController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetProgramsQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.Programs.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportProgramsQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpPost(ApiEndpoints.Programs.Create)]

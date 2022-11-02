@@ -2,6 +2,7 @@
 using Moasher.Application.Features.Budgets.Commands.CreateBudget;
 using Moasher.Application.Features.Budgets.Commands.DeleteBudget;
 using Moasher.Application.Features.Budgets.Commands.UpdateBudget;
+using Moasher.Application.Features.Budgets.Queries.ExportBudgets;
 using Moasher.Application.Features.Budgets.Queries.GetBudgetsQuery;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -17,6 +18,16 @@ public class BudgetsController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetBudgetsQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.Budgets.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportBudgetsQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpPost(ApiEndpoints.Budgets.Create)]

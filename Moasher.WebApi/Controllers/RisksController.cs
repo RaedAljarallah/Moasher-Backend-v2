@@ -3,6 +3,7 @@ using Moasher.Application.Features.Risks.Commands.CreateRisk;
 using Moasher.Application.Features.Risks.Commands.DeleteRisk;
 using Moasher.Application.Features.Risks.Commands.UpdateRisk;
 using Moasher.Application.Features.Risks.Queries.EditRisk;
+using Moasher.Application.Features.Risks.Queries.ExportRisks;
 using Moasher.Application.Features.Risks.Queries.GetRisks;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -18,6 +19,16 @@ public class RisksController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetRisksQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.Risks.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportRisksQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpPost(ApiEndpoints.Risks.Create)]

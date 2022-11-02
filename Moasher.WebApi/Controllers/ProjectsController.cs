@@ -3,6 +3,7 @@ using Moasher.Application.Features.Projects.Commands.CreateProject;
 using Moasher.Application.Features.Projects.Commands.DeleteProject;
 using Moasher.Application.Features.Projects.Commands.UpdateProject;
 using Moasher.Application.Features.Projects.Queries.EditProject;
+using Moasher.Application.Features.Projects.Queries.ExportProjects;
 using Moasher.Application.Features.Projects.Queries.GetProjects;
 using Moasher.Application.Features.Projects.Queries.GetProjectsSummary;
 using Moasher.WebApi.Controllers.Common;
@@ -19,6 +20,16 @@ public class ProjectsController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetProjectsQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.Projects.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportProjectsQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpGet(ApiEndpoints.Projects.Summary)]

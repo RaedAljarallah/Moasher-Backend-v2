@@ -3,6 +3,7 @@ using Moasher.Application.Features.KPIs.Commands.CreateKPI;
 using Moasher.Application.Features.KPIs.Commands.DeleteKPI;
 using Moasher.Application.Features.KPIs.Commands.UpdateKPI;
 using Moasher.Application.Features.KPIs.Queries.EditKPI;
+using Moasher.Application.Features.KPIs.Queries.ExportKPIs;
 using Moasher.Application.Features.KPIs.Queries.GetKPIProgress;
 using Moasher.Application.Features.KPIs.Queries.GetKPIs;
 using Moasher.Application.Features.KPIs.Queries.GetKPIsStatusProgress;
@@ -20,6 +21,16 @@ public class KPIsController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetKPIsQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.KPIs.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportKPIsQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpGet(ApiEndpoints.KPIs.Progress)]

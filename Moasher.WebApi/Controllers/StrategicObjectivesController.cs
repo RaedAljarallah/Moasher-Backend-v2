@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using Moasher.Application.Features.StrategicObjectives.Commands.CreateStrategicObjective;
 using Moasher.Application.Features.StrategicObjectives.Commands.DeleteStrategicObjective;
 using Moasher.Application.Features.StrategicObjectives.Commands.UpdateStrategicObjective;
+using Moasher.Application.Features.StrategicObjectives.Queries.ExportStrategicObjectives;
 using Moasher.Application.Features.StrategicObjectives.Queries.GetStrategicObjectives;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -17,6 +19,16 @@ public class StrategicObjectivesController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetStrategicObjectivesQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.StrategicObjectives.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportStrategicObjectivesQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpPost(ApiEndpoints.StrategicObjectives.Create)]

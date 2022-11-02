@@ -14,6 +14,7 @@ public struct ApiEndpoints
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
         public const string Edit = $"{Base}/{{id}}/edit";
+        public const string Export = $"{Base}/export";
     }
     
     public struct KPIs
@@ -27,6 +28,7 @@ public struct ApiEndpoints
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
         public const string Edit = $"{Base}/{{id}}/edit";
+        public const string Export = $"{Base}/export";
     }
     
     public struct KPIValues
@@ -38,6 +40,7 @@ public struct ApiEndpoints
         public const string Create = Base;
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
+        public const string Export = $"{Base}/export";
     }
     
     public struct Portfolios
@@ -70,6 +73,7 @@ public struct ApiEndpoints
         public const string Create = Base;
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
+        public const string Export = $"{Base}/export";
     }
     
     public struct StrategicObjectives
@@ -80,6 +84,7 @@ public struct ApiEndpoints
         public const string Create = Base;
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
+        public const string Export = $"{Base}/export";
     }
     
     public struct EnumTypes
@@ -101,6 +106,7 @@ public struct ApiEndpoints
         public const string Create = Base;
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
+        public const string Export = $"{Base}/export";
     }
     
     public struct Deliverables
@@ -112,6 +118,7 @@ public struct ApiEndpoints
         public const string Create = Base;
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
+        public const string Export = $"{Base}/export";
     }
     
     public struct ApprovedCosts
@@ -122,6 +129,7 @@ public struct ApiEndpoints
         public const string Create = Base;
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
+        public const string Export = $"{Base}/export";
     }
     
     public struct Budgets
@@ -132,6 +140,7 @@ public struct ApiEndpoints
         public const string Create = Base;
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
+        public const string Export = $"{Base}/export";
     }
     
     public struct Issues
@@ -144,6 +153,7 @@ public struct ApiEndpoints
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
         public const string Edit = $"{Base}/{{id}}/edit";
+        public const string Export = $"{Base}/export";
     }
     
     public struct Risks
@@ -156,6 +166,7 @@ public struct ApiEndpoints
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
         public const string Edit = $"{Base}/{{id}}/edit";
+        public const string Export = $"{Base}/export";
     }
     
     public struct Projects
@@ -168,6 +179,7 @@ public struct ApiEndpoints
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
         public const string Edit = $"{Base}/{{id}}/edit";
+        public const string Export = $"{Base}/export";
     }
     
     public struct Contracts
@@ -180,6 +192,7 @@ public struct ApiEndpoints
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
         public const string Edit = $"{Base}/{{id}}/edit";
+        public const string Export = $"{Base}/export";
     }
 
     public struct Expenditures
@@ -187,6 +200,7 @@ public struct ApiEndpoints
         private const string Base = "expenditures";
         public const string All = Base;
         public const string Summary = $"{Base}/summary";
+        public const string Export = $"{Base}/export";
     }
     
     public struct InitiativeTeams
@@ -198,6 +212,7 @@ public struct ApiEndpoints
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
         public const string Edit = $"{Base}/{{id}}/edit";
+        public const string Export = $"{Base}/export";
     }
     
     public struct Analytics
@@ -208,6 +223,7 @@ public struct ApiEndpoints
         public const string Create = Base;
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
+        public const string Export = $"{Base}/export";
     }
     
     public struct Users

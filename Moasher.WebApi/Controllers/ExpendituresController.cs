@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Moasher.Application.Features.Expenditures.Queries.ExportExpenditures;
 using Moasher.Application.Features.Expenditures.Queries.GetExpenditures;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -16,5 +17,15 @@ public class ExpendituresController : ApiControllerBase
         var result = await Sender.Send(query, cancellationToken);
         
         return Ok(new {result});
+    }
+    
+    [HttpGet(ApiEndpoints.Expenditures.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportExpendituresQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
 }

@@ -2,6 +2,7 @@
 using Moasher.Application.Features.KPIValues.Commands.CreateKPIValue;
 using Moasher.Application.Features.KPIValues.Commands.DeleteKPIValue;
 using Moasher.Application.Features.KPIValues.Commands.UpdateKPIValue;
+using Moasher.Application.Features.KPIValues.Queries.ExportKPIsValues;
 using Moasher.Application.Features.KPIValues.Queries.GetKPIValues;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -17,6 +18,16 @@ public class KPIValuesController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetKPIValuesQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.KPIValues.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportKPIsValuesQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpPost(ApiEndpoints.KPIValues.Create)]

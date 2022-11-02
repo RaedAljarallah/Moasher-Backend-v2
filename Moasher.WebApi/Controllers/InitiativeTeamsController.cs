@@ -3,6 +3,7 @@ using Moasher.Application.Features.InitiativeTeams.Commands.CreateInitiativeTeam
 using Moasher.Application.Features.InitiativeTeams.Commands.DeleteInitiativeTeam;
 using Moasher.Application.Features.InitiativeTeams.Commands.UpdateInitiativeTeam;
 using Moasher.Application.Features.InitiativeTeams.Queries.EditInitiativeTeam;
+using Moasher.Application.Features.InitiativeTeams.Queries.ExportInitiativeTeams;
 using Moasher.Application.Features.InitiativeTeams.Queries.GetInitiativeTeams;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
@@ -18,6 +19,16 @@ public class InitiativeTeamsController : ApiControllerBase
     public async Task<IActionResult> All([FromQuery] GetInitiativeTeamsQuery query, CancellationToken cancellationToken)
     {
         return List(await Sender.Send(query, cancellationToken));
+    }
+    
+    [HttpGet(ApiEndpoints.InitiativeTeams.Export)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("text/csv")]
+    public async Task<IActionResult> Export([FromQuery] ExportInitiativeTeamsQuery query, CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(query, cancellationToken);
+        return File(result.Content, result.ContentType, result.FileName);
     }
     
     [HttpPost(ApiEndpoints.InitiativeTeams.Create)]
