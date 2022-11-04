@@ -26,8 +26,8 @@ public class ResetUserPasswordCommandHandler : IRequestHandler<ResetUserPassword
             throw new NotFoundException();
         }
 
-        await _identityService.ResetUserPassword(user, cancellationToken);
-        
+        var tempPassword = await _identityService.ResetUserPassword(user, cancellationToken);
+        // TODO: Send Email to user with the new password
         return Unit.Value;
     }
 }

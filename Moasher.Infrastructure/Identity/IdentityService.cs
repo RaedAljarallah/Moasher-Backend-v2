@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Entities;
@@ -34,11 +35,13 @@ public class IdentityService : IIdentityService
             cancellationToken);
     }
 
-    public async Task<User> CreateUserAsync(User user, string role, CancellationToken cancellationToken)
+    public async Task<User> CreateUserAsync(User user, string password, string role, CancellationToken cancellationToken)
     {
         user.Role = _roleManager.NormalizeKey(role);
-        var tempPassword = _userManager.GeneratePassword();
-        var createUserResult = await _userManager.CreateAsync(user, tempPassword);
+        user.EmailConfirmed = false;
+        user.MustChangePassword = true;
+        user.UserName = user.Email;
+        var createUserResult = await _userManager.CreateAsync(user, password);
         if (!createUserResult.Succeeded)
         {
             ThrowValidationError(createUserResult.Errors);
@@ -55,6 +58,7 @@ public class IdentityService : IIdentityService
 
     public async Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken = default)
     {
+        user.UserName = user.Email;
         var updateUserResult = await _userManager.UpdateAsync(user);
         if (!updateUserResult.Succeeded)
         {
@@ -97,12 +101,33 @@ public class IdentityService : IIdentityService
         return _roleManager.NormalizeKey(newRole);
     }
 
-    public async Task ResetUserPassword(User user, CancellationToken cancellationToken = default)
+    public async Task<string> ResetUserPassword(User user, CancellationToken cancellationToken = default)
     {
         var tempPassword = _userManager.PasswordHasher.HashPassword(user, _userManager.GeneratePassword());
         user.PasswordHash = tempPassword;
         user.MustChangePassword = true;
         await UpdateUserAsync(user, cancellationToken);
+        return tempPassword;
+    }
+
+    public Task<string> GeneratePassword(CancellationToken cancellationToken = default)
+    {
+        return Task.Factory.StartNew(() => _userManager.GeneratePassword(), cancellationToken);
+    }
+
+    public Task<string> GenerateActivationToken(User user, CancellationToken cancellationToken = default)
+    {
+        return _userManager.GenerateUserTokenAsync(user, IdentityTokenProviders.Activation, IdentityTokenPurposes.Activation);
+    }
+
+    public Task<string> GenerateResetPasswordToken(User user, CancellationToken cancellationToken = default)
+    {
+        return _userManager.GenerateUserTokenAsync(user, IdentityTokenProviders.PasswordReset, IdentityTokenPurposes.PasswordReset);
+    }
+
+    public Task<string> GeneratePasswordChangingToken(User user, CancellationToken cancellationToken = default)
+    {
+        return _userManager.GenerateUserTokenAsync(user, IdentityTokenProviders.PasswordChanging, IdentityTokenPurposes.PasswordChanging);
     }
 
     public IQueryable<Role> Roles => _roleManager.Roles;

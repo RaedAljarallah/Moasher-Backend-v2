@@ -16,4 +16,9 @@ public class User : IdentityUser<Guid>, IDbEntity
     public bool IsActive() => EmailConfirmed && !MustChangePassword;
 
     public bool IsSuspended() => (LockoutEnd.HasValue && LockoutEnd.Value >= DateTimeOffset.UtcNow) || Suspended;
+
+    public string GetFullName()
+    {
+        return $"{FirstName} {LastName}";
+    }
 }

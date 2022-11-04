@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Constants;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Application.Common.Types;
 using Moasher.Application.Features.Users.Commands.Common;
 using Moasher.Domain.Entities;
 
@@ -16,13 +17,17 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
     private readonly IMoasherDbContext _context;
     private readonly IMapper _mapper;
     private readonly IIdentityService _identityService;
+    private readonly IEmailTemplateService _emailTemplateService;
+    private readonly IMailService _mailService;
 
     public CreateUserCommandHandler(IMoasherDbContext context, IMapper mapper,
-        IIdentityService identityService)
+        IIdentityService identityService, IEmailTemplateService emailTemplateService, IMailService mailService)
     {
         _context = context;
         _mapper = mapper;
         _identityService = identityService;
+        _emailTemplateService = emailTemplateService;
+        _mailService = mailService;
     }
 
     public async Task<UserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -32,13 +37,13 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
         {
             throw new ValidationException(nameof(User.Email), UserValidationMessages.Duplicated);
         }
-        
+
         var isValidRole = await _identityService.RoleExistsAsync(request.Role, cancellationToken);
         if (!isValidRole)
         {
             throw new ValidationException(nameof(User.Role), UserValidationMessages.WrongRole);
         }
-        
+
         var entity = await _context.Entities
             .AsNoTracking()
             .FirstOrDefaultAsync(e => e.Id == request.EntityId, cancellationToken);
@@ -54,14 +59,24 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
         }
 
         var user = _mapper.Map<User>(request);
-        user.EmailConfirmed = true;
-        user.MustChangePassword = true;
-        user.UserName = request.Email;
-        
-        var createdUser = await _identityService.CreateUserAsync(user, request.Role, cancellationToken);
+
+        var tempPassword = await _identityService.GeneratePassword(cancellationToken);
+        var createdUser = await _identityService.CreateUserAsync(user, tempPassword, request.Role, cancellationToken);
         createdUser.Entity = entity;
-        
-        // TODO: Send Email To User
+
+        await SendConfirmationEmail(createdUser, tempPassword, cancellationToken);
+
         return _mapper.Map<UserDto>(createdUser);
     }
+
+    private async Task SendConfirmationEmail(User user, string tempPassword, CancellationToken cancellationToken)
+    {
+        var changePasswordToken = await _identityService.GeneratePasswordChangingToken(user, cancellationToken);
+        var emailModel = new CreateUserEmailModel(user.GetFullName(), tempPassword,
+            $"accounts/activation?token={changePasswordToken}&id={user.Id}");
+        var emailTemplate = _emailTemplateService.GenerateEmailTemplate(EmailTemplates.UserCreation, emailModel);
+        var mailRequest = new MailRequest(new List<string> {user.Email}, "تفعيل الحساب", emailTemplate);
+        _ = Task.Factory.StartNew(async () => await _mailService.SendAsync(mailRequest, cancellationToken),
+            cancellationToken);
+    } 
 }

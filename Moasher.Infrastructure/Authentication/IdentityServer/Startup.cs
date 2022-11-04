@@ -9,7 +9,7 @@ internal static class Startup
 {
     internal static void AddIdentityServer(this IServiceCollection services, IConfiguration config)
     {
-        var options = config.GetSection("IdentityServer").Get<IdentityServerOptions>();
+        var options = config.GetSection("IdentityServerSettings").Get<IdentityServerSettings>();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(builder =>
             {

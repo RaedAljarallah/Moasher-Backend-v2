@@ -22,4 +22,9 @@
       <ProjectReference Include="..\Moasher.Persistence\Moasher.Persistence.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="EmailTemplates\*.cshtml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 </Project>

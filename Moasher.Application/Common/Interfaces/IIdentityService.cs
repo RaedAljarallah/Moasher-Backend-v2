@@ -9,14 +9,18 @@ public interface IIdentityService
     public Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken = default);
     
     public Task<bool> UserExistsAsync(string userEmail, CancellationToken cancellationToken = default);
-    public Task<User> CreateUserAsync(User user, string role, CancellationToken cancellationToken = default);
+    public Task<User> CreateUserAsync(User user, string password, string role, CancellationToken cancellationToken = default);
     public Task<User?> GetUserById(Guid id, CancellationToken cancellationToken = default);
     public Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken = default);
     public Task DeleteUserAsync(User user, CancellationToken cancellationToken = default);
     public Task<bool> UpdateUserSuspensionStatusAsync(User user, bool status,
         CancellationToken cancellationToken = default);
     public Task<string> UpdateUserRoleAsync(User user, string newRole, CancellationToken cancellationToken = default);
-    public Task ResetUserPassword(User user, CancellationToken cancellationToken = default);
+    public Task<string> ResetUserPassword(User user, CancellationToken cancellationToken = default);
+    public Task<string> GeneratePassword(CancellationToken cancellationToken = default);
+    public Task<string> GenerateActivationToken(User user, CancellationToken cancellationToken = default);
+    public Task<string> GenerateResetPasswordToken(User user, CancellationToken cancellationToken = default);
+    public Task<string> GeneratePasswordChangingToken(User user, CancellationToken cancellationToken = default);
     public IQueryable<Role> Roles { get; }
     public IQueryable<User> Users { get; }
 }
