@@ -11,6 +11,7 @@ using Moasher.Authentication.Core.Common.Attributes;
 using Moasher.Authentication.Core.Identity.Entities;
 using Moasher.Authentication.Core.Identity.Extensions;
 using Moasher.Authentication.Pages.Account.Login;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Moasher.Authentication.Pages.Account.Activation;
 
@@ -33,10 +34,9 @@ public class Index : PageModel
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<IActionResult> OnGetAsync(string token, string id, string returnUrl)
+    public async Task<IActionResult> OnGetAsync(string id, string returnUrl)
     {
-        token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
-        id = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(id));
+        id = Base64UrlEncoder.Decode(id);
 
         var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
         if (await IsValidClient(context) is false)
@@ -50,12 +50,8 @@ public class Index : PageModel
             return NotFound();
         }
 
-        var isValidToken = await _userManager.VerifyActivationToken(user, token);
-        if (isValidToken is false)
-        {
-            return NotFound();
-        }
-
+        var token = Base64UrlEncoder.Encode(await _userManager.GenerateActivationToken(user));
+        
         Input.ReturnUrl = returnUrl;
         Input.Toke = token;
         Input.Id = id;
@@ -80,7 +76,8 @@ public class Index : PageModel
             var user = await _userManager.FindByIdAsync(Input.Id);
             if (user is not null)
             {
-                var isValidToken = await _userManager.VerifyActivationToken(user, Input.Toke);
+                var token = Base64UrlEncoder.Decode(Input.Toke);
+                var isValidToken = await _userManager.VerifyActivationToken(user, token);
                 if (isValidToken)
                 {
                     var isValidPassword =

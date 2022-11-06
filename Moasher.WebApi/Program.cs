@@ -8,6 +8,7 @@ builder.Services.AddWebApi(builder.Configuration, builder.Environment);
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPersistence(builder.Configuration);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

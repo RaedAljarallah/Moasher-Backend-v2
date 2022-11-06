@@ -19,8 +19,7 @@ public interface IIdentityService
     public Task<string> ResetUserPassword(User user, CancellationToken cancellationToken = default);
     public Task<string> GeneratePassword(CancellationToken cancellationToken = default);
     public Task<string> GenerateActivationToken(User user, CancellationToken cancellationToken = default);
-    public Task<string> GenerateResetPasswordToken(User user, CancellationToken cancellationToken = default);
-    public Task<string> GeneratePasswordChangingToken(User user, CancellationToken cancellationToken = default);
+    public Task<bool> VerifyActivationToken(User user, string token);
     public IQueryable<Role> Roles { get; }
     public IQueryable<User> Users { get; }
 }

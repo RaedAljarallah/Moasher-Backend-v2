@@ -6,6 +6,7 @@ using Moasher.Application.Features.Users.Commands.UpdateUser;
 using Moasher.Application.Features.Users.Commands.UpdateUserSuspensionStatus;
 using Moasher.Application.Features.Users.Queries.EditUser;
 using Moasher.Application.Features.Users.Queries.GetUsers;
+using Moasher.Application.Features.Users.Queries.VerifyActivationToken;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -21,7 +22,16 @@ public class UsersController : ApiControllerBase
     {
         return List(await Sender.Send(query, cancellationToken));
     }
-    
+
+    [HttpPost(ApiEndpoints.Users.VerifyActivationToken)]
+    [OkResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> VerifyActivationToken(VerifyActivationTokenQuery query,
+        CancellationToken cancellationToken)
+    {
+        return Ok(await Sender.Send(query, cancellationToken));
+    }
+
     [HttpPost(ApiEndpoints.Users.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]

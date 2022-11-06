@@ -236,6 +236,7 @@ public struct ApiEndpoints
         public const string Edit = $"{Base}/{{id}}/edit";
         public const string UpdateSuspensionStatus = $"{Base}/{{id}}/update-suspension-status";
         public const string ResetPassword = $"{Base}/{{id}}/reset-password";
+        public const string VerifyActivationToken = $"{Base}/verify-activation-token";
     }
     
     public struct Roles

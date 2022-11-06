@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IdentityServer4.ResponseHandling;
+using IdentityServer4.Validation;
+using Microsoft.EntityFrameworkCore;
 using Moasher.Authentication.Core.Identity.Entities;
+using Moasher.Authentication.Core.IdentityServer.Configurations;
 using Moasher.Authentication.Core.Persistence;
 
 namespace Moasher.Authentication.Core.IdentityServer;
@@ -22,7 +25,7 @@ internal static class Startup
             options.Discovery.ShowApiScopes = false;
             options.Discovery.ShowClaims = false;
         })
-        .AddAspNetIdentity<User>();
+            .AddAspNetIdentity<User>();
         
         if (env.IsDevelopment())
         {
@@ -35,6 +38,9 @@ internal static class Startup
             // Add Certification
             identityServerBuilder.AddIdentityServerInPersistence(config);
         }
+
+        services.AddScoped<IAuthorizeInteractionResponseGenerator, ActivationAuthorizeInteractionResponseGenerator>();
+        services.AddScoped<ICustomAuthorizeRequestValidator, ActivationAuthorizeRequestValidator>();
     }
     
     private static void AddIdentityServerInMemory(this IIdentityServerBuilder builder)

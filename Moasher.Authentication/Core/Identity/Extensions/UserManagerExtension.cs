@@ -17,6 +17,11 @@ public static class UserManagerExtension
             IdentityTokenPurposes.PasswordChanging, token);
     }
 
+    public static Task<string> GenerateActivationToken(this UserManager<User> userManager, User user)
+    {
+        return userManager.GenerateUserTokenAsync(user, IdentityTokenProviders.Activation,
+            IdentityTokenPurposes.Activation);
+    }
     public static Task<bool> VerifyActivationToken(this UserManager<User> userManager, User user, string token)
     {
         return userManager.VerifyUserTokenAsync(user, IdentityTokenProviders.Activation,

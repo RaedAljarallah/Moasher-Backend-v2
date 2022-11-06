@@ -120,14 +120,10 @@ public class IdentityService : IIdentityService
         return _userManager.GenerateUserTokenAsync(user, IdentityTokenProviders.Activation, IdentityTokenPurposes.Activation);
     }
 
-    public Task<string> GenerateResetPasswordToken(User user, CancellationToken cancellationToken = default)
+    public Task<bool> VerifyActivationToken(User user, string token)
     {
-        return _userManager.GenerateUserTokenAsync(user, IdentityTokenProviders.PasswordReset, IdentityTokenPurposes.PasswordReset);
-    }
-
-    public Task<string> GeneratePasswordChangingToken(User user, CancellationToken cancellationToken = default)
-    {
-        return _userManager.GenerateUserTokenAsync(user, IdentityTokenProviders.PasswordChanging, IdentityTokenPurposes.PasswordChanging);
+        return _userManager.VerifyUserTokenAsync(user, IdentityTokenProviders.Activation,
+            IdentityTokenPurposes.Activation, token);
     }
 
     public IQueryable<Role> Roles => _roleManager.Roles;

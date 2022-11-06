@@ -1,4 +1,5 @@
-﻿using Moasher.Authentication.Core.IdentityServer;
+﻿using Microsoft.AspNetCore.DataProtection;
+using Moasher.Authentication.Core.IdentityServer;
 using Moasher.Authentication.Core.Persistence;
 using Moasher.Authentication.Core.Identity;
 

@@ -74,7 +74,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
 
     private async Task SendConfirmationEmail(User user, string tempPassword, CancellationToken cancellationToken)
     {
-        var changePasswordToken = _urlCrypter.Encode(await _identityService.GeneratePasswordChangingToken(user, cancellationToken));
+        var changePasswordToken = _urlCrypter.Encode(await _identityService.GenerateActivationToken(user, cancellationToken));
         var userId = _urlCrypter.Encode(user.Id.ToString());
         var emailModel = new CreateUserEmailModel(user.GetFullName(), tempPassword,
             $"accounts/activation?token={changePasswordToken}&id={userId}");
