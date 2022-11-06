@@ -19,10 +19,9 @@ public class EmailTemplateService : IEmailTemplateService
         where T : EmailModelBase
     {
         var template = GetTemplate(templateName);
-
+        
         var razorEngine = new RazorEngine();
         var modifiedTemplate = razorEngine.Compile(template);
-        
         mailTemplateModel.BaseUrl = _settings.BaseUrl ?? string.Empty;
         mailTemplateModel.FirstLogoUrl = _settings.FirstLogoUrl ?? string.Empty;
         mailTemplateModel.SecondLogoUrl = _settings.SecondLogoUrl ?? string.Empty;

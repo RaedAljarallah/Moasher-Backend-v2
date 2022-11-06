@@ -5,6 +5,7 @@ using Moasher.Infrastructure.BackgroundJobs;
 using Moasher.Infrastructure.Files;
 using Moasher.Infrastructure.Identity;
 using Moasher.Infrastructure.Mailing;
+using Moasher.Infrastructure.UrlCrypter;
 
 namespace Moasher.Infrastructure;
 
@@ -17,5 +18,6 @@ public static class Startup
         services.AddBackgroundJobs(config);
         services.AddFiles(config);
         services.AddMailing(config);
+        services.AddUrlCrypter(config);
     }
 }

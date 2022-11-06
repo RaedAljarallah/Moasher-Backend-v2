@@ -19,15 +19,18 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
     private readonly IIdentityService _identityService;
     private readonly IEmailTemplateService _emailTemplateService;
     private readonly IMailService _mailService;
+    private readonly IUrlCrypter _urlCrypter;
 
     public CreateUserCommandHandler(IMoasherDbContext context, IMapper mapper,
-        IIdentityService identityService, IEmailTemplateService emailTemplateService, IMailService mailService)
+        IIdentityService identityService, IEmailTemplateService emailTemplateService, IMailService mailService,
+        IUrlCrypter urlCrypter)
     {
         _context = context;
         _mapper = mapper;
         _identityService = identityService;
         _emailTemplateService = emailTemplateService;
         _mailService = mailService;
+        _urlCrypter = urlCrypter;
     }
 
     public async Task<UserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -71,12 +74,13 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
 
     private async Task SendConfirmationEmail(User user, string tempPassword, CancellationToken cancellationToken)
     {
-        var changePasswordToken = await _identityService.GeneratePasswordChangingToken(user, cancellationToken);
+        var changePasswordToken = _urlCrypter.Encode(await _identityService.GeneratePasswordChangingToken(user, cancellationToken));
+        var userId = _urlCrypter.Encode(user.Id.ToString());
         var emailModel = new CreateUserEmailModel(user.GetFullName(), tempPassword,
-            $"accounts/activation?token={changePasswordToken}&id={user.Id}");
+            $"accounts/activation?token={changePasswordToken}&id={userId}");
         var emailTemplate = _emailTemplateService.GenerateEmailTemplate(EmailTemplates.UserCreation, emailModel);
         var mailRequest = new MailRequest(new List<string> {user.Email}, "تفعيل الحساب", emailTemplate);
         _ = Task.Factory.StartNew(async () => await _mailService.SendAsync(mailRequest, cancellationToken),
             cancellationToken);
-    } 
+    }
 }
