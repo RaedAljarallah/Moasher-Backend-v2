@@ -1,0 +1,22 @@
+﻿@page
+@model Index
+
+<h1 class="text-md font-bold text-center mb-3 text-red-500">خطأ</h1>
+<p class="mb-3">عذراً، حدث خطأ غير متوقع</p>
+@if (Model.View.Error != null)
+{
+	<strong>
+		<em>
+			: @Model.View.Error.Error
+		</em>
+	</strong>
+
+	if (Model.View.Error.ErrorDescription != null)
+	{
+		<div>@Model.View.Error.ErrorDescription</div>
+	}
+}
+@if (Model?.View?.Error?.RequestId != null)
+{
+	<div class="request-id">Request Id: @Model.View.Error.RequestId</div>
+}

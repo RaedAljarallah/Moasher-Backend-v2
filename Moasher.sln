@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moasher.Persistence", "Moas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moasher.WebApi", "Moasher.WebApi\Moasher.WebApi.csproj", "{D6020704-8312-404B-8E5D-707C054F673C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moasher.Authentication", "Moasher.Authentication\Moasher.Authentication.csproj", "{B4E0F198-4DCC-4152-B98D-22E6B4D5601C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{D6020704-8312-404B-8E5D-707C054F673C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6020704-8312-404B-8E5D-707C054F673C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6020704-8312-404B-8E5D-707C054F673C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4E0F198-4DCC-4152-B98D-22E6B4D5601C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4E0F198-4DCC-4152-B98D-22E6B4D5601C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4E0F198-4DCC-4152-B98D-22E6B4D5601C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4E0F198-4DCC-4152-B98D-22E6B4D5601C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
