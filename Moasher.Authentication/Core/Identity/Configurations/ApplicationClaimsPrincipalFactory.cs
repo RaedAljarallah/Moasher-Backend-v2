@@ -18,7 +18,8 @@ public class ApplicationClaimsPrincipalFactory : UserClaimsPrincipalFactory<User
         var identity = await base.GenerateClaimsAsync(user);
         var claims = new List<Claim>
         {
-            new Claim(JwtClaimTypes.Name, user.GetFullName())
+            new(JwtClaimTypes.Name, user.GetFullName()),
+            new(JwtClaimTypes.Role, user.Role)
         };
         
         identity.AddClaims(claims);

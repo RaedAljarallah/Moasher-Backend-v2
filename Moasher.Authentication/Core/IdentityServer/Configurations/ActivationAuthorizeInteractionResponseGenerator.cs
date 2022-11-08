@@ -14,7 +14,7 @@ public class ActivationAuthorizeInteractionResponseGenerator : AuthorizeInteract
     {
     }
 
-    public override async Task<InteractionResponse> ProcessInteractionAsync(ValidatedAuthorizeRequest request, ConsentResponse consent = null)
+    public override async Task<InteractionResponse> ProcessInteractionAsync(ValidatedAuthorizeRequest request, ConsentResponse? consent = null)
     {
         if (!request.PromptModes.Contains("activation"))
         {

@@ -1,6 +1,4 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using Moasher.Application.Common.Interfaces;
 namespace Moasher.Infrastructure.UrlCrypter;
 

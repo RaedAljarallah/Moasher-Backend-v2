@@ -250,4 +250,10 @@ public struct ApiEndpoints
         private const string Base = "search";
         public const string All = Base;
     }
+    
+    public struct InvalidTokens
+    {
+        private const string Base = "invalid-tokens";
+        public const string Create = Base;
+    }
 }

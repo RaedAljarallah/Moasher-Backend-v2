@@ -49,6 +49,7 @@ public class MoasherDbContext : IdentityDbContext<User, Role, Guid>, IMoasherDbC
     public DbSet<KPIValue> KPIValues => Set<KPIValue>();
     public DbSet<Analytic> Analytics => Set<Analytic>();
     public DbSet<Search> SearchRecords => Set<Search>();
+    public DbSet<InvalidToken> InvalidTokens => Set<InvalidToken>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

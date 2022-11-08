@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
 using Moasher.Authentication.Core.Common.Attributes;
 using Moasher.Authentication.Core.Identity.Entities;
 using Moasher.Authentication.Core.Identity.Extensions;

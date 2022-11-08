@@ -13,25 +13,27 @@ internal static class Startup
         IWebHostEnvironment env)
     {
         var identityServerBuilder = services.AddIdentityServer(options =>
-        {
-            options.Events.RaiseErrorEvents = true;
-            options.Events.RaiseInformationEvents = true;
-            options.Events.RaiseFailureEvents = true;
-            options.Events.RaiseSuccessEvents = true;
-            // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
-            //options.EmitStaticAudienceClaim = true;
+            {
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+                // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
+                //options.EmitStaticAudienceClaim = true;
 
-            options.Authentication.CookieSlidingExpiration = false;
-            options.Discovery.ShowApiScopes = false;
-            options.Discovery.ShowClaims = false;
-        })
+                options.Authentication.CookieSlidingExpiration = false;
+                options.Discovery.ShowApiScopes = false;
+                options.Discovery.ShowClaims = true;
+            })
             .AddAspNetIdentity<User>();
+
+        identityServerBuilder.AddIdentityServerInPersistence(config);
         
         if (env.IsDevelopment())
         {
             identityServerBuilder
-                .AddDeveloperSigningCredential()
-                .AddIdentityServerInMemory();
+                .AddDeveloperSigningCredential();
+            //.AddIdentityServerInMemory();
         }
         else
         {

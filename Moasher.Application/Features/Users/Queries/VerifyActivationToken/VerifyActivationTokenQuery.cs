@@ -6,7 +6,7 @@ namespace Moasher.Application.Features.Users.Queries.VerifyActivationToken;
 
 public class VerifyActivationTokenQuery : IRequest<bool>
 {
-    public string UserId { get; set; }
+    public string UserId { get; set; } = default!;
     public string Token { get; set; } = default!;
 }
 

@@ -1,6 +1,6 @@
-﻿namespace Moasher.Infrastructure.Authentication.IdentityServer;
+﻿namespace Moasher.Infrastructure.Authentication;
 
-public record IdentityServerSettings
+public record AuthenticationSettings
 {
     public string Authority { get; set; } = default!;
     public string Audience { get; set; } = default!;

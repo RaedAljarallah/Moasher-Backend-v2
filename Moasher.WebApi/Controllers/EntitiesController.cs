@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Moasher.Application.Features.Entities.Commands.CreateEntity;
 using Moasher.Application.Features.Entities.Commands.DeleteEntity;
 using Moasher.Application.Features.Entities.Commands.UpdateEntity;
@@ -9,6 +11,7 @@ using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
 namespace Moasher.WebApi.Controllers;
 
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class EntitiesController : ApiControllerBase
 {
     [HttpGet(ApiEndpoints.Entities.All)]

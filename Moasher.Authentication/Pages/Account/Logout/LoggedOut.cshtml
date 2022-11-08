@@ -1,0 +1,26 @@
+﻿@page
+@model LoggedOut
+
+<h1 class="text-md font-bold text- text-center text-green-600 mb-3">تم تسجيل الخروج بنجاح</h1>
+
+@if (Model.View.PostLogoutRedirectUri != null)
+{
+	<div class="w-full flex justify-center">
+		<a href="@Model.View.PostLogoutRedirectUri"
+        	   class="PostLogoutRedirectUri whitespace-nowrap cursor-pointer rounded-md active:shadow-inner border py-1.5 w-20 text-center text-sm text-white 
+        		bg-teal-500 border-teal-500 hover:border-teal-600 hover:bg-teal-600 active:bg-teal-700">العودة الى نظام مؤشر</a>
+	</div>
+}
+	
+@if (Model.View.SignOutIframeUrl != null)
+{
+	<iframe width="0" height="0" class="signout" src="@Model.View.SignOutIframeUrl"></iframe>
+}
+
+@section Scripts
+{
+	@if (Model.View.AutomaticRedirectAfterSignOut)
+	{
+		<script src="~/js/signout-redirect.js"></script>
+	}
+}
