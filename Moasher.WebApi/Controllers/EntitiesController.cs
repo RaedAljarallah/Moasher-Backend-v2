@@ -1,19 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.Entities.Commands.CreateEntity;
 using Moasher.Application.Features.Entities.Commands.DeleteEntity;
 using Moasher.Application.Features.Entities.Commands.UpdateEntity;
 using Moasher.Application.Features.Entities.Queries.ExportEntities;
 using Moasher.Application.Features.Entities.Queries.GetEntities;
+using Moasher.WebApi.Attributes;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
 namespace Moasher.WebApi.Controllers;
-
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class EntitiesController : ApiControllerBase
 {
+    [MustHavePermission(Actions.View, Resources.Entities)]
     [HttpGet(ApiEndpoints.Entities.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -23,6 +24,7 @@ public class EntitiesController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Export, Resources.Entities)]
     [HttpGet(ApiEndpoints.Entities.Export)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -33,6 +35,7 @@ public class EntitiesController : ApiControllerBase
         return File(result.Content, result.ContentType, result.FileName);
     }
 
+    [MustHavePermission(Actions.Create, Resources.Entities)]
     [HttpPost(ApiEndpoints.Entities.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -44,6 +47,7 @@ public class EntitiesController : ApiControllerBase
         return Created($"{ApiEndpoints.Entities.All}/{result.Id}", result);
     }
     
+    [MustHavePermission(Actions.Update, Resources.Entities)]
     [HttpPut(ApiEndpoints.Entities.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -60,6 +64,7 @@ public class EntitiesController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Delete, Resources.Entities)]
     [HttpDelete(ApiEndpoints.Entities.Delete)]
     [NotFoundResponseType]
     [ConflictResponseType]

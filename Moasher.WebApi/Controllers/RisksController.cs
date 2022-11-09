@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.Risks.Commands.CreateRisk;
 using Moasher.Application.Features.Risks.Commands.DeleteRisk;
 using Moasher.Application.Features.Risks.Commands.UpdateRisk;
 using Moasher.Application.Features.Risks.Queries.EditRisk;
 using Moasher.Application.Features.Risks.Queries.ExportRisks;
 using Moasher.Application.Features.Risks.Queries.GetRisks;
+using Moasher.WebApi.Attributes;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -12,6 +14,7 @@ namespace Moasher.WebApi.Controllers;
 
 public class RisksController : ApiControllerBase
 {
+    [MustHavePermission(Actions.View, Resources.Risks)]
     [HttpGet(ApiEndpoints.Risks.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -21,6 +24,7 @@ public class RisksController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Export, Resources.Risks)]
     [HttpGet(ApiEndpoints.Risks.Export)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -31,6 +35,7 @@ public class RisksController : ApiControllerBase
         return File(result.Content, result.ContentType, result.FileName);
     }
     
+    [MustHavePermission(Actions.Create, Resources.Risks)]
     [HttpPost(ApiEndpoints.Risks.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -42,6 +47,7 @@ public class RisksController : ApiControllerBase
         return Created($"{ApiEndpoints.Risks.All}/{result.Id}", result);
     }
     
+    [MustHavePermission(Actions.Update, Resources.Risks)]
     [HttpGet(ApiEndpoints.Risks.Edit)]
     [UnauthorizedResponseType]
     [NotFoundResponseType]
@@ -57,6 +63,7 @@ public class RisksController : ApiControllerBase
         return Ok(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Update, Resources.Risks)]
     [HttpPut(ApiEndpoints.Risks.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -73,6 +80,7 @@ public class RisksController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Delete, Resources.Risks)]
     [HttpDelete(ApiEndpoints.Risks.Delete)]
     [NotFoundResponseType]
     [ConflictResponseType]

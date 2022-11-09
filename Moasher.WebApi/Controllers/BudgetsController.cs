@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.Budgets.Commands.CreateBudget;
 using Moasher.Application.Features.Budgets.Commands.DeleteBudget;
 using Moasher.Application.Features.Budgets.Commands.UpdateBudget;
 using Moasher.Application.Features.Budgets.Queries.ExportBudgets;
 using Moasher.Application.Features.Budgets.Queries.GetBudgetsQuery;
+using Moasher.WebApi.Attributes;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -11,6 +13,7 @@ namespace Moasher.WebApi.Controllers;
 
 public class BudgetsController : ApiControllerBase
 {
+    [MustHavePermission(Actions.View, Resources.Budgets)]
     [HttpGet(ApiEndpoints.Budgets.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -20,6 +23,7 @@ public class BudgetsController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Export, Resources.Budgets)]
     [HttpGet(ApiEndpoints.Budgets.Export)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -30,6 +34,7 @@ public class BudgetsController : ApiControllerBase
         return File(result.Content, result.ContentType, result.FileName);
     }
     
+    [MustHavePermission(Actions.Create, Resources.Budgets)]
     [HttpPost(ApiEndpoints.Budgets.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -41,6 +46,7 @@ public class BudgetsController : ApiControllerBase
         return Created($"{ApiEndpoints.Budgets.All}/{result.Id}", result);
     }
     
+    [MustHavePermission(Actions.Update, Resources.Budgets)]
     [HttpPut(ApiEndpoints.Budgets.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -57,6 +63,7 @@ public class BudgetsController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Delete, Resources.Budgets)]
     [HttpDelete(ApiEndpoints.Budgets.Delete)]
     [NotFoundResponseType]
     [ConflictResponseType]

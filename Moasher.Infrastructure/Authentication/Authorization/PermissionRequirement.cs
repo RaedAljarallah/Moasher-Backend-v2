@@ -7,11 +7,6 @@ public class PermissionRequirement : IAuthorizationRequirement
 {
     public Permission Permission { get; }
 
-    public PermissionRequirement(Permission permission)
-    {
-        Permission = permission;
-    }
-
     public PermissionRequirement(string policyName)
     {
         Permission = Permission.InitializeFromPolicy(policyName);

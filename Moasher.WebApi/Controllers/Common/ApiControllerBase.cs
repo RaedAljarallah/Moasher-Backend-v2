@@ -8,7 +8,7 @@ namespace Moasher.WebApi.Controllers.Common;
 
 [ApiController]
 [Route("api/v{version:apiVersion}")]
-// [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ApiScope")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ApiScope")]
 public abstract class ApiControllerBase : ControllerBase
 {
     private ISender? _sender;

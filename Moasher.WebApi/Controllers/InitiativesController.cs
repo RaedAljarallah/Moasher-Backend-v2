@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.Initiatives.Commands.CreateInitiative;
 using Moasher.Application.Features.Initiatives.Commands.DeleteInitiative;
 using Moasher.Application.Features.Initiatives.Commands.UpdateInitiative;
@@ -10,6 +11,7 @@ using Moasher.Application.Features.Initiatives.Queries.GetInitiatives;
 using Moasher.Application.Features.Initiatives.Queries.GetInitiativesProgress;
 using Moasher.Application.Features.Initiatives.Queries.GetInitiativesStatusProgress;
 using Moasher.Application.Features.Initiatives.Queries.GetInitiativesSummary;
+using Moasher.WebApi.Attributes;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -17,6 +19,7 @@ namespace Moasher.WebApi.Controllers;
 
 public class InitiativesController : ApiControllerBase
 {
+    [MustHavePermission(Actions.View, Resources.Initiatives)]
     [HttpGet(ApiEndpoints.Initiatives.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -26,6 +29,7 @@ public class InitiativesController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Export, Resources.Initiatives)]
     [HttpGet(ApiEndpoints.Initiatives.Export)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -36,6 +40,7 @@ public class InitiativesController : ApiControllerBase
         return File(result.Content, result.ContentType, result.FileName);
     }
     
+    [MustHavePermission(Actions.View, Resources.Initiatives)]
     [HttpGet(ApiEndpoints.Initiatives.Progress)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -47,6 +52,7 @@ public class InitiativesController : ApiControllerBase
         return Ok(new {result});
     }
     
+    [MustHavePermission(Actions.View, Resources.Initiatives)]
     [HttpGet(ApiEndpoints.Initiatives.StatusProgress)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -58,6 +64,7 @@ public class InitiativesController : ApiControllerBase
         return Ok(new {result});
     }
     
+    [MustHavePermission(Actions.View, Resources.Initiatives)]
     [HttpGet(ApiEndpoints.Initiatives.Summary)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -67,6 +74,7 @@ public class InitiativesController : ApiControllerBase
         return Ok(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.View, Resources.Initiatives)]
     [HttpGet(ApiEndpoints.Initiatives.Details)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -82,6 +90,7 @@ public class InitiativesController : ApiControllerBase
         return Ok(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Create, Resources.Initiatives)]
     [HttpPost(ApiEndpoints.Initiatives.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -93,6 +102,7 @@ public class InitiativesController : ApiControllerBase
         return Created($"{ApiEndpoints.Initiatives.All}/{result.Id}", result);
     }
 
+    [MustHavePermission(Actions.Update, Resources.Initiatives)]
     [HttpGet(ApiEndpoints.Initiatives.Edit)]
     [UnauthorizedResponseType]
     [NotFoundResponseType]
@@ -108,6 +118,7 @@ public class InitiativesController : ApiControllerBase
         return Ok(await Sender.Send(query, cancellationToken));
     }
 
+    [MustHavePermission(Actions.Update, Resources.Initiatives)]
     [HttpPut(ApiEndpoints.Initiatives.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -124,6 +135,7 @@ public class InitiativesController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Delete, Resources.Initiatives)]
     [HttpDelete(ApiEndpoints.Initiatives.Delete)]
     [NotFoundResponseType]
     [ConflictResponseType]

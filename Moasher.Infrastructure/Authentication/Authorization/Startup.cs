@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Moasher.Application.Common.Extensions;
 
 namespace Moasher.Infrastructure.Authentication.Authorization;
 
@@ -14,6 +15,11 @@ internal static class Startup
             builder.AddPolicy("ApiScope", policy =>
             {
                 policy.RequireClaim("scope", options.Scope);
+            });
+            
+            builder.AddPolicy("SuperAdminAccess", policy =>
+            {
+                policy.RequireAssertion(ctx => ctx.User.IsSuperAdmin());
             });
         });
         

@@ -39,9 +39,15 @@ public static class AppRoles
 
     public static string GetSuperAdminRole() => SuperAdmin;
 
-    public static bool IsSuperAdminRole(string role) =>
-        string.Equals(SuperAdmin, role, StringComparison.CurrentCultureIgnoreCase);
-
+    public static bool IsSuperAdminRole(string role) => CompareRole(SuperAdmin, role);
+    public static bool IsAdminRole(string role) => CompareRole(Admin, role);
+    public static bool IsDataAssurance(string role) => CompareRole(DataAssurance, role);
+    public static bool IsFinancialOperator(string role) => CompareRole(FinancialOperator, role);
+    public static bool IsExecutionOperator(string role) => CompareRole(ExecutionOperator, role);
+    public static bool IsKPIsOperator(string role) => CompareRole(KPIsOperator, role);
+    public static bool IsEntityUser(string role) => CompareRole(EntityUser, role);
+    public static bool IsFullAccessViewer(string role) => CompareRole(FullAccessViewer, role);
+    
     public static string GetLocalizedName(string roleName)
     {
         if (string.Equals(SuperAdmin, roleName, StringComparison.CurrentCultureIgnoreCase))
@@ -86,4 +92,7 @@ public static class AppRoles
 
         return string.Empty;
     }
+    
+    private static bool CompareRole(string first, string second)
+        => string.Equals(first, second, StringComparison.CurrentCultureIgnoreCase);
 }

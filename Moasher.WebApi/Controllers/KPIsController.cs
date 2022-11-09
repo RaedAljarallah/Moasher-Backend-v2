@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.KPIs.Commands.CreateKPI;
 using Moasher.Application.Features.KPIs.Commands.DeleteKPI;
 using Moasher.Application.Features.KPIs.Commands.UpdateKPI;
@@ -7,6 +8,7 @@ using Moasher.Application.Features.KPIs.Queries.ExportKPIs;
 using Moasher.Application.Features.KPIs.Queries.GetKPIProgress;
 using Moasher.Application.Features.KPIs.Queries.GetKPIs;
 using Moasher.Application.Features.KPIs.Queries.GetKPIsStatusProgress;
+using Moasher.WebApi.Attributes;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -14,6 +16,7 @@ namespace Moasher.WebApi.Controllers;
 
 public class KPIsController : ApiControllerBase
 {
+    [MustHavePermission(Actions.View, Resources.KPIs)]
     [HttpGet(ApiEndpoints.KPIs.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -23,6 +26,7 @@ public class KPIsController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Export, Resources.KPIs)]
     [HttpGet(ApiEndpoints.KPIs.Export)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -33,6 +37,7 @@ public class KPIsController : ApiControllerBase
         return File(result.Content, result.ContentType, result.FileName);
     }
     
+    [MustHavePermission(Actions.View, Resources.KPIs)]
     [HttpGet(ApiEndpoints.KPIs.Progress)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -44,6 +49,7 @@ public class KPIsController : ApiControllerBase
         return Ok(new {result});
     }
     
+    [MustHavePermission(Actions.View, Resources.KPIs)]
     [HttpGet(ApiEndpoints.KPIs.StatusProgress)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -55,6 +61,7 @@ public class KPIsController : ApiControllerBase
         return Ok(new {result});
     }
     
+    [MustHavePermission(Actions.Create, Resources.KPIs)]
     [HttpPost(ApiEndpoints.KPIs.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -66,6 +73,7 @@ public class KPIsController : ApiControllerBase
         return Created($"{ApiEndpoints.KPIs.All}/{result.Id}", result);
     }
 
+    [MustHavePermission(Actions.Update, Resources.KPIs)]
     [HttpGet(ApiEndpoints.KPIs.Edit)]
     [UnauthorizedResponseType]
     [NotFoundResponseType]
@@ -81,6 +89,7 @@ public class KPIsController : ApiControllerBase
         return Ok(await Sender.Send(query, cancellationToken));
     }
 
+    [MustHavePermission(Actions.Update, Resources.KPIs)]
     [HttpPut(ApiEndpoints.KPIs.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -97,6 +106,7 @@ public class KPIsController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Delete, Resources.KPIs)]
     [HttpDelete(ApiEndpoints.KPIs.Delete)]
     [NotFoundResponseType]
     [ConflictResponseType]

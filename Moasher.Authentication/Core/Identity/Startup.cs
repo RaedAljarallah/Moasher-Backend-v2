@@ -33,6 +33,7 @@ internal static class Startup
             options.Password.RequiredUniqueChars = 3;
             options.Password.RequireUppercase = true;
             options.Password.RequireLowercase = true;
+            options.Tokens.PasswordResetTokenProvider = IdentityTokenProviders.PasswordReset;
         })
         .AddDefaultTokenProviders()
         .AddTokenProvider<ActivationTokenProvider>(IdentityTokenProviders.Activation)

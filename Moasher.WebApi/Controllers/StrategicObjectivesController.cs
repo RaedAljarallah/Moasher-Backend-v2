@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.StrategicObjectives.Commands.CreateStrategicObjective;
 using Moasher.Application.Features.StrategicObjectives.Commands.DeleteStrategicObjective;
 using Moasher.Application.Features.StrategicObjectives.Commands.UpdateStrategicObjective;
 using Moasher.Application.Features.StrategicObjectives.Queries.ExportStrategicObjectives;
 using Moasher.Application.Features.StrategicObjectives.Queries.GetStrategicObjectives;
+using Moasher.WebApi.Attributes;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -12,6 +14,7 @@ namespace Moasher.WebApi.Controllers;
 
 public class StrategicObjectivesController : ApiControllerBase
 {
+    [MustHavePermission(Actions.View, Resources.StrategicObjectives)]
     [HttpGet(ApiEndpoints.StrategicObjectives.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -21,6 +24,7 @@ public class StrategicObjectivesController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Export, Resources.StrategicObjectives)]
     [HttpGet(ApiEndpoints.StrategicObjectives.Export)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -31,6 +35,7 @@ public class StrategicObjectivesController : ApiControllerBase
         return File(result.Content, result.ContentType, result.FileName);
     }
     
+    [MustHavePermission(Actions.Create, Resources.StrategicObjectives)]
     [HttpPost(ApiEndpoints.StrategicObjectives.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -42,6 +47,7 @@ public class StrategicObjectivesController : ApiControllerBase
         return Created($"{ApiEndpoints.StrategicObjectives.All}/{result.Id}", result);
     }
     
+    [MustHavePermission(Actions.Update, Resources.StrategicObjectives)]
     [HttpPut(ApiEndpoints.StrategicObjectives.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -58,6 +64,7 @@ public class StrategicObjectivesController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Delete, Resources.StrategicObjectives)]
     [HttpDelete(ApiEndpoints.StrategicObjectives.Delete)]
     [NotFoundResponseType]
     [ConflictResponseType]

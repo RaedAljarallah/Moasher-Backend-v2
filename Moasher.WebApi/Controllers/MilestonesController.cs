@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.Milestones.Commands.CreateMilestone;
 using Moasher.Application.Features.Milestones.Commands.DeleteMilestone;
 using Moasher.Application.Features.Milestones.Commands.UpdateMilestone;
 using Moasher.Application.Features.Milestones.Queries.ExportMilestones;
 using Moasher.Application.Features.Milestones.Queries.GetMilestones;
+using Moasher.WebApi.Attributes;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -11,6 +13,7 @@ namespace Moasher.WebApi.Controllers;
 
 public class MilestonesController : ApiControllerBase
 {
+    [MustHavePermission(Actions.View, Resources.Milestones)]
     [HttpGet(ApiEndpoints.Milestones.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -20,6 +23,7 @@ public class MilestonesController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Export, Resources.Milestones)]
     [HttpGet(ApiEndpoints.Milestones.Export)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -30,6 +34,7 @@ public class MilestonesController : ApiControllerBase
         return File(result.Content, result.ContentType, result.FileName);
     }
     
+    [MustHavePermission(Actions.Create, Resources.Milestones)]
     [HttpPost(ApiEndpoints.Milestones.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -41,6 +46,7 @@ public class MilestonesController : ApiControllerBase
         return Created($"{ApiEndpoints.Milestones.All}/{result.Id}", result);
     }
     
+    [MustHavePermission(Actions.Update, Resources.Milestones)]
     [HttpPut(ApiEndpoints.Milestones.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -57,6 +63,7 @@ public class MilestonesController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Delete, Resources.Milestones)]
     [HttpDelete(ApiEndpoints.Milestones.Delete)]
     [NotFoundResponseType]
     [ConflictResponseType]

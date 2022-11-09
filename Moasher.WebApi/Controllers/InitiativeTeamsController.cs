@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.InitiativeTeams.Commands.CreateInitiativeTeam;
 using Moasher.Application.Features.InitiativeTeams.Commands.DeleteInitiativeTeam;
 using Moasher.Application.Features.InitiativeTeams.Commands.UpdateInitiativeTeam;
 using Moasher.Application.Features.InitiativeTeams.Queries.EditInitiativeTeam;
 using Moasher.Application.Features.InitiativeTeams.Queries.ExportInitiativeTeams;
 using Moasher.Application.Features.InitiativeTeams.Queries.GetInitiativeTeams;
+using Moasher.WebApi.Attributes;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -12,6 +14,7 @@ namespace Moasher.WebApi.Controllers;
 
 public class InitiativeTeamsController : ApiControllerBase
 {
+    [MustHavePermission(Actions.View, Resources.InitiativeTeams)]
     [HttpGet(ApiEndpoints.InitiativeTeams.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -21,6 +24,7 @@ public class InitiativeTeamsController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Export, Resources.InitiativeTeams)]
     [HttpGet(ApiEndpoints.InitiativeTeams.Export)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -31,6 +35,7 @@ public class InitiativeTeamsController : ApiControllerBase
         return File(result.Content, result.ContentType, result.FileName);
     }
     
+    [MustHavePermission(Actions.Create, Resources.InitiativeTeams)]
     [HttpPost(ApiEndpoints.InitiativeTeams.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -42,6 +47,7 @@ public class InitiativeTeamsController : ApiControllerBase
         return Created($"{ApiEndpoints.InitiativeTeams.All}/{result.Id}", result);
     }
     
+    [MustHavePermission(Actions.Update, Resources.InitiativeTeams)]
     [HttpGet(ApiEndpoints.InitiativeTeams.Edit)]
     [UnauthorizedResponseType]
     [NotFoundResponseType]
@@ -57,6 +63,7 @@ public class InitiativeTeamsController : ApiControllerBase
         return Ok(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Update, Resources.InitiativeTeams)]
     [HttpPut(ApiEndpoints.InitiativeTeams.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -73,6 +80,7 @@ public class InitiativeTeamsController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Delete, Resources.InitiativeTeams)]
     [HttpDelete(ApiEndpoints.InitiativeTeams.Delete)]
     [NotFoundResponseType]
     [ConflictResponseType]

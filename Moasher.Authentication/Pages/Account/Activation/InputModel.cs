@@ -16,6 +16,6 @@ public class InputModel
     public string ConfirmPassword { get; set; } = default!;
     
     public string ReturnUrl { get; set; } = default!;
-    public string Toke { get; set; } = default!;
+    public string Token { get; set; } = default!;
     public string Id { get; set; } = default!;
 }

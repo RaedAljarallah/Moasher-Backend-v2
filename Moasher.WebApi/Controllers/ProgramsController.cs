@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.Programs.Commands.CreateProgram;
 using Moasher.Application.Features.Programs.Commands.DeleteProgram;
 using Moasher.Application.Features.Programs.Commands.UpdateProgram;
 using Moasher.Application.Features.Programs.Queries.ExportPrograms;
 using Moasher.Application.Features.Programs.Queries.GetPrograms;
+using Moasher.WebApi.Attributes;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -11,6 +13,7 @@ namespace Moasher.WebApi.Controllers;
 
 public class ProgramsController : ApiControllerBase
 {
+    [MustHavePermission(Actions.View, Resources.Programs)]
     [HttpGet(ApiEndpoints.Programs.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -20,6 +23,7 @@ public class ProgramsController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Export, Resources.Programs)]
     [HttpGet(ApiEndpoints.Programs.Export)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -30,6 +34,7 @@ public class ProgramsController : ApiControllerBase
         return File(result.Content, result.ContentType, result.FileName);
     }
     
+    [MustHavePermission(Actions.Create, Resources.Programs)]
     [HttpPost(ApiEndpoints.Programs.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -41,6 +46,7 @@ public class ProgramsController : ApiControllerBase
         return Created($"{ApiEndpoints.Programs.All}/{result.Id}", result);
     }
     
+    [MustHavePermission(Actions.Update, Resources.Programs)]
     [HttpPut(ApiEndpoints.Programs.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -57,6 +63,7 @@ public class ProgramsController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Delete, Resources.Programs)]
     [HttpDelete(ApiEndpoints.Programs.Delete)]
     [NotFoundResponseType]
     [ConflictResponseType]

@@ -52,7 +52,7 @@ public class Index : PageModel
         var token = Base64UrlEncoder.Encode(await _userManager.GenerateActivationToken(user));
         
         Input.ReturnUrl = returnUrl;
-        Input.Toke = token;
+        Input.Token = token;
         Input.Id = id;
         return Page();
     }
@@ -75,7 +75,7 @@ public class Index : PageModel
             var user = await _userManager.FindByIdAsync(Input.Id);
             if (user is not null)
             {
-                var token = Base64UrlEncoder.Decode(Input.Toke);
+                var token = Base64UrlEncoder.Decode(Input.Token);
                 var isValidToken = await _userManager.VerifyActivationToken(user, token);
                 if (isValidToken)
                 {

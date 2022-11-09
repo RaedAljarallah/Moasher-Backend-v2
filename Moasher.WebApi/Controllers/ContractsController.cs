@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.Contracts.Commands.CreateContract;
 using Moasher.Application.Features.Contracts.Commands.DeleteContract;
 using Moasher.Application.Features.Contracts.Commands.UpdateContract;
 using Moasher.Application.Features.Contracts.Queries.EditContract;
 using Moasher.Application.Features.Contracts.Queries.ExportContracts;
 using Moasher.Application.Features.Contracts.Queries.GetContracts;
+using Moasher.WebApi.Attributes;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -12,6 +14,7 @@ namespace Moasher.WebApi.Controllers;
 
 public class ContractsController : ApiControllerBase
 {
+    [MustHavePermission(Actions.View, Resources.Contracts)]
     [HttpGet(ApiEndpoints.Contracts.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -21,6 +24,7 @@ public class ContractsController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Export, Resources.Contracts)]
     [HttpGet(ApiEndpoints.Contracts.Export)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -31,6 +35,7 @@ public class ContractsController : ApiControllerBase
         return File(result.Content, result.ContentType, result.FileName);
     }
     
+    [MustHavePermission(Actions.Create, Resources.Contracts)]
     [HttpPost(ApiEndpoints.Contracts.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -42,6 +47,7 @@ public class ContractsController : ApiControllerBase
         return Created($"{ApiEndpoints.Contracts.All}/{result.Id}", result);
     }
     
+    [MustHavePermission(Actions.Update, Resources.Contracts)]
     [HttpGet(ApiEndpoints.Contracts.Edit)]
     [UnauthorizedResponseType]
     [NotFoundResponseType]
@@ -57,6 +63,7 @@ public class ContractsController : ApiControllerBase
         return Ok(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Update, Resources.Contracts)]
     [HttpPut(ApiEndpoints.Contracts.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -73,6 +80,7 @@ public class ContractsController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Delete, Resources.Contracts)]
     [HttpDelete(ApiEndpoints.Contracts.Delete)]
     [NotFoundResponseType]
     [ConflictResponseType]

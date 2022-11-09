@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.Projects.Commands.CreateProject;
 using Moasher.Application.Features.Projects.Commands.DeleteProject;
 using Moasher.Application.Features.Projects.Commands.UpdateProject;
@@ -6,6 +7,7 @@ using Moasher.Application.Features.Projects.Queries.EditProject;
 using Moasher.Application.Features.Projects.Queries.ExportProjects;
 using Moasher.Application.Features.Projects.Queries.GetProjects;
 using Moasher.Application.Features.Projects.Queries.GetProjectsSummary;
+using Moasher.WebApi.Attributes;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -13,6 +15,7 @@ namespace Moasher.WebApi.Controllers;
 
 public class ProjectsController : ApiControllerBase
 {
+    [MustHavePermission(Actions.View, Resources.Projects)]
     [HttpGet(ApiEndpoints.Projects.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -22,6 +25,7 @@ public class ProjectsController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Export, Resources.Projects)]
     [HttpGet(ApiEndpoints.Projects.Export)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -32,6 +36,7 @@ public class ProjectsController : ApiControllerBase
         return File(result.Content, result.ContentType, result.FileName);
     }
     
+    [MustHavePermission(Actions.View, Resources.Projects)]
     [HttpGet(ApiEndpoints.Projects.Summary)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -43,6 +48,7 @@ public class ProjectsController : ApiControllerBase
         return Ok(new {result});
     }
     
+    [MustHavePermission(Actions.Create, Resources.Projects)]
     [HttpPost(ApiEndpoints.Projects.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -54,6 +60,7 @@ public class ProjectsController : ApiControllerBase
         return Created($"{ApiEndpoints.Projects.All}/{result.Id}", result);
     }
     
+    [MustHavePermission(Actions.Update, Resources.Projects)]
     [HttpGet(ApiEndpoints.Projects.Edit)]
     [UnauthorizedResponseType]
     [NotFoundResponseType]
@@ -69,6 +76,7 @@ public class ProjectsController : ApiControllerBase
         return Ok(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Update, Resources.Projects)]
     [HttpPut(ApiEndpoints.Projects.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -85,6 +93,7 @@ public class ProjectsController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Delete, Resources.Projects)]
     [HttpDelete(ApiEndpoints.Projects.Delete)]
     [NotFoundResponseType]
     [ConflictResponseType]

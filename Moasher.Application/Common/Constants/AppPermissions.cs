@@ -5,23 +5,133 @@ namespace Moasher.Application.Common.Constants;
 
 public static class AppPermissions
 {
-    public static IReadOnlyList<Permission> All = new ReadOnlyCollection<Permission>(GenerateFromResourcesAndActions());
-    public static IReadOnlyList<Permission> Admin = new ReadOnlyCollection<Permission>(GenerateFromResourcesAndActions(new []
-    {
-        Resources.Users
-    }));
+    public static IReadOnlyList<Permission> SuperAdmin = new ReadOnlyCollection<Permission>(GetSuperAdminPermissions());
+    public static IReadOnlyList<Permission> Admin = new ReadOnlyCollection<Permission>(GetAdminPermissions());
 
-    private static Permission[] GenerateFromResourcesAndActions(string[]? excludedResources = null)
+    public static IReadOnlyList<Permission> DataAssurance =
+        new ReadOnlyCollection<Permission>(GetDataAssurancePermissions());
+
+    public static IReadOnlyList<Permission> FinancialOperator =
+        new ReadOnlyCollection<Permission>(GetFinancialOperatorPermissions());
+
+    public static IReadOnlyList<Permission> ExecutionOperator =
+        new ReadOnlyCollection<Permission>(GetExecutionOperatorPermissions());
+
+    public static IReadOnlyList<Permission> KPIsOperator =
+        new ReadOnlyCollection<Permission>(GetKPIsOperatorPermissions());
+
+    public static IReadOnlyList<Permission> EntityUser =
+        new ReadOnlyCollection<Permission>(GetEntityUserPermissions());
+
+    public static IReadOnlyList<Permission> FullAccessViewer =
+        new ReadOnlyCollection<Permission>(GetFullAccessViewerPermissions());
+
+    private static Permission[] GetSuperAdminPermissions() => GeneratePermissions().ToArray();
+
+    private static Permission[] GetAdminPermissions()
     {
-        return GeneratePermissions(excludedResources);
+        return GeneratePermissions()
+            .Where(p => p.Resource != Resources.Users)
+            .Where(p => p.Resource != Resources.Roles)
+            .ToArray();
+    }
+
+    private static Permission[] GetDataAssurancePermissions()
+    {
+        var result = GenerateBasicPermissions();
+        result.AddRange(GenerateFromResource(Resources.EditRequests));
+        return result.ToArray();
     }
     
-    private static Permission[] GeneratePermissions(string[]? excludedResources = null, string[]? excludedActions = null)
+    private static Permission[] GetFinancialOperatorPermissions()
     {
-        return (
-            from resource in Resources.All.Except(excludedResources ?? Array.Empty<string>())
-            from action in Actions.All.Except(excludedActions ?? Array.Empty<string>())
-            select new Permission(action, resource)
-        ).ToArray();
+        var result = GenerateBasicPermissions();
+        result.AddRange(GenerateFromResource(Resources.ApprovedCosts));
+        result.AddRange(GenerateFromResource(Resources.Budgets));
+        result.AddRange(GenerateFromResource(Resources.Projects));
+        result.AddRange(GenerateFromResource(Resources.Contracts));
+        return result.ToArray();
+    }
+
+    private static Permission[] GetExecutionOperatorPermissions()
+    {
+        var result = GenerateBasicPermissions();
+        result.AddRange(GenerateFromResource(Resources.Milestones));
+        result.AddRange(GenerateFromResource(Resources.Deliverables));
+        result.AddRange(GenerateFromResource(Resources.Issues));
+        result.AddRange(GenerateFromResource(Resources.Risks));
+        result.AddRange(GenerateFromResource(Resources.InitiativeTeams));
+        result.AddRange(GenerateFromResource(Resources.Analytics));
+        return result.ToArray();
+    }
+
+    private static Permission[] GetKPIsOperatorPermissions()
+    {
+        var result = GenerateBasicPermissions();
+        result.AddRange(GenerateFromResource(Resources.KPIValues));
+        result.AddRange(GenerateFromResource(Resources.Analytics));
+        return result.ToArray();
+    }
+
+    private static Permission[] GetEntityUserPermissions()
+    {
+        var result = GenerateBasicPermissions()
+            .Where(p => p.Resource != Resources.Portfolios)
+            .Where(p => p.Resource != Resources.Programs)
+            .Where(p => p.Resource != Resources.StrategicObjectives)
+            .ToList();
+        result.AddRange(GenerateFromResource(Resources.Milestones, new[] {Actions.Create, Actions.Delete}));
+        result.AddRange(GenerateFromResource(Resources.Deliverables, new[] {Actions.Create, Actions.Delete}));
+        result.AddRange(GenerateFromResource(Resources.Issues, new[] {Actions.Create, Actions.Delete}));
+        result.AddRange(GenerateFromResource(Resources.Risks, new[] {Actions.Create, Actions.Delete}));
+        result.AddRange(GenerateFromResource(Resources.Projects, new[] {Actions.Create, Actions.Delete}));
+        result.AddRange(GenerateFromResource(Resources.Contracts, new[] {Actions.Create, Actions.Delete}));
+        result.AddRange(GenerateFromResource(Resources.KPIValues, new[] {Actions.Create, Actions.Delete}));
+
+        return result.ToArray();
+    }
+
+    private static Permission[] GetFullAccessViewerPermissions()
+    {
+        return GenerateBasicPermissions()
+            .Where(p => p.Resource != Resources.EditRequests)
+            .ToArray();
+    }
+    
+    private static List<Permission> GenerateBasicPermissions()
+    {
+        return GeneratePermissions()
+            .Where(p => p.Resource != Resources.Users)
+            .Where(p => p.Resource != Resources.Roles)
+            .Where(p => p.Resource != Resources.EnumTypes)
+            .Where(p => p.Action != Actions.Create)
+            .Where(p => p.Action != Actions.Delete)
+            .Where(p => p.Action != Actions.Update)
+            .ToList();
+    }
+
+    private static List<Permission> GenerateFromResource(string resource)
+    {
+        return Actions.All.Select(action => new Permission(action, resource)).ToList();
+    }
+
+    private static List<Permission> GenerateFromResource(string resource, string[] excludedActions)
+    {
+        return Actions.All
+            .Where(a => !excludedActions.Contains(a))
+            .Select(action => new Permission(action, resource))
+            .ToList();
+    }
+
+    private static List<Permission> GenerateFromAction(string action)
+    {
+        return Resources.All.Select(resource => new Permission(action, resource)).ToList();
+    }
+
+    private static List<Permission> GeneratePermissions()
+    {
+        return Resources.All
+            .SelectMany(_ => Actions.All, (resource, action) => new Permission(action, resource))
+            .ToList();
     }
 }

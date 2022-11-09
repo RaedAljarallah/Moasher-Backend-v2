@@ -22,7 +22,7 @@ internal static class Startup
                 builder.TokenValidationParameters.ValidateAudience = true;
                 builder.TokenValidationParameters.ClockSkew = TimeSpan.Zero;
                 builder.TokenValidationParameters.RoleClaimType = AppRegisteredClaimNames.Role;
-                builder.TokenValidationParameters.NameClaimType = AppRegisteredClaimNames.name;
+                builder.TokenValidationParameters.NameClaimType = AppRegisteredClaimNames.Name;
                 builder.Events = new JwtBearerEvents
                 {
                     OnTokenValidated = async ctx =>

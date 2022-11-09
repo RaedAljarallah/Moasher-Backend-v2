@@ -27,13 +27,11 @@ internal static class Startup
             })
             .AddAspNetIdentity<User>();
 
-        identityServerBuilder.AddIdentityServerInPersistence(config);
-        
         if (env.IsDevelopment())
         {
             identityServerBuilder
-                .AddDeveloperSigningCredential();
-            //.AddIdentityServerInMemory();
+                .AddDeveloperSigningCredential()
+                .AddIdentityServerInMemory();
         }
         else
         {
@@ -41,8 +39,8 @@ internal static class Startup
             identityServerBuilder.AddIdentityServerInPersistence(config);
         }
 
-        services.AddScoped<IAuthorizeInteractionResponseGenerator, ActivationAuthorizeInteractionResponseGenerator>();
-        services.AddScoped<ICustomAuthorizeRequestValidator, ActivationAuthorizeRequestValidator>();
+        services.AddScoped<IAuthorizeInteractionResponseGenerator, AppAuthorizeInteractionResponseGenerator>();
+        services.AddScoped<ICustomAuthorizeRequestValidator, AppAuthorizeRequestValidator>();
     }
     
     private static void AddIdentityServerInMemory(this IIdentityServerBuilder builder)
@@ -51,7 +49,8 @@ internal static class Startup
             .AddInMemoryIdentityResources(Config.IdentityResources)
             .AddInMemoryApiResources(Config.ApiResources)
             .AddInMemoryApiScopes(Config.ApiScopes)
-            .AddInMemoryClients(Config.Clients);
+            .AddInMemoryClients(Config.Clients)
+            .AddInMemoryPersistedGrants();
     }
     
     private static void AddIdentityServerInPersistence(this IIdentityServerBuilder builder, IConfiguration configuration)

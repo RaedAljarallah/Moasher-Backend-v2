@@ -27,6 +27,7 @@ public struct Resources
     public const string Roles = nameof(Roles);
     public const string Search = nameof(Search);
     public const string InvalidTokens = nameof(InvalidTokens);
+    public const string EditRequests = nameof(EditRequests);
 
     public static IReadOnlyList<string> All = new ReadOnlyCollection<string>(new[]
     {
@@ -52,6 +53,7 @@ public struct Resources
         Users,
         Roles,
         Search,
-        InvalidTokens
+        InvalidTokens,
+        EditRequests
     });
 }

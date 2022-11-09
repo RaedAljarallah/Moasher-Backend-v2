@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.DataProtection;
-using Moasher.Authentication.Core.IdentityServer;
+﻿using Moasher.Authentication.Core.IdentityServer;
 using Moasher.Authentication.Core.Persistence;
 using Moasher.Authentication.Core.Identity;
+using Moasher.Authentication.Core.Mailing;
 
 namespace Moasher.Authentication;
 
@@ -13,6 +13,7 @@ internal static class Startup
         builder.Services.AddPersistence(builder.Configuration);
         builder.Services.AddIdentity(builder.Configuration);
         builder.Services.AddIdentityServer(builder.Configuration, builder.Environment);
+        builder.Services.AddMailing(builder.Configuration);
         return builder.Build();
     }
 

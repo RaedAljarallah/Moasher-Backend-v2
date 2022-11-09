@@ -7,6 +7,6 @@ public struct AppRegisteredClaimNames
     public const string Aud = "aud";
     public const string Iss = "iss";
     public const string Email = "email";
-    public const string name = "name";
+    public const string Name = "name";
     public const string Role = "role";
 }

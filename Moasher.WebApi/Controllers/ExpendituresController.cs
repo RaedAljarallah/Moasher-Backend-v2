@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.Expenditures.Queries.ExportExpenditures;
 using Moasher.Application.Features.Expenditures.Queries.GetExpenditures;
+using Moasher.WebApi.Attributes;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -8,6 +10,7 @@ namespace Moasher.WebApi.Controllers;
 
 public class ExpendituresController : ApiControllerBase
 {
+    [MustHavePermission(Actions.View, Resources.Expenditures)]
     [HttpGet(ApiEndpoints.Expenditures.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -19,6 +22,7 @@ public class ExpendituresController : ApiControllerBase
         return Ok(new {result});
     }
     
+    [MustHavePermission(Actions.Export, Resources.Expenditures)]
     [HttpGet(ApiEndpoints.Expenditures.Export)]
     [UnauthorizedResponseType]
     [OkResponseType]

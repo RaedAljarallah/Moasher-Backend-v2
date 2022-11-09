@@ -1,6 +1,6 @@
 ﻿namespace Moasher.Infrastructure.Mailing;
 
-public record class EmailTemplateSettings
+public record EmailTemplateSettings
 {
     public string? BaseUrl { get; set; }
     public string? FirstLogoUrl { get; set; }

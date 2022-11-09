@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Moasher.Application.Features.Users.Commands.CreateUser;
 using Moasher.Application.Features.Users.Commands.DeleteUser;
 using Moasher.Application.Features.Users.Commands.ResetUserPassword;
@@ -14,6 +15,7 @@ namespace Moasher.WebApi.Controllers;
 
 public class UsersController : ApiControllerBase
 {
+    [Authorize(Policy = "SuperAdminAccess")]
     [HttpGet(ApiEndpoints.Users.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -23,6 +25,7 @@ public class UsersController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
 
+    [AllowAnonymous]
     [HttpPost(ApiEndpoints.Users.VerifyActivationToken)]
     [OkResponseType]
     [Produces("application/json")]
@@ -32,6 +35,7 @@ public class UsersController : ApiControllerBase
         return Ok(await Sender.Send(query, cancellationToken));
     }
 
+    [Authorize(Policy = "SuperAdminAccess")]
     [HttpPost(ApiEndpoints.Users.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -43,6 +47,7 @@ public class UsersController : ApiControllerBase
         return Created($"{ApiEndpoints.Users.All}/{result.Id}", result);
     }
     
+    [Authorize(Policy = "SuperAdminAccess")]
     [HttpGet(ApiEndpoints.Users.Edit)]
     [UnauthorizedResponseType]
     [NotFoundResponseType]
@@ -58,6 +63,7 @@ public class UsersController : ApiControllerBase
         return Ok(await Sender.Send(query, cancellationToken));
     }
     
+    [Authorize(Policy = "SuperAdminAccess")]
     [HttpPut(ApiEndpoints.Users.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -74,6 +80,7 @@ public class UsersController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
     
+    [Authorize(Policy = "SuperAdminAccess")]
     [HttpPut(ApiEndpoints.Users.UpdateSuspensionStatus)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -90,6 +97,7 @@ public class UsersController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
 
+    [Authorize(Policy = "SuperAdminAccess")]
     [HttpPost(ApiEndpoints.Users.ResetPassword)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -107,6 +115,7 @@ public class UsersController : ApiControllerBase
         return NoContent();
     }
     
+    [Authorize(Policy = "SuperAdminAccess")]
     [HttpDelete(ApiEndpoints.Users.Delete)]
     [NotFoundResponseType]
     [ConflictResponseType]

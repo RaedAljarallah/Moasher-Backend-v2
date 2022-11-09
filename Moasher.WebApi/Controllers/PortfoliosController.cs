@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.Portfolios.Commands.CreatePortfolio;
 using Moasher.Application.Features.Portfolios.Commands.DeletePortfolio;
 using Moasher.Application.Features.Portfolios.Commands.UpdatePortfolio;
 using Moasher.Application.Features.Portfolios.Queries.EditPortfolio;
 using Moasher.Application.Features.Portfolios.Queries.GetPortfolios;
+using Moasher.WebApi.Attributes;
 using Moasher.WebApi.Controllers.Common;
 using Moasher.WebApi.Controllers.Common.ResponseTypes;
 
@@ -11,6 +13,7 @@ namespace Moasher.WebApi.Controllers;
 
 public class PortfoliosController : ApiControllerBase
 {
+    [MustHavePermission(Actions.View, Resources.Portfolios)]
     [HttpGet(ApiEndpoints.Portfolios.All)]
     [UnauthorizedResponseType]
     [OkResponseType]
@@ -20,6 +23,7 @@ public class PortfoliosController : ApiControllerBase
         return List(await Sender.Send(query, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Create, Resources.Portfolios)]
     [HttpPost(ApiEndpoints.Portfolios.Create)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -31,6 +35,7 @@ public class PortfoliosController : ApiControllerBase
         return Created($"{ApiEndpoints.Portfolios.All}/{result.Id}", result);
     }
 
+    [MustHavePermission(Actions.Update, Resources.Portfolios)]
     [HttpGet(ApiEndpoints.Portfolios.Edit)]
     [UnauthorizedResponseType]
     [NotFoundResponseType]
@@ -46,6 +51,7 @@ public class PortfoliosController : ApiControllerBase
         return Ok(await Sender.Send(query, cancellationToken));
     }
 
+    [MustHavePermission(Actions.Update, Resources.Portfolios)]
     [HttpPut(ApiEndpoints.Portfolios.Update)]
     [BadRequestResponseType]
     [UnauthorizedResponseType]
@@ -62,6 +68,7 @@ public class PortfoliosController : ApiControllerBase
         return Ok(await Sender.Send(command, cancellationToken));
     }
     
+    [MustHavePermission(Actions.Delete, Resources.Portfolios)]
     [HttpDelete(ApiEndpoints.Portfolios.Delete)]
     [NotFoundResponseType]
     [ConflictResponseType]
