@@ -3,7 +3,7 @@ using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
 
-public class InitiativeProjectProgress : DbEntity
+public class InitiativeProjectProgress : ApprovableDbEntity
 {
     private EnumType _phaseEnum = default!;
     public EnumValue Phase { get; private set; } = default!;

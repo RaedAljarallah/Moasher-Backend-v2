@@ -1,4 +1,5 @@
-﻿namespace Moasher.Application.Features.Entities.Commands;
+﻿
+namespace Moasher.Application.Features.Entities.Commands;
 
 public abstract record EntityCommandBase
 {

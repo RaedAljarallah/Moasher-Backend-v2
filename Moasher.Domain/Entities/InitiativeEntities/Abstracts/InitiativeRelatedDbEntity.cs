@@ -2,7 +2,7 @@
 
 namespace Moasher.Domain.Entities.InitiativeEntities.Abstracts;
 
-public abstract class InitiativeRelatedDbEntity : AuditableDbEntity
+public abstract class InitiativeRelatedDbEntity : ApprovableDbEntity
 {
     private Initiative _initiative = default!;
     public string InitiativeName { get; private set; } = default!;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Moasher.Application.Common.Services;
+using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Types;
 
@@ -8,6 +8,12 @@ namespace Moasher.Persistence.Interceptors;
 
 public class AuditingInterceptor : SaveChangesInterceptor
 {
+    private readonly ICurrentUser _currentUser;
+
+    public AuditingInterceptor(ICurrentUser currentUser)
+    {
+        _currentUser = currentUser;
+    }
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result,
         CancellationToken cancellationToken = new())
     {
@@ -18,24 +24,30 @@ public class AuditingInterceptor : SaveChangesInterceptor
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
     
-    private static void HandelAuditableEntries(DbContext context)
+    private void HandelAuditableEntries(DbContext context)
     {
         foreach (var entry in context.ChangeTracker.Entries<AuditableDbEntity>())
         {
             switch (entry.State)
             {
                 case EntityState.Added:
-                    // TODO: Replace dummy value
-                    entry.Entity.CreatedBy = "Test@Test.com";
+                    entry.Entity.CreatedBy = _currentUser.GetEmail() ?? string.Empty;
                     entry.Entity.CreatedAt = LocalDateTime.Now;
                     break;
                 case EntityState.Modified:
-                    entry.Entity.LastModifiedBy = "Test@Test.com";
+                    entry.Entity.LastModifiedBy = _currentUser.GetEmail() ?? string.Empty;
                     entry.Entity.LastModified = LocalDateTime.Now;
                     break;
             }
-            // TODO: Replace dummy value with edit request handler
-            entry.Entity.Approved = true;
+        }
+    }
+
+    private void HandelApprovableEntries(DbContext context)
+    {
+        var approved = _currentUser.IsSuperAdmin() || _currentUser.IsAdmin();
+        foreach (var entry in context.ChangeTracker.Entries<ApprovableDbEntity>())
+        {
+            entry.Entity.Approved = approved;
         }
     }
 }

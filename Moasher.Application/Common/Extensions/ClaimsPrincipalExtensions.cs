@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using Moasher.Application.Common.Constants;
-using Moasher.Application.Common.Types;
 
 namespace Moasher.Application.Common.Extensions;
 
@@ -37,27 +36,10 @@ public static class ClaimsPrincipalExtensions
 
     public static bool IsFullAccessViewer(this ClaimsPrincipal principal) =>
         AppRoles.IsFullAccessViewer(principal.GetRole());
-    
-    public static bool HasPermission(this ClaimsPrincipal principal, Permission permission)
-        => principal.GetPermissions().Contains(permission);
-    
+
     private static string GetRole(this ClaimsPrincipal principal) =>
         principal.GetValue(AppRegisteredClaimNames.Role) ?? string.Empty;
 
-    private static IReadOnlyList<Permission>GetPermissions(this ClaimsPrincipal principal)
-    {
-        if (principal.IsSuperAdmin()) return AppPermissions.SuperAdmin;
-        if (principal.IsAdmin()) return AppPermissions.Admin;
-        if (principal.IsDataAssurance()) return AppPermissions.DataAssurance;
-        if (principal.IsFinancialOperator()) return AppPermissions.FinancialOperator;
-        if (principal.IsExecutionOperator()) return AppPermissions.ExecutionOperator;
-        if (principal.IsKPIsOperator()) return AppPermissions.KPIsOperator;
-        if (principal.IsEntityUser()) return AppPermissions.EntityUser;
-        if (principal.IsFullAccessViewer()) return AppPermissions.FullAccessViewer;
-
-        return new List<Permission>();
-    }
-    
     private static string? GetValue(this ClaimsPrincipal principal, string claimType) =>
         principal is null
             ? throw new ArgumentNullException(nameof(principal))

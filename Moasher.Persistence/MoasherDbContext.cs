@@ -74,7 +74,7 @@ public class MoasherDbContext : IdentityDbContext<User, Role, Guid>, IMoasherDbC
         optionsBuilder.AddInterceptors(_auditingInterceptor);
     }
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         var events = this.GetDomainEvents();
         var result = await base.SaveChangesAsync(cancellationToken);

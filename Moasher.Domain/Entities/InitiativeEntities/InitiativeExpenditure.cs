@@ -3,7 +3,7 @@ using Moasher.Domain.Enums;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
 
-public class InitiativeExpenditure : AuditableDbEntity
+public class InitiativeExpenditure : ApprovableDbEntity
 {
     public ushort Year { get; set; }
     public Month Month { get; set; }

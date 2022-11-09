@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moasher.Infrastructure.Authentication;
+using Moasher.Infrastructure.Authentication.Authorization;
 using Moasher.Infrastructure.BackgroundJobs;
 using Moasher.Infrastructure.Files;
 using Moasher.Infrastructure.Identity;
@@ -19,5 +21,13 @@ public static class Startup
         services.AddFiles(config);
         services.AddMailing(config);
         services.AddUrlCrypter(config);
+    }
+
+    public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
+    {
+        app.UseAuthentication();
+        app.UseCurrentUser();
+        app.UseAuthorization();
+        return app;
     }
 }

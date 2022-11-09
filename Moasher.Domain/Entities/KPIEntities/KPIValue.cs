@@ -4,7 +4,7 @@ using Moasher.Domain.Enums;
 
 namespace Moasher.Domain.Entities.KPIEntities;
 
-public class KPIValue : AuditableDbEntity, ISchedulable
+public class KPIValue : ApprovableDbEntity, ISchedulable
 {
     private KPI _kpi = default!;
     public TimePeriod MeasurementPeriod { get; set; }

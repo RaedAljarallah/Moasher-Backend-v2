@@ -58,7 +58,6 @@ public class MoasherDbContextInitializer
                 Style = "gray-1",
                 CanBeDeleted = false,
                 IsDefault = true,
-                Approved = true,
                 CreatedBy = "System",
                 CreatedAt = DateTimeOffset.Now.AddHours(3)
             });

@@ -2,7 +2,7 @@
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
 
-public class InitiativeProjectBaseline : AuditableDbEntity
+public class InitiativeProjectBaseline : ApprovableDbEntity
 {
     public DateTimeOffset InitialPlannedContractingDate { get; set; }
     public decimal InitialEstimatedAmount { get; set; }
