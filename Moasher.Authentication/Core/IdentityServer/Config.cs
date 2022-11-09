@@ -10,14 +10,7 @@ internal static class Config
         new IdentityResource[]
         {
             new IdentityResources.OpenId(),
-            new()
-            {
-                Name = IdentityServerConstants.StandardScopes.Profile,
-                DisplayName = "User profile",
-                Description = "User profile information (first name, last name, etc.)",
-                Emphasize = true,
-                UserClaims = new [] { "name", "email" }
-            }
+            new IdentityResources.Profile()
         };
 
     public static IEnumerable<ApiScope> ApiScopes =>
@@ -32,7 +25,7 @@ internal static class Config
             new ApiResource("web_app", "Web App")
             {
                 Scopes = {"access_as_user"},
-                UserClaims = {JwtClaimTypes.Role, JwtClaimTypes.Name },
+                UserClaims = {JwtClaimTypes.Role, JwtClaimTypes.Name, JwtClaimTypes.Email },
                 Description = "Web app using Moasher APIs"
             }
         };

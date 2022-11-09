@@ -10,7 +10,7 @@ public struct Actions
     public const string Delete = nameof(Delete);
     public const string Export = nameof(Export);
 
-    public static IReadOnlyList<string> All = new ReadOnlyCollection<string>(new[]
+    public static IReadOnlyList<string> All { get; } = new ReadOnlyCollection<string>(new[]
     {
         Create,
         View,

@@ -1,4 +1,5 @@
 ﻿using Moasher.Domain.Common.Interfaces;
+using Newtonsoft.Json;
 
 namespace Moasher.Domain.Common.Abstracts;
 
@@ -8,6 +9,7 @@ public abstract class DbEntity : IDbEntity
     
     public Guid Id { get; set; }
     
+    [JsonIgnore]
     public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
     public void AddDomainEvent(DomainEvent domainEvent)
     {

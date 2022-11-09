@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Events.Milestones;
 using Moasher.Domain.Validators;
@@ -41,6 +42,9 @@ public class CreateMilestoneCommandHandler : IRequestHandler<CreateMilestoneComm
         milestone.Initiative = initiative;
         milestone.AddDomainEvent(new MilestoneCreatedEvent(milestone));
         initiative.Milestones.Add(milestone);
+        
+        milestone.SetEditRequest(EditRequest.CreateRequest(nameof(CreateMilestoneCommand)));
+        
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<MilestoneDto>(milestone);

@@ -50,6 +50,7 @@ public class MoasherDbContext : IdentityDbContext<User, Role, Guid>, IMoasherDbC
     public DbSet<Analytic> Analytics => Set<Analytic>();
     public DbSet<Search> SearchRecords => Set<Search>();
     public DbSet<InvalidToken> InvalidTokens => Set<InvalidToken>();
+    public DbSet<EditRequest> EditRequests => Set<EditRequest>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

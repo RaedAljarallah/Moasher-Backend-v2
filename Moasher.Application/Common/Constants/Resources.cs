@@ -29,7 +29,7 @@ public struct Resources
     public const string InvalidTokens = nameof(InvalidTokens);
     public const string EditRequests = nameof(EditRequests);
 
-    public static IReadOnlyList<string> All = new ReadOnlyCollection<string>(new[]
+    public static IReadOnlyList<string> All { get; } = new ReadOnlyCollection<string>(new[]
     {
         Entities,
         Initiatives,

@@ -5,26 +5,29 @@ namespace Moasher.Application.Common.Constants;
 
 public static class AppPermissions
 {
-    public static IReadOnlyList<Permission> SuperAdmin = new ReadOnlyCollection<Permission>(GetSuperAdminPermissions());
-    public static IReadOnlyList<Permission> Admin = new ReadOnlyCollection<Permission>(GetAdminPermissions());
+    public static IReadOnlyList<Permission> SuperAdmin { get; } =
+        new ReadOnlyCollection<Permission>(GetSuperAdminPermissions());
 
-    public static IReadOnlyList<Permission> DataAssurance =
-        new ReadOnlyCollection<Permission>(GetDataAssurancePermissions());
+    public static IReadOnlyList<Permission> Admin { get; }
+        = new ReadOnlyCollection<Permission>(GetAdminPermissions());
 
-    public static IReadOnlyList<Permission> FinancialOperator =
-        new ReadOnlyCollection<Permission>(GetFinancialOperatorPermissions());
+    public static IReadOnlyList<Permission> DataAssurance { get; }
+        = new ReadOnlyCollection<Permission>(GetDataAssurancePermissions());
 
-    public static IReadOnlyList<Permission> ExecutionOperator =
-        new ReadOnlyCollection<Permission>(GetExecutionOperatorPermissions());
+    public static IReadOnlyList<Permission> FinancialOperator { get; }
+        = new ReadOnlyCollection<Permission>(GetFinancialOperatorPermissions());
 
-    public static IReadOnlyList<Permission> KPIsOperator =
-        new ReadOnlyCollection<Permission>(GetKPIsOperatorPermissions());
+    public static IReadOnlyList<Permission> ExecutionOperator { get; }
+        = new ReadOnlyCollection<Permission>(GetExecutionOperatorPermissions());
 
-    public static IReadOnlyList<Permission> EntityUser =
-        new ReadOnlyCollection<Permission>(GetEntityUserPermissions());
+    public static IReadOnlyList<Permission> KPIsOperator { get; }
+        = new ReadOnlyCollection<Permission>(GetKPIsOperatorPermissions());
 
-    public static IReadOnlyList<Permission> FullAccessViewer =
-        new ReadOnlyCollection<Permission>(GetFullAccessViewerPermissions());
+    public static IReadOnlyList<Permission> EntityUser { get; }
+        = new ReadOnlyCollection<Permission>(GetEntityUserPermissions());
+
+    public static IReadOnlyList<Permission> FullAccessViewer { get; }
+        = new ReadOnlyCollection<Permission>(GetFullAccessViewerPermissions());
 
     private static Permission[] GetSuperAdminPermissions() => GeneratePermissions().ToArray();
 
@@ -42,7 +45,7 @@ public static class AppPermissions
         result.AddRange(GenerateFromResource(Resources.EditRequests));
         return result.ToArray();
     }
-    
+
     private static Permission[] GetFinancialOperatorPermissions()
     {
         var result = GenerateBasicPermissions();
@@ -97,10 +100,10 @@ public static class AppPermissions
             .Where(p => p.Resource != Resources.EditRequests)
             .ToArray();
     }
-    
+
     private static List<Permission> GenerateBasicPermissions()
     {
-        return GeneratePermissions()
+        var result = GeneratePermissions()
             .Where(p => p.Resource != Resources.Users)
             .Where(p => p.Resource != Resources.Roles)
             .Where(p => p.Resource != Resources.EnumTypes)
@@ -108,14 +111,17 @@ public static class AppPermissions
             .Where(p => p.Action != Actions.Delete)
             .Where(p => p.Action != Actions.Update)
             .ToList();
+        result.Add(new Permission(Actions.View, Resources.EnumTypes));
+
+        return result;
     }
 
-    private static List<Permission> GenerateFromResource(string resource)
+    private static IEnumerable<Permission> GenerateFromResource(string resource)
     {
         return Actions.All.Select(action => new Permission(action, resource)).ToList();
     }
 
-    private static List<Permission> GenerateFromResource(string resource, string[] excludedActions)
+    private static IEnumerable<Permission> GenerateFromResource(string resource, string[] excludedActions)
     {
         return Actions.All
             .Where(a => !excludedActions.Contains(a))

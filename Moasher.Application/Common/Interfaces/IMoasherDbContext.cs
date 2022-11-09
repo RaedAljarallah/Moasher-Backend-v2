@@ -34,5 +34,6 @@ public interface IMoasherDbContext
     public DbSet<User> Users { get; }
     public DbSet<Search> SearchRecords { get; }
     public DbSet<InvalidToken> InvalidTokens { get; }
+    public DbSet<EditRequest> EditRequests { get; }
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
