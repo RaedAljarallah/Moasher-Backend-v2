@@ -1,8 +1,10 @@
-﻿using Moasher.Domain.Common.Interfaces;
+﻿using System.ComponentModel.DataAnnotations;
+using Moasher.Domain.Common.Interfaces;
 using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
 
+[Display(Name = "مخرجات")]
 public class InitiativeDeliverable : InitiativeRelatedDbEntity, ISchedulable
 {
     public string Name { get; set; } = default!;

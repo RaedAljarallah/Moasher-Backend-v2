@@ -43,7 +43,7 @@ public class CreateMilestoneCommandHandler : IRequestHandler<CreateMilestoneComm
         milestone.AddDomainEvent(new MilestoneCreatedEvent(milestone));
         initiative.Milestones.Add(milestone);
         
-        milestone.SetEditRequest(EditRequest.CreateRequest(nameof(CreateMilestoneCommand)));
+        //milestone.SetEditRequest(EditRequest.CreateRequest(nameof(CreateMilestoneCommand)));
         
         await _context.SaveChangesAsync(cancellationToken);
 

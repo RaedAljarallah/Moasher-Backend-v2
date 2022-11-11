@@ -9,6 +9,7 @@ using Moasher.Application.Features.Projects.Commands.Common;
 using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Events.Projects;
+using Moasher.Domain.Types;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Projects.Commands.CreateProject;
@@ -81,10 +82,10 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
             project.ExpendituresBaseline.Add(baseline);
         });
         project.Baseline = InitiativeProjectBaseline.Map(project);
-        project.AddDomainEvent(new ProjectCreatedEvent(project));
+        project.Progress.Add(InitiativeProjectProgress.CreateProjectProgressItem(project));
+        //project.AddDomainEvent(new ProjectCreatedEvent(project));
         initiative.Projects.Add(project);
-        
-        project.SetEditRequest(EditRequest.CreateRequest(nameof(CreateProjectCommand)));
+
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<ProjectDto>(project);

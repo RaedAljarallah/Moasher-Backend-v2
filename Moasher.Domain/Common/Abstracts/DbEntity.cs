@@ -25,4 +25,8 @@ public abstract class DbEntity : IDbEntity
     {
         _domainEvents.Clear();
     }
+    public bool HasDomainEvents()
+    {
+        return _domainEvents.Any();
+    }
 }

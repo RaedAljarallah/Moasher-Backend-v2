@@ -26,11 +26,11 @@ public class ProjectPhaseCompletedEventHandler : INotificationHandler<ProjectPha
         if (project is not null)
         {
             var activeProgressItem = project.Progress.FirstOrDefault(p => !p.Completed);
-            activeProgressItem?.Complete(project.LastModified!.Value, project.LastModifiedBy!);
+            activeProgressItem?.Complete();
             
             var newProgressItem = InitiativeProjectProgress.CreateProjectProgressItem(project);
             project.Progress.Add(newProgressItem);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

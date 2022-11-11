@@ -1,8 +1,11 @@
-﻿using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
+﻿using System.ComponentModel.DataAnnotations;
+using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
 using Moasher.Domain.ValueObjects;
+using Newtonsoft.Json;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
 
+[Display(Name = "عقود")]
 public class InitiativeContract : InitiativeRelatedDbEntity
 {
     private EnumType _statusEnum = default!;
@@ -13,6 +16,7 @@ public class InitiativeContract : InitiativeRelatedDbEntity
     public decimal Amount { get; set; }
     public string? RefNumber { get; set; }
     public EnumValue Status { get; private set; } = default!;
+    [JsonIgnore]
     public EnumType StatusEnum
     {
         get => _statusEnum;

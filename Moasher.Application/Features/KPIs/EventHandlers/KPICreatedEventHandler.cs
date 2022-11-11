@@ -20,6 +20,6 @@ public class KPICreatedEventHandler : INotificationHandler<KPICreatedEvent>
         var kpi = notification.Kpi;
         var searchRecord = new Search(kpi.Id, kpi.Name, SearchCategory.KPI);
         _context.SearchRecords.Add(searchRecord);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
     }
 }

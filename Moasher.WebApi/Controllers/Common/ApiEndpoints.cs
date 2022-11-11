@@ -256,4 +256,11 @@ public struct ApiEndpoints
         private const string Base = "invalid-tokens";
         public const string Create = Base;
     }
+    
+    public struct EditRequests
+    {
+        private const string Base = "edit-requests";
+        public const string All = Base;
+        public const string Details = $"{Base}/{{id}}";
+    }
 }

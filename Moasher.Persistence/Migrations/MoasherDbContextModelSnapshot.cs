@@ -178,7 +178,7 @@ namespace Moasher.Persistence.Migrations
                     b.ToTable("Analytics");
                 });
 
-            modelBuilder.Entity("Moasher.Domain.Entities.EditRequest", b =>
+            modelBuilder.Entity("Moasher.Domain.Entities.EditRequests.EditRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -194,19 +194,17 @@ namespace Moasher.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CommandName")
-                        .IsRequired()
+                    b.Property<string>("EventArgumentTypes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CurrentValues")
+                    b.Property<string>("EventArguments")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Model")
-                        .IsRequired()
+                    b.Property<string>("Events")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OriginalValues")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("HasEvents")
+                        .HasColumnType("bit");
 
                     b.Property<DateTimeOffset>("RequestedAt")
                         .HasColumnType("datetimeoffset");
@@ -224,6 +222,36 @@ namespace Moasher.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EditRequests");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.EditRequests.EditRequestSnapshot", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EditRequestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModelName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OriginalValues")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TableName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EditRequestId");
+
+                    b.ToTable("EditRequestSnapshot");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.Entity", b =>
@@ -265,9 +293,9 @@ namespace Moasher.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d7c16486-c5a0-459f-bc24-89e248902f19"),
+                            Id = new Guid("68b908cd-3091-408e-bfa8-9c2f9d2ecd7e"),
                             Code = "VRO",
-                            CreatedAt = new DateTimeOffset(new DateTime(2022, 11, 9, 21, 33, 5, 241, DateTimeKind.Unspecified).AddTicks(4120), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreatedAt = new DateTimeOffset(new DateTime(2022, 11, 10, 12, 56, 43, 161, DateTimeKind.Unspecified).AddTicks(3250), new TimeSpan(0, 0, 0, 0, 0)),
                             CreatedBy = "System",
                             IsOrganizer = true,
                             Name = "مكتب تحقيق الرؤية"
@@ -1702,64 +1730,64 @@ namespace Moasher.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("81a1d0c9-1633-47cd-9d13-8f5f572aca4b"),
-                            ConcurrencyStamp = "874bd322-729b-420b-b5b7-88a673c0dc3d",
+                            Id = new Guid("6641ddbc-3dc5-4798-9c07-f6850c2a882e"),
+                            ConcurrencyStamp = "e115a639-b814-49a1-91b1-0b0ae8fe5bd1",
                             LocalizedName = "مدير النظام",
                             Name = "SuperAdmin",
                             NormalizedName = "SUPERADMIN"
                         },
                         new
                         {
-                            Id = new Guid("b4035f6a-f8bb-4deb-b1b0-614ecc21e887"),
-                            ConcurrencyStamp = "c00ca1cc-ebab-4236-8974-48595d407b39",
+                            Id = new Guid("63a0b918-1db6-4ab3-b302-6666c6422c7b"),
+                            ConcurrencyStamp = "04cde204-3463-475e-b71f-949f1d0eb145",
                             LocalizedName = "مشرف",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("8d4e073c-c02e-480c-8882-51edae08acc3"),
-                            ConcurrencyStamp = "db86559c-1789-44f8-9116-8cc393c98f34",
+                            Id = new Guid("ed0055be-0415-4e6d-b48a-b49789ad2618"),
+                            ConcurrencyStamp = "97573ad2-32da-483c-a428-5dcd6dc608a2",
                             LocalizedName = "مدقق بيانات",
                             Name = "DataAssurance",
                             NormalizedName = "DATAASSURANCE"
                         },
                         new
                         {
-                            Id = new Guid("441e4503-2382-4541-ad7b-6320bebba96b"),
-                            ConcurrencyStamp = "84450e89-7632-47f1-a32d-bbc580e2d300",
+                            Id = new Guid("badfc438-a8d8-4043-aace-94addfb4188c"),
+                            ConcurrencyStamp = "ca45f408-6e61-4cc8-bb87-b2567b70197d",
                             LocalizedName = "مسؤول مالي",
                             Name = "FinancialOperator",
                             NormalizedName = "FINANCIALOPERATOR"
                         },
                         new
                         {
-                            Id = new Guid("1b36d09c-e61e-4ffd-a6ef-ea78e88c96a3"),
-                            ConcurrencyStamp = "874f229c-7fa6-482a-b79a-862e963fefe0",
+                            Id = new Guid("8b3a0839-663e-4033-a519-d4cd46f64741"),
+                            ConcurrencyStamp = "8d816460-6a0b-4577-beff-ec58df47f619",
                             LocalizedName = "مسؤول تنفيذ",
                             Name = "ExecutionOperator",
                             NormalizedName = "EXECUTIONOPERATOR"
                         },
                         new
                         {
-                            Id = new Guid("2fccda78-8f42-48ab-ac35-8cc2c69c437f"),
-                            ConcurrencyStamp = "78f6babd-b44a-4a51-938f-54c62a602ca3",
+                            Id = new Guid("40164e43-3b14-401b-a181-3e3b5f18e12f"),
+                            ConcurrencyStamp = "c07ed18c-cab0-4068-aed2-0a6aad866613",
                             LocalizedName = "مسؤول مؤشرات أداء",
                             Name = "KPIsOperator",
                             NormalizedName = "KPISOPERATOR"
                         },
                         new
                         {
-                            Id = new Guid("b25f4430-8347-4436-b331-f4155097559b"),
-                            ConcurrencyStamp = "0390d66c-b738-4472-8b7a-98db3ebffeb5",
+                            Id = new Guid("09b7683c-a52e-4445-a00e-8fed6f16975f"),
+                            ConcurrencyStamp = "36c31f30-901f-45ac-bb05-2116bc9e43c7",
                             LocalizedName = "مستخدم جهة",
                             Name = "EntityUser",
                             NormalizedName = "ENTITYUSER"
                         },
                         new
                         {
-                            Id = new Guid("edd03dcd-8a46-4b43-8c1d-696e7ce92ede"),
-                            ConcurrencyStamp = "5ac02d56-fe5f-420c-9421-0da095d2ad39",
+                            Id = new Guid("7d7a176e-c037-4c71-8801-6e9c7370b402"),
+                            ConcurrencyStamp = "c1190e4c-38eb-4380-88a3-0eaae1caafc3",
                             LocalizedName = "مستعرض جميع البيانات",
                             Name = "FullAccessViewer",
                             NormalizedName = "FULLACCESSVIEWER"
@@ -1978,6 +2006,17 @@ namespace Moasher.Persistence.Migrations
                     b.Navigation("Initiative");
 
                     b.Navigation("KPI");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.EditRequests.EditRequestSnapshot", b =>
+                {
+                    b.HasOne("Moasher.Domain.Entities.EditRequests.EditRequest", "EditRequest")
+                        .WithMany("Snapshots")
+                        .HasForeignKey("EditRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EditRequest");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.Initiative", b =>
@@ -2640,6 +2679,11 @@ namespace Moasher.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Entity");
+                });
+
+            modelBuilder.Entity("Moasher.Domain.Entities.EditRequests.EditRequest", b =>
+                {
+                    b.Navigation("Snapshots");
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.Entity", b =>

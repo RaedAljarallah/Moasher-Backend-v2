@@ -20,6 +20,6 @@ public class InitiativeCreatedEventHandler : INotificationHandler<InitiativeCrea
         var initiative = notification.Initiative;
         var searchRecord = new Search(initiative.Id, initiative.Name, SearchCategory.Initiative);
         _context.SearchRecords.Add(searchRecord);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
     }
 }

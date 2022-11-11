@@ -35,7 +35,7 @@ public class KPIValueUpdatedEventHandler : INotificationHandler<KPIValueUpdatedE
             }
 
             _context.KPIs.Update(kpi);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

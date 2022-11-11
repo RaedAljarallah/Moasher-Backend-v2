@@ -24,7 +24,7 @@ public class ApprovedCostUpdatedEventHandler : INotificationHandler<ApprovedCost
         {
             initiative.SetTotalApprovedCost();
             _context.Initiatives.Update(initiative);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

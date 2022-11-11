@@ -25,7 +25,7 @@ public class BudgetDeletedEventHandler : INotificationHandler<BudgetDeletedEvent
             initiative.SetTotalBudget();
             initiative.SetCurrentYearBudget();
             _context.Initiatives.Update(initiative);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

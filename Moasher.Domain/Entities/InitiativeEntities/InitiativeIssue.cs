@@ -1,8 +1,11 @@
-﻿using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
+﻿using System.ComponentModel.DataAnnotations;
+using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
 using Moasher.Domain.ValueObjects;
+using Newtonsoft.Json;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
 
+[Display(Name = "معوقات")]
 public class InitiativeIssue : InitiativeRelatedDbEntity
 {
     private EnumType _scopeEnum = default!;
@@ -11,6 +14,7 @@ public class InitiativeIssue : InitiativeRelatedDbEntity
     public string Description { get; set; } = default!;
     public EnumValue Scope { get; private set; } = default!;
 
+    [JsonIgnore]
     public EnumType ScopeEnum
     {
         get => _scopeEnum;
@@ -23,6 +27,7 @@ public class InitiativeIssue : InitiativeRelatedDbEntity
     public Guid? ScopeEnumId { get; set; }
     public EnumValue Status { get; set; } = default!;
 
+    [JsonIgnore]
     public EnumType StatusEnum
     {
         get => _statusEnum;
@@ -36,6 +41,7 @@ public class InitiativeIssue : InitiativeRelatedDbEntity
 
     public EnumValue Impact { get; set; } = default!;
 
+    [JsonIgnore]
     public EnumType ImpactEnum
     {
         get => _impactEnum;

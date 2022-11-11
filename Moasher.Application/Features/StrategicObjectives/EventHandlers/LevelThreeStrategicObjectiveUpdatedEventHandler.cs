@@ -30,7 +30,7 @@ public class LevelThreeStrategicObjectiveUpdatedEventHandler : INotificationHand
 
             _context.Initiatives.UpdateRange(strategicObjective.Initiatives);
             _context.KPIs.UpdateRange(strategicObjective.KPIs);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

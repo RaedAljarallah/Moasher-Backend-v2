@@ -31,7 +31,7 @@ public class ContractDeletedEventHandler : INotificationHandler<ContractDeletedE
             initiative.SetCurrentYearExpenditure();
         
             _context.Initiatives.Update(initiative);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

@@ -16,13 +16,13 @@ public class MoasherDbContextInitializer
         _context = context;
     }
 
-    public async Task InitializeAsync()
+    public async Task InitializeAsync(CancellationToken cancellationToken)
     {
         try
         {
             if (_context.Database.IsSqlServer())
             {
-                await _context.Database.MigrateAsync();
+                await _context.Database.MigrateAsync(cancellationToken: cancellationToken);
             }
         }
         catch (Exception ex)
@@ -32,11 +32,11 @@ public class MoasherDbContextInitializer
         }
     }
 
-    public async Task SeedAsync()
+    public async Task SeedAsync(CancellationToken cancellationToken)
     {
         try
         {
-            await TrySeedAsync();
+            await TrySeedAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -45,10 +45,10 @@ public class MoasherDbContextInitializer
         }
     }
 
-    public async Task TrySeedAsync()
+    public async Task TrySeedAsync(CancellationToken cancellationToken)
     {
         var hasDefaultInitiativeStatus = await _context.EnumTypes
-            .AnyAsync(e => e.Category.ToString() == EnumTypeCategory.InitiativeStatus.ToString() && e.IsDefault);
+            .AnyAsync(e => e.Category.ToString() == EnumTypeCategory.InitiativeStatus.ToString() && e.IsDefault, cancellationToken: cancellationToken);
         if (!hasDefaultInitiativeStatus)
         {
             _context.EnumTypes.Add(new EnumType
@@ -62,7 +62,7 @@ public class MoasherDbContextInitializer
                 CreatedAt = DateTimeOffset.Now.AddHours(3)
             });
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken: cancellationToken);
         }
     }
 }

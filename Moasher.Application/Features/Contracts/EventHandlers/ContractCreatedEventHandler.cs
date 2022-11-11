@@ -35,9 +35,9 @@ public class ContractCreatedEventHandler : INotificationHandler<ContractCreatedE
             contract.BalancedExpenditurePlan = totalExpenditureAmount == contract.Amount;
             
             var projectActiveProgressItem = contract.Project.Progress.FirstOrDefault(p => !p.Completed);
-            projectActiveProgressItem?.Complete(contract.CreatedAt, contract.CreatedBy);
+            projectActiveProgressItem?.Complete();
             
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
         
         var initiativeId = notification.Contract.InitiativeId;
@@ -55,7 +55,7 @@ public class ContractCreatedEventHandler : INotificationHandler<ContractCreatedE
             initiative.SetCurrentYearExpenditure();
         
             _context.Initiatives.Update(initiative);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

@@ -22,7 +22,7 @@ public class EntityDeletedEventHandler : INotificationHandler<EntityDeletedEvent
         if (searchRecord is not null)
         {
             _context.SearchRecords.Remove(searchRecord);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

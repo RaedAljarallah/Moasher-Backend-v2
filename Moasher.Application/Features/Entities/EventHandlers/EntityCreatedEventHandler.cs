@@ -20,6 +20,6 @@ public class EntityCreatedEventHandler : INotificationHandler<EntityCreatedEvent
         var entity = notification.Entity;
         var searchRecord = new Search(entity.Id, entity.Name, SearchCategory.Entity);
         _context.SearchRecords.Add(searchRecord);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
     }
 }

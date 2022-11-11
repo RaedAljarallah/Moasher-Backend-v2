@@ -54,7 +54,7 @@ public class InitiativeUpdatedEventHandler : INotificationHandler<InitiativeUpda
             {
                 searchRecord.Title = initiative.Name;
             }
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

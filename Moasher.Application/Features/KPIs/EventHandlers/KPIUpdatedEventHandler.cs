@@ -38,7 +38,7 @@ public class KPIUpdatedEventHandler : INotificationHandler<KPIUpdatedEvent>
                 searchRecord.Title = kpi.Name;
             }
             
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
         
     }

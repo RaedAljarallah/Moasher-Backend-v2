@@ -35,7 +35,7 @@ public class ProgramUpdatedEventHandler : INotificationHandler<ProgramUpdatedEve
             {
                 searchRecord.Title = program.Name;
             }
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

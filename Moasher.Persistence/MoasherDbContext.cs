@@ -1,86 +1,184 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Common.Abstracts;
-using Moasher.Domain.Entities;
+using Moasher.Domain.Entities.EditRequests;
 using Moasher.Domain.Entities.InitiativeEntities;
-using Moasher.Domain.Entities.KPIEntities;
-using Moasher.Domain.Entities.StrategicObjectiveEntities;
-using Moasher.Persistence.Extensions;
-using Moasher.Persistence.Interceptors;
+using Moasher.Domain.Enums;
+using Moasher.Domain.Types;
+using Newtonsoft.Json;
 
 namespace Moasher.Persistence;
 
-public class MoasherDbContext : IdentityDbContext<User, Role, Guid>, IMoasherDbContext
+public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
 {
-    private readonly AuditingInterceptor _auditingInterceptor;
     private readonly IBackgroundQueue _backgroundQueue;
+    private readonly ICurrentUser _currentUser;
 
-    public MoasherDbContext(DbContextOptions<MoasherDbContext> options, AuditingInterceptor auditingInterceptor,
-        IBackgroundQueue backgroundQueue) : base(options)
+    public MoasherDbContext(DbContextOptions<MoasherDbContext> options, IBackgroundQueue backgroundQueue,
+        ICurrentUser currentUser) : base(options)
     {
-        _auditingInterceptor = auditingInterceptor;
         _backgroundQueue = backgroundQueue;
+        _currentUser = currentUser;
     }
 
-    public DbSet<Initiative> Initiatives => Set<Initiative>();
-    public DbSet<InitiativeApprovedCost> InitiativeApprovedCosts => Set<InitiativeApprovedCost>();
-    public DbSet<InitiativeBudget> InitiativeBudgets => Set<InitiativeBudget>();
-    public DbSet<InitiativeContract> InitiativeContracts => Set<InitiativeContract>();
-    public DbSet<InitiativeProject> InitiativeProjects => Set<InitiativeProject>();
-    public DbSet<InitiativeProjectBaseline> InitiativeProjectsBaseline => Set<InitiativeProjectBaseline>();
-    public DbSet<InitiativeProjectProgress> InitiativeProjectProgress => Set<InitiativeProjectProgress>();
-    public DbSet<InitiativeExpenditure> InitiativeExpenditures => Set<InitiativeExpenditure>();
-    public DbSet<InitiativeExpenditureBaseline> InitiativeExpendituresBaseline => Set<InitiativeExpenditureBaseline>();
-    public DbSet<InitiativeDeliverable> InitiativeDeliverables => Set<InitiativeDeliverable>();
-    public DbSet<InitiativeImpact> InitiativeImpacts => Set<InitiativeImpact>();
-    public DbSet<InitiativeIssue> InitiativeIssues => Set<InitiativeIssue>();
-    public DbSet<InitiativeMilestone> InitiativeMilestones => Set<InitiativeMilestone>();
-    public DbSet<InitiativeRisk> InitiativeRisks => Set<InitiativeRisk>();
-    public DbSet<InitiativeTeam> InitiativeTeams => Set<InitiativeTeam>();
-    public DbSet<Entity> Entities => Set<Entity>();
-    public DbSet<EnumType> EnumTypes => Set<EnumType>();
-    public DbSet<Portfolio> Portfolios => Set<Portfolio>();
-    public DbSet<Program> Programs => Set<Program>();
-    public DbSet<StrategicObjective> StrategicObjectives => Set<StrategicObjective>();
-    public DbSet<KPI> KPIs => Set<KPI>();
-    public DbSet<KPIValue> KPIValues => Set<KPIValue>();
-    public DbSet<Analytic> Analytics => Set<Analytic>();
-    public DbSet<Search> SearchRecords => Set<Search>();
-    public DbSet<InvalidToken> InvalidTokens => Set<InvalidToken>();
-    public DbSet<EditRequest> EditRequests => Set<EditRequest>();
-
-    protected override void OnModelCreating(ModelBuilder builder)
+    public Task<int> SaveChangesAsyncFromDomainEvent(CancellationToken cancellationToken = new())
     {
-        base.OnModelCreating(builder);
-
-        builder.Entity<User>().ToTable("Users");
-        builder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
-        builder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
-        builder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
-        builder.Entity<Role>().ToTable("Roles");
-        builder.Entity<IdentityRoleClaim<Guid>>().ToTable("RoleClaims");
-        builder.Entity<IdentityUserRole<Guid>>().ToTable("UserRoles");
-
-        builder.ApplyConfigurationsFromAssembly(typeof(MoasherDbContext).Assembly);
-        
-        builder.SeedRoles();
-        builder.SeedOrganizerEntity();
+        HandelAuditableEntries();
+        return base.SaveChangesAsync(cancellationToken);
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public Task<int> SaveChangesAsyncFromInternalProcess(CancellationToken cancellationToken = new())
     {
-        optionsBuilder.AddInterceptors(_auditingInterceptor);
+        return base.SaveChangesAsync(cancellationToken);
     }
-
+    
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
-        var events = this.GetDomainEvents();
+        HandelAuditableEntries();
+        HandelEditRequests();
+        var events = GetDomainEvents();
         var result = await base.SaveChangesAsync(cancellationToken);
         await DispatchEvents(events);
         return result;
+    }
+    
+    private List<DomainEvent> GetDomainEvents()
+    {
+        var entities = ChangeTracker
+            .Entries<DbEntity>()
+            .Where(e => e.Entity.HasDomainEvents())
+            .Select(e => e.Entity).ToList();
+        
+        var domainEvents = entities
+            .SelectMany(e => e.DomainEvents)
+            .ToList();
+        
+        entities.ForEach(e => e.ClearDomainEvents());
+        
+        return domainEvents;
+    }
+    
+    private void HandelAuditableEntries()
+    {
+        foreach (var entry in ChangeTracker.Entries<AuditableDbEntity>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    entry.Entity.CreatedBy = _currentUser.GetEmail() ?? string.Empty;
+                    entry.Entity.CreatedAt = LocalDateTime.Now;
+                    break;
+                case EntityState.Modified:
+                    entry.Entity.LastModifiedBy = _currentUser.GetEmail() ?? "System";
+                    entry.Entity.LastModified = LocalDateTime.Now;
+                    break;
+            }
+        }
+
+        foreach (var projectProgress in ChangeTracker.Entries<InitiativeProjectProgress>())
+        {
+            switch (projectProgress.State)
+            {
+                case EntityState.Added:
+                    projectProgress.Entity.PhaseStartedAt = projectProgress.Entity.CreatedAt;
+                    projectProgress.Entity.PhaseStartedBy = projectProgress.Entity.CreatedBy;
+                    break;
+                case EntityState.Modified:
+                    projectProgress.Entity.PhaseEndedAt = projectProgress.Entity.LastModified;
+                    projectProgress.Entity.PhaseEndedBy = projectProgress.Entity.LastModifiedBy;
+                    break;
+            }
+        }
+    }
+
+    private void HandelEditRequests()
+    {
+        var approved = _currentUser.IsSuperAdmin() || _currentUser.IsAdmin();
+        var editRequest = new EditRequest {Code = Guid.NewGuid().ToString()};
+        var events = new Dictionary<string, object>();
+        var hasEditRequest = false;
+        foreach (var entry in ChangeTracker.Entries<ApprovableDbEntity>())
+        {
+            if (approved)
+            {
+                entry.Entity.Approved = true;
+                continue;
+            }
+            
+            if (entry.Entity.HasDomainEvents())
+            {
+                editRequest.HasEvents = true;
+                var entryEvents = entry.Entity.DomainEvents;
+                foreach (var domainEvent in entryEvents)
+                {
+                    var eventName = domainEvent.GetType().Name;
+                    var eventArgumentName = domainEvent.GetType()
+                        .GetProperties()
+                        .Select(p => p.Name)
+                        .FirstOrDefault();
+                    
+                    if (string.IsNullOrWhiteSpace(eventArgumentName)) continue;
+                    var eventArgumentProperty = domainEvent.GetType().GetProperty(eventArgumentName);
+                    var eventArgumentValue = eventArgumentProperty?.GetValue(domainEvent, null);
+                    if (eventArgumentValue is not null)
+                    {
+                        events.Add(eventName, eventArgumentValue);
+                    }
+                }
+            }
+            
+            var snapshot = new EditRequestSnapshot
+            {
+                ModelName = entry.Entity.GetType().Name,
+                TableName = entry.Metadata.GetTableName() ?? string.Empty
+            };
+
+            var snapshotValues = new Dictionary<string, object?>();
+            foreach (var property in entry.Properties)
+            {
+                if (property.Metadata.IsPrimaryKey())
+                {
+                    snapshot.ModelId = Guid.Parse(property.CurrentValue?.ToString() ?? Guid.Empty.ToString());
+                }
+                
+                var propertyName = property.Metadata.Name;
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        editRequest.Type = EditRequestType.Create;
+                        snapshotValues[propertyName] = property.CurrentValue;
+                        hasEditRequest = true;
+                        break;
+                    case EntityState.Deleted:
+                        editRequest.Type = EditRequestType.Delete;
+                        snapshotValues[propertyName] = property.OriginalValue;
+                        hasEditRequest = true;
+                        break;
+                    case EntityState.Modified:
+                        editRequest.Type = EditRequestType.Update;
+                        snapshotValues[propertyName] = property.OriginalValue;
+                        hasEditRequest = true;
+                        break;
+                }
+                
+            }
+
+            if (snapshotValues.Any())
+            {
+                snapshot.OriginalValues = JsonConvert.SerializeObject(snapshotValues);
+                editRequest.Snapshots.Add(snapshot);
+            }
+        }
+
+        if (hasEditRequest)
+        {
+            editRequest.Events = JsonConvert.SerializeObject(events);
+            editRequest.Status = EditRequestStatus.Pending;
+            editRequest.RequestedAt = LocalDateTime.Now;
+            editRequest.RequestedBy = _currentUser.GetEmail() ?? string.Empty;
+            EditRequests.Add(editRequest);
+        }
     }
 
     private async Task DispatchEvents(List<DomainEvent> domainEvents)

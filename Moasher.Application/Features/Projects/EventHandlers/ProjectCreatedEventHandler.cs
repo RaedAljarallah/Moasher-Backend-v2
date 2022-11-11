@@ -27,7 +27,7 @@ public class ProjectCreatedEventHandler : INotificationHandler<ProjectCreatedEve
         {
             var progressItem = InitiativeProjectProgress.CreateProjectProgressItem(project);
             project.Progress.Add(progressItem);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

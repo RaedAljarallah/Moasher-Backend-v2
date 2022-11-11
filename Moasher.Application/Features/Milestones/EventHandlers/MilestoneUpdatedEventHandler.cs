@@ -33,7 +33,7 @@ public class MilestoneUpdatedEventHandler : INotificationHandler<MilestoneUpdate
                 initiative.SetStatus(status);
             }
             _context.Initiatives.Update(initiative);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

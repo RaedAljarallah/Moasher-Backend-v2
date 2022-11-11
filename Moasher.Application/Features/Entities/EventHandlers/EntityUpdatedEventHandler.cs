@@ -61,7 +61,7 @@ public class EntityUpdatedEventHandler : INotificationHandler<EntityUpdatedEvent
             {
                 searchRecord.Title = entity.Name;
             }
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

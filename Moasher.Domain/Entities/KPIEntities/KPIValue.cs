@@ -1,9 +1,12 @@
-﻿using Moasher.Domain.Common.Abstracts;
+﻿using System.ComponentModel.DataAnnotations;
+using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Common.Interfaces;
 using Moasher.Domain.Enums;
+using Newtonsoft.Json;
 
 namespace Moasher.Domain.Entities.KPIEntities;
 
+[Display(Name = "مستهدفات")]
 public class KPIValue : ApprovableDbEntity, ISchedulable
 {
     private KPI _kpi = default!;
@@ -18,6 +21,7 @@ public class KPIValue : ApprovableDbEntity, ISchedulable
     public string EntityName { get; private set; } = default!;
     public string KPIName { get; private set; } = default!;
 
+    [JsonIgnore]
     public KPI KPI
     {
         get => _kpi;

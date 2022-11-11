@@ -1,5 +1,6 @@
 ﻿using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.ValueObjects;
+using Newtonsoft.Json;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
 
@@ -7,6 +8,8 @@ public class InitiativeProjectProgress : ApprovableDbEntity
 {
     private EnumType _phaseEnum = default!;
     public EnumValue Phase { get; private set; } = default!;
+    
+    [JsonIgnore]
     public EnumType PhaseEnum
     {
         get => _phaseEnum;
@@ -22,6 +25,7 @@ public class InitiativeProjectProgress : ApprovableDbEntity
     public string PhaseStartedBy { get; set; } = default!;
     public string? PhaseEndedBy { get; set; }
     public bool Completed { get; set; }
+    [JsonIgnore]
     public InitiativeProject Project { get; set; } = default!;
     public Guid ProjectId { get; set; }
     
@@ -30,15 +34,11 @@ public class InitiativeProjectProgress : ApprovableDbEntity
         return new InitiativeProjectProgress
         {
             PhaseEnum = project.PhaseEnum,
-            PhaseStartedAt = project.CreatedAt,
-            PhaseStartedBy = project.CreatedBy
         };
     }
     
-    public void Complete(DateTimeOffset completedAt, string completedBy)
+    public void Complete()
     {
         Completed = true;
-        PhaseEndedAt = completedAt;
-        PhaseEndedBy = completedBy;
     } 
 }

@@ -1,8 +1,11 @@
-﻿using Moasher.Domain.Common.Interfaces;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using Moasher.Domain.Common.Interfaces;
 using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
 
+[Display(Name = "معالم")]
 public class InitiativeMilestone : InitiativeRelatedDbEntity, ISchedulable
 {
     public string Name { get; set; } = default!;

@@ -26,7 +26,7 @@ public class PortfolioUpdatedEventHandler : INotificationHandler<PortfolioUpdate
         {
             portfolio.Initiatives.ToList().ForEach(i => i.Portfolio = portfolio);
             _context.Initiatives.UpdateRange(portfolio.Initiatives);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
         }
     }
 }

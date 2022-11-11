@@ -1,8 +1,11 @@
-﻿using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
+﻿using System.ComponentModel.DataAnnotations;
+using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
 using Moasher.Domain.ValueObjects;
+using Newtonsoft.Json;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
 
+[Display(Name = "مخاطر")]
 public class InitiativeRisk : InitiativeRelatedDbEntity
 {
     private EnumType _typeEnum = default!;
@@ -13,6 +16,8 @@ public class InitiativeRisk : InitiativeRelatedDbEntity
 
     public string Description { get; set; } = default!;
     public EnumValue Type { get; set; } = default!;
+    
+    [JsonIgnore]
     public EnumType TypeEnum
     {
         get => _typeEnum;
@@ -25,6 +30,8 @@ public class InitiativeRisk : InitiativeRelatedDbEntity
     public Guid? TypeEnumId { get; set; }
 
     public EnumValue Priority { get; set; } = default!;
+    
+    [JsonIgnore]
     public EnumType PriorityEnum
     {
         get => _priorityEnum;
@@ -38,6 +45,7 @@ public class InitiativeRisk : InitiativeRelatedDbEntity
 
     public EnumValue Probability { get; set; } = default!;
 
+    [JsonIgnore]
     public EnumType ProbabilityEnum
     {
         get => _probabilityEnum;
@@ -51,6 +59,7 @@ public class InitiativeRisk : InitiativeRelatedDbEntity
 
     public EnumValue Impact { get; set; } = default!;
 
+    [JsonIgnore]
     public EnumType ImpactEnum
     {
         get => _impactEnum;
@@ -65,6 +74,7 @@ public class InitiativeRisk : InitiativeRelatedDbEntity
 
     public EnumValue Scope { get; set; } = default!;
 
+    [JsonIgnore]
     public EnumType ScopeEnum
     {
         get => _scopeEnum;

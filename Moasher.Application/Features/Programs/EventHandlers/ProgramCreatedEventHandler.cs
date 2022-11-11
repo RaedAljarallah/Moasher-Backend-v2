@@ -20,6 +20,6 @@ public class ProgramCreatedEventHandler : INotificationHandler<ProgramCreatedEve
         var program = notification.Program;
         var searchRecord = new Search(program.Id, program.Name, SearchCategory.Program);
         _context.SearchRecords.Add(searchRecord);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
     }
 }

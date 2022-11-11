@@ -31,6 +31,6 @@ public class LevelFourStrategicObjectiveUpdatedEventHandler : INotificationHandl
 
         _context.Initiatives.UpdateRange(initiatives);
         _context.KPIs.UpdateRange(kpis);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsyncFromDomainEvent(cancellationToken);
     }
 }

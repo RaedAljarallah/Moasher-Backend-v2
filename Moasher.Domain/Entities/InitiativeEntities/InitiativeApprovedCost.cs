@@ -1,7 +1,9 @@
-﻿using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
+﻿using System.ComponentModel.DataAnnotations;
+using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
 
+[Display(Name = "تكاليف معتمدة")]
 public class InitiativeApprovedCost : InitiativeRelatedDbEntity
 {
     public DateTimeOffset ApprovalDate { get; set; }
