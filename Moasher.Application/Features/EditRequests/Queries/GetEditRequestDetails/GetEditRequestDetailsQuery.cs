@@ -28,7 +28,9 @@ public class GetEditRequestDetailsQueryHandler : IRequestHandler<GetEditRequestD
         nameof(AuditableDbEntity.CreatedBy),
         nameof(AuditableDbEntity.LastModified),
         nameof(AuditableDbEntity.LastModifiedBy),
-        nameof(ApprovableDbEntity.Approved)
+        nameof(ApprovableDbEntity.Approved),
+        nameof(ApprovableDbEntity.HasDeleteRequest),
+        nameof(ApprovableDbEntity.HasUpdateRequest)
     };
 
     private IEnumerable<EnumType> _enumTypes = new List<EnumType>();

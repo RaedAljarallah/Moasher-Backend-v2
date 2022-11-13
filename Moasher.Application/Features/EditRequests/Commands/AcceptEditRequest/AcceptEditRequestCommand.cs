@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
+using Moasher.Application.Common.JsonContracts;
 using Moasher.Application.Common.Services;
 using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities.EditRequests;
@@ -24,14 +25,15 @@ public class AcceptEditRequestCommandHandler : IRequestHandler<AcceptEditRequest
     private readonly ICurrentUser _currentUser;
     private readonly IPublisher _publisher;
 
-    public AcceptEditRequestCommandHandler(IMoasherDbContext context, IMapper mapper, ICurrentUser currentUser, IPublisher publisher)
+    public AcceptEditRequestCommandHandler(IMoasherDbContext context, IMapper mapper, ICurrentUser currentUser,
+        IPublisher publisher)
     {
         _context = context;
         _mapper = mapper;
         _currentUser = currentUser;
         _publisher = publisher;
     }
-    
+
     public async Task<EditRequestDto> Handle(AcceptEditRequestCommand request, CancellationToken cancellationToken)
     {
         var editRequest = await _context.EditRequests
@@ -45,44 +47,75 @@ public class AcceptEditRequestCommandHandler : IRequestHandler<AcceptEditRequest
             throw new NotFoundException();
         }
 
-        var entries = editRequest.Snapshots.Select(s => new {Id = s.ModelId, Table = s.TableName}).ToList();
-        
-        if (editRequest.Type == EditRequestType.Create)
+        foreach (var entry in editRequest.Snapshots)
         {
-            foreach (var entry in entries)
+            var set = _context.GetSet<ApprovableDbEntity>(entry.TableName);
+            if (set is not null)
             {
-                var set = _context.GetSet<ApprovableDbEntity>(entry.Table);
-                if (set is not null)
+                if (editRequest.Type == EditRequestType.Create)
                 {
-                    var result = await set.FirstOrDefaultAsync(s => s.Id == entry.Id, cancellationToken);
+                    var result = await set.FirstOrDefaultAsync(s => s.Id == entry.ModelId, cancellationToken);
                     if (result != null)
                     {
                         result.Approved = true;
                         await _context.SaveChangesAsyncFromInternalProcess(cancellationToken);
                     }
                 }
-            }
-        }
 
-        if (editRequest.Type == EditRequestType.Delete)
-        {
-            foreach (var entry in entries)
-            {
-                var set = _context.GetSet<ApprovableDbEntity>(entry.Table);
-                if (set is not null)
+                if (editRequest.Type == EditRequestType.Delete)
                 {
-                    var result = await set.FirstOrDefaultAsync(s => s.Id == entry.Id, cancellationToken);
+                    var result = await set.FirstOrDefaultAsync(s => s.Id == entry.ModelId, cancellationToken);
                     if (result != null)
                     {
                         _context.RemoveEntity(result);
                         await _context.SaveChangesAsyncFromInternalProcess(cancellationToken);
                     }
                 }
+
+                if (editRequest.Type == EditRequestType.Update)
+                {
+                    var result = await set
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(s => s.Id == entry.ModelId, cancellationToken);
+                    if (result != null)
+                    {
+                        var currentState =
+                            JsonConvert.DeserializeObject<Dictionary<string, object>>(
+                                JsonConvert.SerializeObject(result));
+                        if (currentState is null) continue;
+
+                        var newState =
+                            JsonConvert.DeserializeObject<Dictionary<string, object>>(entry.OriginalValues ??
+                                string.Empty);
+                        if (newState is null) continue;
+
+                        foreach (var key in newState.Keys.Where(key => key != nameof(ApprovableDbEntity.Id)))
+                        {
+                            currentState[key] = newState[key];
+                        }
+
+                        currentState[nameof(ApprovableDbEntity.Approved)] = true;
+                        currentState[nameof(ApprovableDbEntity.HasUpdateRequest)] = false;
+
+                        var entryType = AttributeServices.GetType<EditRequest>(entry.ModelName);
+                        if (entryType is null) continue;
+
+                        var updatedEntry =
+                            JsonConvert.DeserializeObject(JsonConvert.SerializeObject(currentState), entryType,
+                                new JsonSerializerSettings
+                                {
+                                    ContractResolver = new PrivateSetterContractResolver()
+                                });
+                        if (updatedEntry is null) continue;
+
+                        _context.UpdateEntity(updatedEntry);
+                        await _context.SaveChangesAsyncFromInternalProcess(cancellationToken);
+                    }
+                }
             }
         }
-        
-        
-        if (editRequest.HasEvents && editRequest.Events is { Length: > 0 })
+
+        if (editRequest.HasEvents && editRequest.Events is {Length: > 0})
         {
             var editRequestEvents =
                 JsonConvert.DeserializeObject<Dictionary<string, object>>(editRequest.Events);
@@ -98,7 +131,9 @@ public class AcceptEditRequestCommandHandler : IRequestHandler<AcceptEditRequest
                     var eventArgumentName = eventKeys.Last();
                     var eventArgumentType = AttributeServices.GetType<EditRequest>(eventArgumentName);
                     if (eventArgumentType is null) continue;
-                    var eventArgumentValues = JsonConvert.DeserializeObject(editRequestEvent.Value.ToString() ?? string.Empty, eventArgumentType);
+                    var eventArgumentValues =
+                        JsonConvert.DeserializeObject(editRequestEvent.Value.ToString() ?? string.Empty,
+                            eventArgumentType);
                     if (eventArgumentValues is null) continue;
                     var domainEvent = AttributeServices.CreateInstance<DomainEvent>(eventType, eventArgumentValues);
                     if (domainEvent is null) continue;

@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Moasher.Domain.Common.Abstracts;
+using Moasher.Domain.Common.Interfaces;
 using Moasher.Domain.Enums;
 using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Domain.Entities;
 
-public class EnumType : AuditableDbEntity
+public class EnumType : AuditableDbEntity, IRootEntity
 {
     public string Category { get; set; } = default!;
     public string Name { get; set; } = default!;

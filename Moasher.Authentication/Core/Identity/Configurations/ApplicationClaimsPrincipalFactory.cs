@@ -3,6 +3,7 @@ using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Moasher.Authentication.Core.Identity.Entities;
+using Moasher.Authentication.Core.Identity.Extensions;
 
 namespace Moasher.Authentication.Core.Identity.Configurations;
 
@@ -16,10 +17,11 @@ public class ApplicationClaimsPrincipalFactory : UserClaimsPrincipalFactory<User
     protected override async Task<ClaimsIdentity> GenerateClaimsAsync(User user)
     {
         var identity = await base.GenerateClaimsAsync(user);
+        var userRole = await UserManager.GetRoleAsync(user);
         var claims = new List<Claim>
         {
             new(JwtClaimTypes.Name, user.GetFullName()),
-            new(JwtClaimTypes.Role, user.Role),
+            new(JwtClaimTypes.Role, userRole),
             new(JwtClaimTypes.Email, user.Email)
         };
         

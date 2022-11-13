@@ -66,12 +66,27 @@ public class InitiativeIssue : InitiativeRelatedDbEntity
     [Display(Name = "الأثر")]
     public Guid? ImpactEnumId { get; set; }
     
+    [Display(Name = "وصف الأثر")]
     public string ImpactDescription { get; set; } = default!;
+    
+    [Display(Name = "مصدر المعوق")]
     public string Source { get; set; } = default!;
+    
+    [Display(Name = "سبب المعوق")]
     public string Reason { get; set; } = default!;
+    
+    [Display(Name = "الحل المقترح")]
     public string Resolution { get; set; } = default!;
+    
+    [Display(Name = "تاريخ الحل المتوقع")]
     public DateTimeOffset? EstimatedResolutionDate { get; set; }
+    
+    [Display(Name = "رفع بتاريخ")]
     public DateTimeOffset RaisedAt { get; set; }
+    
+    [Display(Name = "رفع بواسطة")]
     public string RaisedBy { get; set; } = default!;
+    
+    [Display(Name = "أغلق بتاريخ")]
     public DateTimeOffset? ClosedAt { get; set; }
 }

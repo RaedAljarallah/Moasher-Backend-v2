@@ -33,4 +33,10 @@ public static class UserManagerExtension
         return userManager.VerifyUserTokenAsync(user, IdentityTokenProviders.Activation,
             IdentityTokenPurposes.Activation, token);
     }
+
+    public static async Task<string> GetRoleAsync(this UserManager<User> userManager, User user)
+    {
+        var userRoles = await userManager.GetRolesAsync(user);
+        return userRoles.Any() ? userRoles.First().ToUpper() : string.Empty;
+    }
 }

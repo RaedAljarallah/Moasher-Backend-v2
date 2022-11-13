@@ -1,11 +1,12 @@
 ﻿using Moasher.Domain.Common.Abstracts;
+using Moasher.Domain.Common.Interfaces;
 using Moasher.Domain.Entities.StrategicObjectiveEntities;
 using Moasher.Domain.Enums;
 using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Domain.Entities.KPIEntities;
 
-public class KPI : AuditableDbEntity
+public class KPI : AuditableDbEntity, IRootEntity
 {
     private EnumType? _statusEnum;
     private Entity _entity = default!;

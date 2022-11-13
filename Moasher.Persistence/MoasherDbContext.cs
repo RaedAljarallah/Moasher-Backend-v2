@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Common.Abstracts;
+using Moasher.Domain.Common.Interfaces;
 using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.EditRequests;
 using Moasher.Domain.Entities.InitiativeEntities;
@@ -43,12 +44,16 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
     {
         Remove(entity);
     }
-    
 
+    public void UpdateEntity(object entity)
+    {
+        Update(entity);
+    }
+    
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         HandelAuditableEntries();
-        HandelEditRequests();
+        await HandelEditRequests(cancellationToken);
         var events = GetDomainEvents();
         var result = await base.SaveChangesAsync(cancellationToken);
         await DispatchEvents(events);
@@ -104,12 +109,13 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
         }
     }
 
-    private void HandelEditRequests()
+    private async Task HandelEditRequests(CancellationToken cancellationToken = new())
     {
         var approved = _currentUser.IsSuperAdmin() || _currentUser.IsAdmin();
         var editRequest = new EditRequest {Code = Guid.NewGuid().ToString()};
         var events = new Dictionary<string, object>();
         var hasEditRequest = false;
+
         foreach (var entry in ChangeTracker.Entries<ApprovableDbEntity>())
         {
             if (approved)
@@ -164,7 +170,7 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
                         break;
                     case EntityState.Modified:
                         editRequest.Type = EditRequestType.Update;
-                        snapshotValues[propertyName] = property.OriginalValue;
+                        snapshotValues[propertyName] = property.CurrentValue;
                         hasEditRequest = true;
                         break;
                     case EntityState.Deleted:
@@ -179,13 +185,26 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
             {
                 // We need to keep the entity's parent last status,
                 // so we set Entity.Approved to true to prevent domain events from changing the status
-                // instead we set Entity.IsDeleted to true, so we can capture the edite request
+                // instead we set Entity.HasDeleteRequest to true, so we can capture the edite request
                 // we need to keep the entity on the db, so we change the tracker to Modified
                 entry.Entity.Approved = true;
-                entry.Entity.IsDeleted = true;
+                entry.Entity.HasDeleteRequest = true;
                 entry.State = EntityState.Modified;
             }
-            
+
+            if (editRequest.Type == EditRequestType.Update)
+            {
+                // We need to keep the entity's parent last status,
+                // so we set Entity.Approved to true to prevent domain events from changing the status
+                // instead we set Entity.HasUpdateRequest to true, so we can capture the edite request
+                // we need to keep the entity on the db, so we replace current values with the original values by reloading the entity
+                //var ggg = entry.Entity;
+                await entry.ReloadAsync(cancellationToken);
+                //await entry.Reference("ScopeEnum").LoadAsync(cancellationToken);
+                entry.Entity.Approved = true;
+                entry.Entity.HasUpdateRequest = true;
+            }
+
             if (snapshotValues.Any())
             {
                 snapshot.OriginalValues = JsonConvert.SerializeObject(snapshotValues);

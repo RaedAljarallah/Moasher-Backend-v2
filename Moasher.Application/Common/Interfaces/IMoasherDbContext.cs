@@ -38,6 +38,7 @@ public interface IMoasherDbContext
     public DbSet<EditRequest> EditRequests { get; }
     public IQueryable<T>? GetSet<T>(string tableName);
     public void RemoveEntity(object entity);
+    public void UpdateEntity(object entity);
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     public Task<int> SaveChangesAsyncFromDomainEvent(CancellationToken cancellationToken);
     public Task<int> SaveChangesAsyncFromInternalProcess(CancellationToken cancellationToken);

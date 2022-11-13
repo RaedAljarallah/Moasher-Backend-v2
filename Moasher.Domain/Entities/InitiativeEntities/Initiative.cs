@@ -1,10 +1,11 @@
 ﻿using Moasher.Domain.Common.Abstracts;
+using Moasher.Domain.Common.Interfaces;
 using Moasher.Domain.Entities.StrategicObjectiveEntities;
 using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
 
-public class Initiative : AuditableDbEntity
+public class Initiative : AuditableDbEntity, IRootEntity
 {
     private EnumType? _statusEnum;
     private EnumType _fundStatusEnum = default!;

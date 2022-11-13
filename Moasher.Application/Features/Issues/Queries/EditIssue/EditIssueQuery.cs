@@ -26,9 +26,9 @@ public class EditIssueQueryHandler : IRequestHandler<EditIssueQuery, EditIssueDt
     {
         var issue = await _context.InitiativeIssues
             .AsNoTracking()
-            .Include(i => i.ScopeEnum)
-            .Include(i => i.StatusEnum)
-            .Include(i => i.ImpactEnum)
+             .Include(i => i.ScopeEnum)
+             .Include(i => i.StatusEnum)
+             .Include(i => i.ImpactEnum)
             .AsSplitQuery()
             .FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken);
 
@@ -36,7 +36,7 @@ public class EditIssueQueryHandler : IRequestHandler<EditIssueQuery, EditIssueDt
         {
             throw new NotFoundException();
         }
-
+        
         return _mapper.Map<EditIssueDto>(issue);
     }
 }

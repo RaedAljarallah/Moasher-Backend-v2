@@ -1,10 +1,11 @@
 ﻿using Moasher.Domain.Common.Abstracts;
+using Moasher.Domain.Common.Interfaces;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Entities.KPIEntities;
 
 namespace Moasher.Domain.Entities;
 
-public class Entity : AuditableDbEntity
+public class Entity : AuditableDbEntity, IRootEntity
 {
     public string Code { get; set; } = default!;
     public string Name { get; set; } = default!;
