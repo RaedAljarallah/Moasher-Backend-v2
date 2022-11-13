@@ -7,6 +7,7 @@ using Moasher.Application.Features.Contracts.Queries.EditContract;
 using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Common.Extensions;
 using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Application.Common.Mappings;
 
@@ -16,6 +17,7 @@ public class ContractMappings : Profile
     {
         CreateMap<InitiativeContract, ContractDto>()
             .IncludeBase<AuditableDbEntity, DtoBase>()
+            .ForMember(c => c.Status, opt => opt.MapFrom(c => new EnumValue(c.StatusName, c.StatusStyle)))
             .ForMember(c => c.PlannedExpenditureToDate, opt => opt.MapFrom(c => c.GetPlannedExpenditureToDate()));
 
         CreateMap<CreateContractCommand, InitiativeContract>()

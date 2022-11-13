@@ -13,11 +13,10 @@ public class EditRequest : IDbEntity
     public DateTimeOffset RequestedAt { get; set; }
     public string RequestedBy { get; set; } = default!;
     public string? ActionBy { get; set; }
+    public string? Justification { get; set; }
     public DateTimeOffset? ActionAt { get; set; }
     public bool HasEvents { get; set; }
     public string? Events { get; set; }
-    // public string? EventArguments { get; set; }
-    // public string? EventArgumentTypes { get; set; }
     public ICollection<EditRequestSnapshot> Snapshots { get; set; }
         = new HashSet<EditRequestSnapshot>();
 

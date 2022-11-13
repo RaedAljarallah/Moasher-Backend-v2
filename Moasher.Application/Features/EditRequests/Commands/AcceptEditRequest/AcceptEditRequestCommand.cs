@@ -52,7 +52,7 @@ public class AcceptEditRequestCommandHandler : IRequestHandler<AcceptEditRequest
             var set = _context.GetSet<ApprovableDbEntity>(entry.TableName);
             if (set is not null)
             {
-                if (editRequest.Type == EditRequestType.Create)
+                if (entry.Type == EditRequestType.Create)
                 {
                     var result = await set.FirstOrDefaultAsync(s => s.Id == entry.ModelId, cancellationToken);
                     if (result != null)
@@ -62,7 +62,7 @@ public class AcceptEditRequestCommandHandler : IRequestHandler<AcceptEditRequest
                     }
                 }
 
-                if (editRequest.Type == EditRequestType.Delete)
+                if (entry.Type == EditRequestType.Delete)
                 {
                     var result = await set.FirstOrDefaultAsync(s => s.Id == entry.ModelId, cancellationToken);
                     if (result != null)
@@ -72,7 +72,7 @@ public class AcceptEditRequestCommandHandler : IRequestHandler<AcceptEditRequest
                     }
                 }
 
-                if (editRequest.Type == EditRequestType.Update)
+                if (entry.Type == EditRequestType.Update)
                 {
                     var result = await set
                         .AsNoTracking()

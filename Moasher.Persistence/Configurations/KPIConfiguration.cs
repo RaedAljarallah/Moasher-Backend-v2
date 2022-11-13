@@ -10,8 +10,6 @@ public class KPIConfiguration : ConfigurationBase<KPI>
     {
         base.Configure(builder);
         
-        builder.OwnsOne(i => i.Status);
-        
         builder.Ignore(k => k.LevelOneStrategicObjective);
         builder.Ignore(k => k.LevelTwoStrategicObjective);
         builder.Ignore(k => k.LevelFourStrategicObjective);

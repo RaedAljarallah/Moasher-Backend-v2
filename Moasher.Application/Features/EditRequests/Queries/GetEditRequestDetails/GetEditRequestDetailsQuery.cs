@@ -1,12 +1,9 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Common.Services;
 using Moasher.Domain.Common.Abstracts;
-using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.EditRequests;
 using Newtonsoft.Json;
 
@@ -33,8 +30,6 @@ public class GetEditRequestDetailsQueryHandler : IRequestHandler<GetEditRequestD
         nameof(ApprovableDbEntity.HasUpdateRequest)
     };
 
-    private IEnumerable<EnumType> _enumTypes = new List<EnumType>();
-
     public GetEditRequestDetailsQueryHandler(IMoasherDbContext context)
     {
         _context = context;
@@ -53,16 +48,13 @@ public class GetEditRequestDetailsQueryHandler : IRequestHandler<GetEditRequestD
         {
             throw new NotFoundException();
         }
-
-        _enumTypes = await _context.EnumTypes
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
-
+        
         var editScopes = editRequest.GetEditScopes();
         var originalValues = new List<EditRequestValue>();
         foreach (var scope in editScopes)
         {
-            var editRequestValue = new EditRequestValue {ModelName = AttributeServices.GetDisplayName<EditRequest>(scope)};
+            var editRequestValue = new EditRequestValue
+                {ModelName = AttributeServices.GetDisplayName<EditRequest>(scope)};
             var editSnapshots = editRequest.Snapshots
                 .Where(s => s.ModelName == scope)
                 .Where(s => s.OriginalValues is not null)
@@ -91,38 +83,12 @@ public class GetEditRequestDetailsQueryHandler : IRequestHandler<GetEditRequestD
     private Dictionary<string, object> ParseKeysToDisplayName(Dictionary<string, object> values,
         string modelName)
     {
-        var result = new Dictionary<string, object>();
-        foreach (var value in values.Where(value => !_ignoredFields.Contains(value.Key)))
-        {
-            if (value.Key.EndsWith("EnumId"))
-            {
-                try
-                {
-                    if (Guid.TryParse($"{value.Value}", out var enumId))
-                    {
-                        var enumTypeName = _enumTypes.FirstOrDefault(e => e.Id == enumId)?.Name;
-                        result.Add(AttributeServices.GetDisplayName<EditRequest>(modelName, value.Key),
-                            enumTypeName ?? string.Empty);
-                    }
-                    
-                }
-                catch (Exception)
-                {
-                    result.Add(AttributeServices.GetDisplayName<EditRequest>(modelName, value.Key), value.Value);
-                }
-                
-            }
-
-            if (value.Key.EndsWith("Id"))
-            {
-                continue;
-            }
-
-            result.Add(AttributeServices.GetDisplayName<EditRequest>(modelName, value.Key),
-                GetFormattedValue(value.Value));
-        }
-
-        return result;
+        return values
+            .Where(value => !_ignoredFields.Contains(value.Key))
+            .Where(value => !value.Key.EndsWith("Id"))
+            .Where(value => !value.Key.EndsWith("Style"))
+            .ToDictionary(value => AttributeServices.GetDisplayName<EditRequest>(modelName, value.Key),
+                value => GetFormattedValue(value.Value));
     }
 
     private static object GetFormattedValue(object value)

@@ -2,7 +2,6 @@
 using Moasher.Domain.Common.Interfaces;
 using Moasher.Domain.Entities.StrategicObjectiveEntities;
 using Moasher.Domain.Enums;
-using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Domain.Entities.KPIEntities;
 
@@ -38,7 +37,9 @@ public class KPI : AuditableDbEntity, IRootEntity
     public bool Visible { get; set; }
     public bool VisibleOnDashboard { get; set; }
     public bool CalculateStatus { get; set; }
-    public EnumValue Status { get; private set; } = default!;
+
+    public string? StatusName { get; private set; }
+    public string? StatusStyle { get; private set; }
 
     public EnumType? StatusEnum
     {
@@ -46,7 +47,8 @@ public class KPI : AuditableDbEntity, IRootEntity
         set
         {
             _statusEnum = value;
-            Status = value != null ? new EnumValue(value.Name, value.Style) : new EnumValue();
+            StatusName = value?.Name;
+            StatusStyle = value?.Style;
         }
     }
 

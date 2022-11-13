@@ -1,10 +1,7 @@
-﻿using System.Reflection;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Common.Abstracts;
-using Moasher.Domain.Common.Interfaces;
-using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.EditRequests;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Enums;
@@ -112,11 +109,10 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
     private async Task HandelEditRequests(CancellationToken cancellationToken = new())
     {
         var approved = _currentUser.IsSuperAdmin() || _currentUser.IsAdmin();
-        var editRequest = new EditRequest {Code = Guid.NewGuid().ToString()};
+        var editRequest = new EditRequest();
         var events = new Dictionary<string, object>();
         var hasEditRequest = false;
-
-        foreach (var entry in ChangeTracker.Entries<ApprovableDbEntity>())
+        foreach (var entry in ChangeTracker.Entries<ApprovableDbEntity>().ToList())
         {
             if (approved)
             {
@@ -165,16 +161,19 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
                 {
                     case EntityState.Added:
                         editRequest.Type = EditRequestType.Create;
+                        snapshot.Type = EditRequestType.Create;
                         snapshotValues[propertyName] = property.CurrentValue;
                         hasEditRequest = true;
                         break;
                     case EntityState.Modified:
                         editRequest.Type = EditRequestType.Update;
+                        snapshot.Type = EditRequestType.Update;
                         snapshotValues[propertyName] = property.CurrentValue;
                         hasEditRequest = true;
                         break;
                     case EntityState.Deleted:
                         editRequest.Type = EditRequestType.Delete;
+                        snapshot.Type = EditRequestType.Delete;
                         snapshotValues[propertyName] = property.OriginalValue;
                         hasEditRequest = true;
                         break;

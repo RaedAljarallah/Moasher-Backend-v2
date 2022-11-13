@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Moasher.Persistence;
 
@@ -11,9 +12,10 @@ using Moasher.Persistence;
 namespace Moasher.Persistence.Migrations
 {
     [DbContext(typeof(MoasherDbContext))]
-    partial class MoasherDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221113165415_RefactorEditRequestTable")]
+    partial class RefactorEditRequestTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,8 +23,6 @@ namespace Moasher.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.HasSequence<int>("ERCodeSequence", "dbo");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
@@ -194,14 +194,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("nvarchar(450)")
-                        .HasComputedColumnSql("('ER-'+right(replicate('0',(5))+CONVERT([varchar],[CodeInc]),(5)))");
-
-                    b.Property<int>("CodeInc")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValueSql("NEXT VALUE FOR dbo.ERCodeSequence");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Events")
                         .HasColumnType("nvarchar(max)");
@@ -226,9 +219,6 @@ namespace Moasher.Persistence.Migrations
                         .HasColumnType("tinyint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
 
                     b.ToTable("EditRequests");
                 });
@@ -305,9 +295,9 @@ namespace Moasher.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("4fa564cb-b53a-43e1-a401-017e844418b8"),
+                            Id = new Guid("84a0595b-4db1-4f1c-96e2-1217443bba87"),
                             Code = "VRO",
-                            CreatedAt = new DateTimeOffset(new DateTime(2022, 11, 13, 20, 35, 59, 624, DateTimeKind.Unspecified).AddTicks(8689), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreatedAt = new DateTimeOffset(new DateTime(2022, 11, 13, 19, 54, 15, 267, DateTimeKind.Unspecified).AddTicks(5740), new TimeSpan(0, 0, 0, 0, 0)),
                             CreatedBy = "System",
                             IsOrganizer = true,
                             Name = "مكتب تحقيق الرؤية"
@@ -1948,64 +1938,64 @@ namespace Moasher.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("8d24a178-f873-4128-8f83-b6d3e469dfd4"),
-                            ConcurrencyStamp = "6a629344-a0f8-4e90-9497-04c2456f283a",
+                            Id = new Guid("87b94c08-4e22-4f7f-b08a-a2fd294b5687"),
+                            ConcurrencyStamp = "7cd8d134-d022-48fc-ad8c-b8e9e66b0261",
                             LocalizedName = "مدير النظام",
                             Name = "SuperAdmin",
                             NormalizedName = "SUPERADMIN"
                         },
                         new
                         {
-                            Id = new Guid("807bc649-a38a-4032-9a19-f43d22762dab"),
-                            ConcurrencyStamp = "753277fa-a91b-4640-ab99-bf644cd2458e",
+                            Id = new Guid("b0cfd091-6ecf-4906-87cf-057e02398957"),
+                            ConcurrencyStamp = "173407bc-d33d-47c1-869d-e1a851d5f900",
                             LocalizedName = "مشرف",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("30291ca4-9868-487f-bef5-be04948000a7"),
-                            ConcurrencyStamp = "03cdffbd-5beb-4b75-a87e-bb028544227b",
+                            Id = new Guid("6a9eed88-7e83-4eb3-b59e-ed4a56f177ae"),
+                            ConcurrencyStamp = "2ea040c2-ba63-4428-94b1-13b96adddfca",
                             LocalizedName = "مدقق بيانات",
                             Name = "DataAssurance",
                             NormalizedName = "DATAASSURANCE"
                         },
                         new
                         {
-                            Id = new Guid("1d15a3d0-14eb-444c-8529-cdc0c20f157f"),
-                            ConcurrencyStamp = "45c30276-41d9-45da-963d-40735bedc58d",
+                            Id = new Guid("5f4ff2ce-23a8-4523-83a0-d33212d89505"),
+                            ConcurrencyStamp = "09131750-36f1-4835-abfa-4d4aec7ba05a",
                             LocalizedName = "مسؤول مالي",
                             Name = "FinancialOperator",
                             NormalizedName = "FINANCIALOPERATOR"
                         },
                         new
                         {
-                            Id = new Guid("98ed961b-df20-4ce7-ac25-467e5afbb213"),
-                            ConcurrencyStamp = "a47627d6-1e89-4779-81e4-8b0f4c442d4f",
+                            Id = new Guid("dd977bb3-a874-4131-b353-3443fedddbfe"),
+                            ConcurrencyStamp = "c7d8a47a-d3b3-4b8f-b59b-becb216ad7ff",
                             LocalizedName = "مسؤول تنفيذ",
                             Name = "ExecutionOperator",
                             NormalizedName = "EXECUTIONOPERATOR"
                         },
                         new
                         {
-                            Id = new Guid("2d73ee2e-2156-42cb-b451-78bbdaa956af"),
-                            ConcurrencyStamp = "e8f1f2bf-c0b0-4593-a515-356a1517737a",
+                            Id = new Guid("0af7ed6b-cf4a-43ae-96d1-499d83b7a845"),
+                            ConcurrencyStamp = "1d31c00d-5353-47f8-bf2b-83bade53b7d6",
                             LocalizedName = "مسؤول مؤشرات أداء",
                             Name = "KPIsOperator",
                             NormalizedName = "KPISOPERATOR"
                         },
                         new
                         {
-                            Id = new Guid("e7bbf502-69c0-4e35-b544-67b359bcb0d5"),
-                            ConcurrencyStamp = "e4ee20fc-9636-4a75-bf05-1f24298994ac",
+                            Id = new Guid("89b3bd58-0e92-4bb2-8e1c-c969f477a69c"),
+                            ConcurrencyStamp = "0ac2d32d-5a42-4528-aa26-57f9f91043e5",
                             LocalizedName = "مستخدم جهة",
                             Name = "EntityUser",
                             NormalizedName = "ENTITYUSER"
                         },
                         new
                         {
-                            Id = new Guid("395365f8-b4c3-40cd-99ad-96cd4763ecde"),
-                            ConcurrencyStamp = "dce382a9-e5b4-4aab-8b11-08a4d0449223",
+                            Id = new Guid("4b879510-3101-4f31-9e4e-18391a04f67b"),
+                            ConcurrencyStamp = "47879ac5-f671-4ae6-a8cd-e8590bb0907e",
                             LocalizedName = "مستعرض جميع البيانات",
                             Name = "FullAccessViewer",
                             NormalizedName = "FULLACCESSVIEWER"

@@ -1,4 +1,5 @@
 ﻿using Moasher.Application.Common.Abstracts;
+using Moasher.Application.Common.Extensions;
 using Moasher.Domain.Entities.EditRequests;
 using Moasher.Domain.Enums;
 
@@ -15,6 +16,11 @@ public class GetEditRequestsQueryParameter : IQueryParameterBuilder<EditRequest>
     
     public IQueryable<EditRequest> Build(IQueryable<EditRequest> query)
     {
+        if (!string.IsNullOrWhiteSpace(_parameter.SearchQuery))
+        {
+            query = query.Where(e => e.Code == _parameter.SearchQuery);
+        }
+        
         if (!string.IsNullOrWhiteSpace(_parameter.Status))
         {
             if (string.Equals(_parameter.Status, EditRequestStatus.Approved.ToString(),

@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
-using Moasher.Domain.ValueObjects;
 using Newtonsoft.Json;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
@@ -12,8 +11,10 @@ public class InitiativeTeam : InitiativeRelatedDbEntity
     public string Name { get; set; } = default!;
     public string Email { get; set; } = default!;
     public string Phone { get; set; } = default!;
-    public EnumValue Role { get; set; } = default!;
 
+    public string RoleName { get; private set; } = default!;
+    public string RoleStyle { get; private set; } = default!;
+    
     [JsonIgnore]
     public EnumType RoleEnum
     {
@@ -21,7 +22,8 @@ public class InitiativeTeam : InitiativeRelatedDbEntity
         set
         {
             _roleEnum = value;
-            Role = new EnumValue(value.Name, value.Style);
+            RoleName = value.Name;
+            RoleStyle = value.Style;
         }
     }
 

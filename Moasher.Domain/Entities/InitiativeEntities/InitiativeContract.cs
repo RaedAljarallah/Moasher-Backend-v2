@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
-using Moasher.Domain.ValueObjects;
 using Newtonsoft.Json;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
@@ -24,10 +23,11 @@ public class InitiativeContract : InitiativeRelatedDbEntity
     
     [Display(Name = "الرقم المرجعي")]
     public string? RefNumber { get; set; }
-    
-    [JsonIgnore]
-    public EnumValue Status { get; private set; } = default!;
-    
+
+    [Display(Name = "الحالة")]
+    public string StatusName { get; private set; } = default!;
+    public string StatusStyle { get; private set; } = default!;
+
     [JsonIgnore]
     public EnumType StatusEnum
     {
@@ -35,11 +35,11 @@ public class InitiativeContract : InitiativeRelatedDbEntity
         set
         {
             _statusEnum = value;
-            Status = new EnumValue(value.Name, value.Style);
+            StatusName = value.Name;
+            StatusStyle = value.Style;
         }
     }
     
-    [Display(Name = "الحالة")]
     public Guid? StatusEnumId { get; set; }
     
     [Display(Name = "المورد")]

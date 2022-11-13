@@ -10,6 +10,5 @@ public class InitiativeProjectConfiguration : ConfigurationBase<InitiativeProjec
     {
         base.Configure(builder);
         builder.Property(p => p.EstimatedAmount).HasPrecision(18, 6);
-        builder.OwnsOne(p => p.Phase);
     }
 }

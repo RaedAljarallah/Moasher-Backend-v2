@@ -4,6 +4,7 @@ using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Common.Services;
 using Moasher.Domain.Common.Extensions;
+using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Application.Features.Initiatives.Queries.GetInitiativesSummary;
 
@@ -43,8 +44,12 @@ public class GetInitiativesSummaryQueryHandler : IRequestHandler<GetInitiativesS
         var summaryDto = new InitiativeSummaryDto();
         initiatives.ForEach(i =>
         {
-            summaryDto.Statuses.Add(i.Status);
-            summaryDto.FundStatuses.Add(i.FundStatus);
+            if (i.StatusName != null && i.StatusStyle != null)
+            {
+                summaryDto.Statuses.Add(new EnumValue(i.StatusName, i.StatusStyle));
+            }
+            
+            summaryDto.FundStatuses.Add(new EnumValue(i.FundStatusName, i.FundStatusStyle));
             summaryDto.ApprovedCost += i.ApprovedCost ?? 0m;
             summaryDto.RequiredCost += i.RequiredCost;
             summaryDto.ContractsAmount += i.ContractsAmount ?? 0m;

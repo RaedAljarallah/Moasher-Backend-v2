@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
-using Moasher.Domain.ValueObjects;
 using Newtonsoft.Json;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
@@ -30,9 +29,10 @@ public class InitiativeProject : InitiativeRelatedDbEntity
     
     [Display(Name = "القيمة التقديرية")]
     public decimal EstimatedAmount { get; set; }
-    
-    [JsonIgnore]
-    public EnumValue Phase { get; private set; } = default!;
+
+    [Display(Name = "المرحلة")]
+    public string PhaseName { get; private set; } = default!;
+    public string PhaseStyle { get; private set; } = default!;
     
     [JsonIgnore]
     public EnumType PhaseEnum
@@ -41,11 +41,11 @@ public class InitiativeProject : InitiativeRelatedDbEntity
         set
         {
             _phaseEnum = value;
-            Phase = new EnumValue(value.Name, value.Style);
+            PhaseName = value.Name;
+            PhaseStyle = value.Style;
         }
     }
     
-    [Display(Name = "المرحلة")]
     public Guid? PhaseEnumId { get; set; }
     
     [Display(Name = "تم التعاقد؟")]

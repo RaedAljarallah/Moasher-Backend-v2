@@ -49,7 +49,6 @@ public abstract class MoasherDbContextBase : IdentityDbContext<User, Role, Guid>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
         builder.Entity<User>().ToTable("Users");
         builder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
         builder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
@@ -57,7 +56,7 @@ public abstract class MoasherDbContextBase : IdentityDbContext<User, Role, Guid>
         builder.Entity<Role>().ToTable("Roles");
         builder.Entity<IdentityRoleClaim<Guid>>().ToTable("RoleClaims");
         builder.Entity<IdentityUserRole<Guid>>().ToTable("UserRoles");
-
+        builder.HasSequence<int>("ERCodeSequence", schema: "dbo").StartsAt(1).IncrementsBy(1);
         builder.ApplyConfigurationsFromAssembly(typeof(MoasherDbContext).Assembly);
 
         builder.SeedRoles();

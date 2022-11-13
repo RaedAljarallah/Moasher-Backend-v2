@@ -9,7 +9,6 @@ public class InitiativeProjectProgressConfiguration: IEntityTypeConfiguration<In
     public void Configure(EntityTypeBuilder<InitiativeProjectProgress> builder)
     {
         builder.Ignore(p => p.DomainEvents);
-        builder.OwnsOne(p => p.Phase);
         builder.Property(e => e.PhaseStartedBy).HasMaxLength(256).IsRequired();
         builder.Property(e => e.PhaseStartedAt).IsRequired();
         builder.Property(e => e.PhaseEndedBy).HasMaxLength(256);

@@ -6,6 +6,7 @@ using Moasher.Application.Features.Risks.Commands.UpdateRisk;
 using Moasher.Application.Features.Risks.Queries.EditRisk;
 using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Application.Common.Mappings;
 
@@ -14,7 +15,13 @@ public class RiskMappings : Profile
     public RiskMappings()
     {
         CreateMap<InitiativeRisk, RiskDto>()
-            .IncludeBase<AuditableDbEntity, DtoBase>();
+            .IncludeBase<AuditableDbEntity, DtoBase>()
+            .ForMember(r => r.Type, opt => opt.MapFrom(r => new EnumValue(r.TypeName, r.TypeStyle)))
+            .ForMember(r => r.Priority, opt => opt.MapFrom(r => new EnumValue(r.PriorityName, r.PriorityStyle)))
+            .ForMember(r => r.Probability,
+                opt => opt.MapFrom(r => new EnumValue(r.ProbabilityName, r.ProbabilityStyle)))
+            .ForMember(r => r.Impact, opt => opt.MapFrom(r => new EnumValue(r.ImpactName, r.ImpactStyle)))
+            .ForMember(r => r.Scope, opt => opt.MapFrom(r => new EnumValue(r.ScopeName, r.ScopeStyle)));
         
         CreateMap<CreateRiskCommand, InitiativeRisk>();
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Moasher.Persistence;
 
@@ -11,9 +12,10 @@ using Moasher.Persistence;
 namespace Moasher.Persistence.Migrations
 {
     [DbContext(typeof(MoasherDbContext))]
-    partial class MoasherDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221113152311_ConvetIssusEnumValuesToString")]
+    partial class ConvetIssusEnumValuesToString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,8 +23,6 @@ namespace Moasher.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.HasSequence<int>("ERCodeSequence", "dbo");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
@@ -194,23 +194,13 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("nvarchar(450)")
-                        .HasComputedColumnSql("('ER-'+right(replicate('0',(5))+CONVERT([varchar],[CodeInc]),(5)))");
-
-                    b.Property<int>("CodeInc")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValueSql("NEXT VALUE FOR dbo.ERCodeSequence");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Events")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("HasEvents")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Justification")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("RequestedAt")
                         .HasColumnType("datetimeoffset");
@@ -226,9 +216,6 @@ namespace Moasher.Persistence.Migrations
                         .HasColumnType("tinyint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
 
                     b.ToTable("EditRequests");
                 });
@@ -255,9 +242,6 @@ namespace Moasher.Persistence.Migrations
                     b.Property<string>("TableName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("Type")
-                        .HasColumnType("tinyint");
 
                     b.HasKey("Id");
 
@@ -305,9 +289,9 @@ namespace Moasher.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("4fa564cb-b53a-43e1-a401-017e844418b8"),
+                            Id = new Guid("315c0a39-cb02-4d22-92ab-e84f84f5b408"),
                             Code = "VRO",
-                            CreatedAt = new DateTimeOffset(new DateTime(2022, 11, 13, 20, 35, 59, 624, DateTimeKind.Unspecified).AddTicks(8689), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreatedAt = new DateTimeOffset(new DateTime(2022, 11, 13, 18, 23, 10, 870, DateTimeKind.Unspecified).AddTicks(9582), new TimeSpan(0, 0, 0, 0, 0)),
                             CreatedBy = "System",
                             IsOrganizer = true,
                             Name = "مكتب تحقيق الرؤية"
@@ -425,14 +409,6 @@ namespace Moasher.Persistence.Migrations
                     b.Property<Guid?>("FundStatusEnumId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("FundStatusName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FundStatusStyle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTimeOffset?>("LastModified")
                         .HasColumnType("datetimeoffset");
 
@@ -511,12 +487,6 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<Guid?>("StatusEnumId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("StatusName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StatusStyle")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TargetSegment")
                         .HasColumnType("nvarchar(max)");
@@ -746,14 +716,6 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<Guid?>("StatusEnumId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("StatusName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StatusStyle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Supplier")
                         .HasColumnType("nvarchar(max)");
@@ -1044,11 +1006,13 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<string>("ImpactName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Impact_Name");
 
                     b.Property<string>("ImpactStyle")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Impact_Style");
 
                     b.Property<Guid>("InitiativeId")
                         .HasColumnType("uniqueidentifier");
@@ -1084,11 +1048,13 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<string>("ScopeName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Scope_Name");
 
                     b.Property<string>("ScopeStyle")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Scope_Style");
 
                     b.Property<string>("Source")
                         .IsRequired()
@@ -1099,11 +1065,13 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<string>("StatusName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Status_Name");
 
                     b.Property<string>("StatusStyle")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Status_Style");
 
                     b.HasKey("Id");
 
@@ -1246,14 +1214,6 @@ namespace Moasher.Persistence.Migrations
                     b.Property<Guid?>("PhaseEnumId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("PhaseName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhaseStyle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTimeOffset>("PlannedBiddingDate")
                         .HasColumnType("datetimeoffset");
 
@@ -1365,10 +1325,6 @@ namespace Moasher.Persistence.Migrations
                     b.Property<Guid?>("PhaseEnumId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("PhaseName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTimeOffset>("PhaseStartedAt")
                         .HasColumnType("datetimeoffset");
 
@@ -1376,10 +1332,6 @@ namespace Moasher.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PhaseStyle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
@@ -1431,14 +1383,6 @@ namespace Moasher.Persistence.Migrations
                     b.Property<Guid?>("ImpactEnumId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ImpactName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImpactStyle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("InitiativeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1459,24 +1403,8 @@ namespace Moasher.Persistence.Migrations
                     b.Property<Guid?>("PriorityEnumId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("PriorityName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PriorityStyle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("ProbabilityEnumId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ProbabilityName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProbabilityStyle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("RaisedAt")
                         .HasColumnType("datetimeoffset");
@@ -1492,24 +1420,8 @@ namespace Moasher.Persistence.Migrations
                     b.Property<Guid?>("ScopeEnumId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ScopeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ScopeStyle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("TypeEnumId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TypeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TypeStyle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -1583,14 +1495,6 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<Guid?>("RoleEnumId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("RoleName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoleStyle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -1746,12 +1650,6 @@ namespace Moasher.Persistence.Migrations
 
                     b.Property<Guid?>("StatusEnumId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("StatusName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StatusStyle")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte>("ValidationStatus")
                         .HasColumnType("tinyint");
@@ -1948,64 +1846,64 @@ namespace Moasher.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("8d24a178-f873-4128-8f83-b6d3e469dfd4"),
-                            ConcurrencyStamp = "6a629344-a0f8-4e90-9497-04c2456f283a",
+                            Id = new Guid("584c49d1-a90d-4c18-8d84-ab95fab80926"),
+                            ConcurrencyStamp = "3edbc7ee-a0b2-4dc0-b8dd-315105f3e4ab",
                             LocalizedName = "مدير النظام",
                             Name = "SuperAdmin",
                             NormalizedName = "SUPERADMIN"
                         },
                         new
                         {
-                            Id = new Guid("807bc649-a38a-4032-9a19-f43d22762dab"),
-                            ConcurrencyStamp = "753277fa-a91b-4640-ab99-bf644cd2458e",
+                            Id = new Guid("669b00da-fdfc-46c7-b6d5-71eca7407135"),
+                            ConcurrencyStamp = "25a0093e-dfee-4597-9c9b-4a300c226f6a",
                             LocalizedName = "مشرف",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("30291ca4-9868-487f-bef5-be04948000a7"),
-                            ConcurrencyStamp = "03cdffbd-5beb-4b75-a87e-bb028544227b",
+                            Id = new Guid("8ce11797-93e8-4d33-9aab-2aed10ca30d2"),
+                            ConcurrencyStamp = "70474fe8-4ceb-46ed-8567-51fea982562b",
                             LocalizedName = "مدقق بيانات",
                             Name = "DataAssurance",
                             NormalizedName = "DATAASSURANCE"
                         },
                         new
                         {
-                            Id = new Guid("1d15a3d0-14eb-444c-8529-cdc0c20f157f"),
-                            ConcurrencyStamp = "45c30276-41d9-45da-963d-40735bedc58d",
+                            Id = new Guid("560e1bf2-0572-4631-9e8e-a99ccacc56eb"),
+                            ConcurrencyStamp = "860a8527-4bf1-4b68-bc0c-cd4b67a91464",
                             LocalizedName = "مسؤول مالي",
                             Name = "FinancialOperator",
                             NormalizedName = "FINANCIALOPERATOR"
                         },
                         new
                         {
-                            Id = new Guid("98ed961b-df20-4ce7-ac25-467e5afbb213"),
-                            ConcurrencyStamp = "a47627d6-1e89-4779-81e4-8b0f4c442d4f",
+                            Id = new Guid("a70f3f3a-c1aa-4d7e-ac96-7e934efa4592"),
+                            ConcurrencyStamp = "89150282-277b-4954-ba19-2f50b790222b",
                             LocalizedName = "مسؤول تنفيذ",
                             Name = "ExecutionOperator",
                             NormalizedName = "EXECUTIONOPERATOR"
                         },
                         new
                         {
-                            Id = new Guid("2d73ee2e-2156-42cb-b451-78bbdaa956af"),
-                            ConcurrencyStamp = "e8f1f2bf-c0b0-4593-a515-356a1517737a",
+                            Id = new Guid("8a93e85d-5d39-4826-8823-608ad849bc75"),
+                            ConcurrencyStamp = "ed2af493-1fec-46b5-8501-0653d7df5caa",
                             LocalizedName = "مسؤول مؤشرات أداء",
                             Name = "KPIsOperator",
                             NormalizedName = "KPISOPERATOR"
                         },
                         new
                         {
-                            Id = new Guid("e7bbf502-69c0-4e35-b544-67b359bcb0d5"),
-                            ConcurrencyStamp = "e4ee20fc-9636-4a75-bf05-1f24298994ac",
+                            Id = new Guid("6a9733c8-57d4-429a-be2d-603be6206336"),
+                            ConcurrencyStamp = "e155fed7-ad39-4478-ac81-5677e307fcd0",
                             LocalizedName = "مستخدم جهة",
                             Name = "EntityUser",
                             NormalizedName = "ENTITYUSER"
                         },
                         new
                         {
-                            Id = new Guid("395365f8-b4c3-40cd-99ad-96cd4763ecde"),
-                            ConcurrencyStamp = "dce382a9-e5b4-4aab-8b11-08a4d0449223",
+                            Id = new Guid("c795aa25-8c32-4056-9152-e6eee33a102b"),
+                            ConcurrencyStamp = "3e765eba-906f-4719-b09f-96c502d359a4",
                             LocalizedName = "مستعرض جميع البيانات",
                             Name = "FullAccessViewer",
                             NormalizedName = "FULLACCESSVIEWER"
@@ -2269,7 +2167,48 @@ namespace Moasher.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("StatusEnumId");
 
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "FundStatus", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Style")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("InitiativeId");
+
+                            b1.ToTable("Initiatives");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeId");
+                        });
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Style")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("InitiativeId");
+
+                            b1.ToTable("Initiatives");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeId");
+                        });
+
                     b.Navigation("Entity");
+
+                    b.Navigation("FundStatus")
+                        .IsRequired();
 
                     b.Navigation("FundStatusEnum");
 
@@ -2278,6 +2217,9 @@ namespace Moasher.Persistence.Migrations
                     b.Navigation("Portfolio");
 
                     b.Navigation("Program");
+
+                    b.Navigation("Status")
+                        .IsRequired();
 
                     b.Navigation("StatusEnum");
                 });
@@ -2316,7 +2258,29 @@ namespace Moasher.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("StatusEnumId");
 
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeContractId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Style")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("InitiativeContractId");
+
+                            b1.ToTable("InitiativeContracts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeContractId");
+                        });
+
                     b.Navigation("Initiative");
+
+                    b.Navigation("Status")
+                        .IsRequired();
 
                     b.Navigation("StatusEnum");
                 });
@@ -2429,9 +2393,31 @@ namespace Moasher.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("PhaseEnumId");
 
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Phase", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeProjectId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Style")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("InitiativeProjectId");
+
+                            b1.ToTable("InitiativeProjects");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeProjectId");
+                        });
+
                     b.Navigation("Contract");
 
                     b.Navigation("Initiative");
+
+                    b.Navigation("Phase")
+                        .IsRequired();
 
                     b.Navigation("PhaseEnum");
                 });
@@ -2457,6 +2443,28 @@ namespace Moasher.Persistence.Migrations
                         .WithMany("Progress")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Phase", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeProjectProgressId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Style")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("InitiativeProjectProgressId");
+
+                            b1.ToTable("InitiativeProjectProgress");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeProjectProgressId");
+                        });
+
+                    b.Navigation("Phase")
                         .IsRequired();
 
                     b.Navigation("PhaseEnum");
@@ -2492,15 +2500,125 @@ namespace Moasher.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("TypeEnumId");
 
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Impact", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeRiskId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Style")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("InitiativeRiskId");
+
+                            b1.ToTable("InitiativeRisks");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeRiskId");
+                        });
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Priority", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeRiskId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Style")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("InitiativeRiskId");
+
+                            b1.ToTable("InitiativeRisks");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeRiskId");
+                        });
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Probability", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeRiskId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Style")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("InitiativeRiskId");
+
+                            b1.ToTable("InitiativeRisks");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeRiskId");
+                        });
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Scope", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeRiskId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Style")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("InitiativeRiskId");
+
+                            b1.ToTable("InitiativeRisks");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeRiskId");
+                        });
+
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Type", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeRiskId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Style")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("InitiativeRiskId");
+
+                            b1.ToTable("InitiativeRisks");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeRiskId");
+                        });
+
+                    b.Navigation("Impact")
+                        .IsRequired();
+
                     b.Navigation("ImpactEnum");
 
                     b.Navigation("Initiative");
 
+                    b.Navigation("Priority")
+                        .IsRequired();
+
                     b.Navigation("PriorityEnum");
+
+                    b.Navigation("Probability")
+                        .IsRequired();
 
                     b.Navigation("ProbabilityEnum");
 
+                    b.Navigation("Scope")
+                        .IsRequired();
+
                     b.Navigation("ScopeEnum");
+
+                    b.Navigation("Type")
+                        .IsRequired();
 
                     b.Navigation("TypeEnum");
                 });
@@ -2517,7 +2635,29 @@ namespace Moasher.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("RoleEnumId");
 
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Role", b1 =>
+                        {
+                            b1.Property<Guid>("InitiativeTeamId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Style")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("InitiativeTeamId");
+
+                            b1.ToTable("InitiativeTeams");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InitiativeTeamId");
+                        });
+
                     b.Navigation("Initiative");
+
+                    b.Navigation("Role")
+                        .IsRequired();
 
                     b.Navigation("RoleEnum");
                 });
@@ -2540,9 +2680,31 @@ namespace Moasher.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("StatusEnumId");
 
+                    b.OwnsOne("Moasher.Domain.ValueObjects.EnumValue", "Status", b1 =>
+                        {
+                            b1.Property<Guid>("KPIId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Style")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("KPIId");
+
+                            b1.ToTable("KPIs");
+
+                            b1.WithOwner()
+                                .HasForeignKey("KPIId");
+                        });
+
                     b.Navigation("Entity");
 
                     b.Navigation("LevelThreeStrategicObjective");
+
+                    b.Navigation("Status")
+                        .IsRequired();
 
                     b.Navigation("StatusEnum");
                 });

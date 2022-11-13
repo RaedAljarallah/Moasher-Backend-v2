@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
-using Moasher.Domain.ValueObjects;
 using Newtonsoft.Json;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
@@ -15,7 +14,9 @@ public class InitiativeRisk : InitiativeRelatedDbEntity
     private EnumType _scopeEnum = default!;
 
     public string Description { get; set; } = default!;
-    public EnumValue Type { get; set; } = default!;
+    
+    public string TypeName { get; private set; } = default!;
+    public string TypeStyle { get; private set; } = default!;
     
     [JsonIgnore]
     public EnumType TypeEnum
@@ -24,12 +25,14 @@ public class InitiativeRisk : InitiativeRelatedDbEntity
         set
         {
             _typeEnum = value;
-            Type = new EnumValue(value.Name, value.Style);
+            TypeName = value.Name;
+            TypeStyle = value.Style;
         }
     }
     public Guid? TypeEnumId { get; set; }
 
-    public EnumValue Priority { get; set; } = default!;
+    public string PriorityName { get; private set; } = default!;
+    public string PriorityStyle { get; private set; } = default!;
     
     [JsonIgnore]
     public EnumType PriorityEnum
@@ -38,12 +41,14 @@ public class InitiativeRisk : InitiativeRelatedDbEntity
         set
         {
             _priorityEnum = value;
-            Priority = new EnumValue(value.Name, value.Style);
+            PriorityName = value.Name;
+            PriorityStyle = value.Style;
         }
     }
     public Guid? PriorityEnumId { get; set; }
 
-    public EnumValue Probability { get; set; } = default!;
+    public string ProbabilityName { get; private set; } = default!;
+    public string ProbabilityStyle { get; private set; } = default!;
 
     [JsonIgnore]
     public EnumType ProbabilityEnum
@@ -52,13 +57,14 @@ public class InitiativeRisk : InitiativeRelatedDbEntity
         set
         {
             _probabilityEnum = value;
-            Probability = new EnumValue(value.Name, value.Style);
+            ProbabilityName = value.Name;
+            ProbabilityStyle = value.Style;
         }
     }
     public Guid? ProbabilityEnumId { get; set; }
 
-    public EnumValue Impact { get; set; } = default!;
-
+    public string ImpactName { get; private set; } = default!;
+    public string ImpactStyle { get; private set; } = default!;
     [JsonIgnore]
     public EnumType ImpactEnum
     {
@@ -66,13 +72,15 @@ public class InitiativeRisk : InitiativeRelatedDbEntity
         set
         {
             _impactEnum = value;
-            Impact = new EnumValue(value.Name, value.Style);
+            ImpactName = value.Name;
+            ImpactStyle = value.Style;
         }
     }
     public Guid? ImpactEnumId { get; set; }
     public string ImpactDescription { get; set; } = default!;
 
-    public EnumValue Scope { get; set; } = default!;
+    public string ScopeName { get; private set; } = default!;
+    public string ScopeStyle { get; private set; } = default!;
 
     [JsonIgnore]
     public EnumType ScopeEnum
@@ -81,7 +89,8 @@ public class InitiativeRisk : InitiativeRelatedDbEntity
         set
         {
             _scopeEnum = value;
-            Scope = new EnumValue(value.Name, value.Style);
+            ScopeName = value.Name;
+            ScopeStyle = value.Style;
         }
     }
     public Guid? ScopeEnumId { get; set; }

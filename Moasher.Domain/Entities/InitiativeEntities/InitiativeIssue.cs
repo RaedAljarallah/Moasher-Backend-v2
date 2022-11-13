@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Moasher.Domain.Entities.InitiativeEntities.Abstracts;
-using Moasher.Domain.ValueObjects;
 using Newtonsoft.Json;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
@@ -15,9 +14,10 @@ public class InitiativeIssue : InitiativeRelatedDbEntity
     [Display(Name = "الوصف")]
     public string Description { get; set; } = default!;
     
-    [JsonIgnore]
-    public EnumValue Scope { get; private set; } = default!;
-
+    [Display(Name = "النطاق")]
+    public string ScopeName { get; private set; } = default!;
+    public string ScopeStyle { get; private set; } = default!;
+    
     [JsonIgnore]
     public EnumType ScopeEnum
     {
@@ -25,15 +25,15 @@ public class InitiativeIssue : InitiativeRelatedDbEntity
         set
         {
             _scopeEnum = value;
-            Scope = new EnumValue(value.Name, value.Style);
+            ScopeName = value.Name;
+            ScopeStyle = value.Style;
         }
     }
-    
-    [Display(Name = "النطاق")]
     public Guid? ScopeEnumId { get; set; }
-    
-    [JsonIgnore]
-    public EnumValue Status { get; set; } = default!;
+
+    [Display(Name = "الحالة")]
+    public string StatusName { get; private set; } = default!;
+    public string StatusStyle { get; private set; } = default!;
 
     [JsonIgnore]
     public EnumType StatusEnum
@@ -42,15 +42,16 @@ public class InitiativeIssue : InitiativeRelatedDbEntity
         set
         {
             _statusEnum = value;
-            Status = new EnumValue(value.Name, value.Style);
+            StatusName = value.Name;
+            StatusStyle = value.Style;
         }
     }
     
-    [Display(Name = "الحالة")]
     public Guid? StatusEnumId { get; set; }
 
-    [JsonIgnore]
-    public EnumValue Impact { get; set; } = default!;
+    [Display(Name = "الأثر")]
+    public string ImpactName { get; private set; } = default!;
+    public string ImpactStyle { get; private set; } = default!;
 
     [JsonIgnore]
     public EnumType ImpactEnum
@@ -59,11 +60,10 @@ public class InitiativeIssue : InitiativeRelatedDbEntity
         set
         {
             _impactEnum = value;
-            Impact = new EnumValue(value.Name, value.Style);
+            ImpactName = value.Name;
+            ImpactStyle = value.Style;
         }
     }
-
-    [Display(Name = "الأثر")]
     public Guid? ImpactEnumId { get; set; }
     
     [Display(Name = "وصف الأثر")]

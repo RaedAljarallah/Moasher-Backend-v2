@@ -1,7 +1,6 @@
 ﻿using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Common.Interfaces;
 using Moasher.Domain.Entities.StrategicObjectiveEntities;
-using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Domain.Entities.InitiativeEntities;
 
@@ -24,18 +23,23 @@ public class Initiative : AuditableDbEntity, IRootEntity
     public string? Scope { get; set; }
     public string? TargetSegment { get; set; }
     public string? ContributionOnStrategicObjective { get; set; }
-    public EnumValue Status { get; private set; } = default!;
+
+    public string? StatusName { get; private set; }
+    public string? StatusStyle { get; private set; }
     public EnumType? StatusEnum
     {
         get => _statusEnum;
         set
         {
             _statusEnum = value;
-            Status = value != null ? new EnumValue(value.Name, value.Style) : new EnumValue();
+            StatusName = value?.Name;
+            StatusStyle = value?.Style;
         }
     }
     public Guid? StatusEnumId { get; set; }
-    public EnumValue FundStatus { get; private set; } = default!;
+
+    public string FundStatusName { get; private set; } = default!;
+    public string FundStatusStyle { get; private set; } = default!;
 
     public EnumType FundStatusEnum
     {
@@ -43,7 +47,8 @@ public class Initiative : AuditableDbEntity, IRootEntity
         set
         {
             _fundStatusEnum = value;
-            FundStatus = new EnumValue(value.Name, value.Style);
+            FundStatusName = value.Name;
+            FundStatusStyle = value.Style;
         }
     }
 

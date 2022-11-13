@@ -6,6 +6,7 @@ using Moasher.Application.Features.InitiativeTeams.Commands.UpdateInitiativeTeam
 using Moasher.Application.Features.InitiativeTeams.Queries.EditInitiativeTeam;
 using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Application.Common.Mappings;
 
@@ -14,7 +15,8 @@ public class InitiativeTeamMappings : Profile
     public InitiativeTeamMappings()
     {
         CreateMap<InitiativeTeam, InitiativeTeamDto>()
-            .IncludeBase<AuditableDbEntity, DtoBase>();
+            .IncludeBase<AuditableDbEntity, DtoBase>()
+            .ForMember(m => m.Role, opt => opt.MapFrom(m => new EnumValue(m.RoleName, m.RoleStyle)));
         
         CreateMap<CreateInitiativeTeamCommand, InitiativeTeam>();
 

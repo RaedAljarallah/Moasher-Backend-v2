@@ -6,6 +6,7 @@ using Moasher.Application.Features.Projects.Commands.UpdateProject;
 using Moasher.Application.Features.Projects.Queries.EditProject;
 using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.ValueObjects;
 
 namespace Moasher.Application.Common.Mappings;
 
@@ -14,7 +15,8 @@ public class ProjectMappings : Profile
     public ProjectMappings()
     {
         CreateMap<InitiativeProject, ProjectDto>()
-            .IncludeBase<AuditableDbEntity, DtoBase>();
+            .IncludeBase<AuditableDbEntity, DtoBase>()
+            .ForMember(p => p.Phase, opt => opt.MapFrom(p => new EnumValue(p.PhaseName, p.PhaseStyle)));
 
         CreateMap<CreateProjectCommand, InitiativeProject>()
             .ForMember(p => p.Expenditures, opt => opt.Ignore());
