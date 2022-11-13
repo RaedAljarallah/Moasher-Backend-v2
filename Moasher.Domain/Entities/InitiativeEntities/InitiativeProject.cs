@@ -31,7 +31,7 @@ public class InitiativeProject : InitiativeRelatedDbEntity
     [Display(Name = "القيمة التقديرية")]
     public decimal EstimatedAmount { get; set; }
     
-    [Display(Name = "المرحلة")]
+    [JsonIgnore]
     public EnumValue Phase { get; private set; } = default!;
     
     [JsonIgnore]
@@ -44,9 +44,11 @@ public class InitiativeProject : InitiativeRelatedDbEntity
             Phase = new EnumValue(value.Name, value.Style);
         }
     }
+    
+    [Display(Name = "المرحلة")]
     public Guid? PhaseEnumId { get; set; }
     
-    [Display(Name = "تم التعاقد")]
+    [Display(Name = "تم التعاقد؟")]
     public bool Contracted { get; set; }
     public ICollection<InitiativeExpenditure> Expenditures { get; set; }
         = new HashSet<InitiativeExpenditure>();

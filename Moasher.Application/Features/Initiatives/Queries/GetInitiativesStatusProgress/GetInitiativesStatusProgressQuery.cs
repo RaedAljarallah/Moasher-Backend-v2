@@ -34,7 +34,7 @@ public class GetInitiativesStatusProgressQueryHandler : IRequestHandler<GetIniti
         var initiatives = await _context.Initiatives
             .WithinParameters(new GetInitiativesStatusProgressQueryParameter(request))
             .AsNoTracking()
-            .Include(i => i.Milestones)
+            .Include(i => i.Milestones.Where(m => m.Approved))
             .AsSplitQuery()
             .ToListAsync(cancellationToken);
 

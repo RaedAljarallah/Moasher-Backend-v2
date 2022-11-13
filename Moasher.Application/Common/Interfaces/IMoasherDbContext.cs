@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.EditRequests;
 using Moasher.Domain.Entities.InitiativeEntities;
@@ -35,6 +36,8 @@ public interface IMoasherDbContext
     public DbSet<Search> SearchRecords { get; }
     public DbSet<InvalidToken> InvalidTokens { get; }
     public DbSet<EditRequest> EditRequests { get; }
+    public IQueryable<T>? GetSet<T>(string tableName);
+    public void RemoveEntity(object entity);
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     public Task<int> SaveChangesAsyncFromDomainEvent(CancellationToken cancellationToken);
     public Task<int> SaveChangesAsyncFromInternalProcess(CancellationToken cancellationToken);

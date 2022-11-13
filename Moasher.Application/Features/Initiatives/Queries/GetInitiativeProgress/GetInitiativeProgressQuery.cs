@@ -30,7 +30,7 @@ public class GetInitiativeProgressQueryHandler : IRequestHandler<GetInitiativePr
     {
         var initiative = await _context.Initiatives
             .AsNoTracking()
-            .Include(i => i.Milestones)
+            .Include(i => i.Milestones.Where(m => m.Approved))
             .AsSplitQuery()
             .FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken);
 

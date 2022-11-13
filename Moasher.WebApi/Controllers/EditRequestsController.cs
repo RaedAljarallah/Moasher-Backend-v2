@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moasher.Application.Common.Constants;
+using Moasher.Application.Features.EditRequests.Commands.AcceptEditRequest;
+using Moasher.Application.Features.EditRequests.Commands.RejectEditRequest;
 using Moasher.Application.Features.EditRequests.Queries.GetEditRequestDetails;
 using Moasher.Application.Features.EditRequests.Queries.GetEditRequests;
 using Moasher.WebApi.Attributes;
@@ -35,5 +37,29 @@ public class EditRequestsController : ApiControllerBase
         }
         
         return Ok(await Sender.Send(query, cancellationToken));
+    }
+
+    [MustHavePermission(Actions.Update, Resources.EditRequests)]
+    [HttpPost(ApiEndpoints.EditRequests.Accept)]
+    [BadRequestResponseType]
+    [UnauthorizedResponseType]
+    [NotFoundResponseType]
+    [OkResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> Accept(AcceptEditRequestCommand command, CancellationToken cancellationToken)
+    {
+        return Ok(await Sender.Send(command, cancellationToken));
+    }
+    
+    [MustHavePermission(Actions.Update, Resources.EditRequests)]
+    [HttpPost(ApiEndpoints.EditRequests.Reject)]
+    [BadRequestResponseType]
+    [UnauthorizedResponseType]
+    [NotFoundResponseType]
+    [OkResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> Accept(RejectEditRequestCommand command, CancellationToken cancellationToken)
+    {
+        return Ok(await Sender.Send(command, cancellationToken));
     }
 }

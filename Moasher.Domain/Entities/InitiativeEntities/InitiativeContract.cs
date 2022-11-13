@@ -10,12 +10,24 @@ public class InitiativeContract : InitiativeRelatedDbEntity
 {
     private EnumType _statusEnum = default!;
     
+    [Display(Name = "اسم العقد")]
     public string Name { get; set; } = default!;
+    
+    [Display(Name = "تاريخ البداية")]
     public DateTimeOffset StartDate { get; set; }
+    
+    [Display(Name = "تاريخ النهاية")]
     public DateTimeOffset EndDate { get; set; }
+    
+    [Display(Name = "المبلغ")]
     public decimal Amount { get; set; }
+    
+    [Display(Name = "الرقم المرجعي")]
     public string? RefNumber { get; set; }
+    
+    [JsonIgnore]
     public EnumValue Status { get; private set; } = default!;
+    
     [JsonIgnore]
     public EnumType StatusEnum
     {
@@ -26,12 +38,23 @@ public class InitiativeContract : InitiativeRelatedDbEntity
             Status = new EnumValue(value.Name, value.Style);
         }
     }
+    
+    [Display(Name = "الحالة")]
     public Guid? StatusEnumId { get; set; }
     
+    [Display(Name = "المورد")]
     public string? Supplier { get; set; }
+    
+    [Display(Name = "تضمين قيمة العقد؟")]
     public bool CalculateAmount { get; set; }
+    
+    [Display(Name = "إجمالي المنصرف")]
     public decimal? TotalExpenditure { get; set; }
+    
+    [Display(Name = "منصرف السنة الحالية")]
     public decimal? CurrentYearExpenditure { get; set; }
+    
+    [Display(Name = "خطة الصرف متوازنة؟")]
     public bool BalancedExpenditurePlan { get; set; }
     public InitiativeProject Project { get; set; } = default!;
 

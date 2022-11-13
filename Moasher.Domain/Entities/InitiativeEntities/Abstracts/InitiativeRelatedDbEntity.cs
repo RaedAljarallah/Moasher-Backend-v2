@@ -24,7 +24,6 @@ public abstract class InitiativeRelatedDbEntity : ApprovableDbEntity
         }
     }
     
-    [Display(Name = "معرف المبادرة")]
     public Guid InitiativeId { get; set; }
     
     [Display(Name = "اسم الجهة")]

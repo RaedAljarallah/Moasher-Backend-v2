@@ -1,7 +1,9 @@
-﻿using MediatR;
+﻿using System.Reflection;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Common.Abstracts;
+using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.EditRequests;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Enums;
@@ -24,7 +26,6 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
 
     public Task<int> SaveChangesAsyncFromDomainEvent(CancellationToken cancellationToken = new())
     {
-        HandelAuditableEntries();
         return base.SaveChangesAsync(cancellationToken);
     }
 
@@ -32,7 +33,18 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
     {
         return base.SaveChangesAsync(cancellationToken);
     }
+
+    public IQueryable<T>? GetSet<T>(string tableName)
+    {
+        return (IQueryable<T>?) GetType().GetProperty(tableName)?.GetValue(this, null);
+    }
+
+    public void RemoveEntity(object entity)
+    {
+        Remove(entity);
+    }
     
+
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         HandelAuditableEntries();
@@ -42,23 +54,23 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
         await DispatchEvents(events);
         return result;
     }
-    
+
     private List<DomainEvent> GetDomainEvents()
     {
         var entities = ChangeTracker
             .Entries<DbEntity>()
             .Where(e => e.Entity.HasDomainEvents())
             .Select(e => e.Entity).ToList();
-        
+
         var domainEvents = entities
             .SelectMany(e => e.DomainEvents)
             .ToList();
-        
+
         entities.ForEach(e => e.ClearDomainEvents());
-        
+
         return domainEvents;
     }
-    
+
     private void HandelAuditableEntries()
     {
         foreach (var entry in ChangeTracker.Entries<AuditableDbEntity>())
@@ -105,7 +117,7 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
                 entry.Entity.Approved = true;
                 continue;
             }
-            
+
             if (entry.Entity.HasDomainEvents())
             {
                 editRequest.HasEvents = true;
@@ -117,17 +129,17 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
                         .GetProperties()
                         .Select(p => p.Name)
                         .FirstOrDefault();
-                    
+
                     if (string.IsNullOrWhiteSpace(eventArgumentName)) continue;
                     var eventArgumentProperty = domainEvent.GetType().GetProperty(eventArgumentName);
                     var eventArgumentValue = eventArgumentProperty?.GetValue(domainEvent, null);
                     if (eventArgumentValue is not null)
                     {
-                        events.Add(eventName, eventArgumentValue);
+                        events.Add($"{eventName}.{eventArgumentProperty!.PropertyType.Name}", eventArgumentValue);
                     }
                 }
             }
-            
+
             var snapshot = new EditRequestSnapshot
             {
                 ModelName = entry.Entity.GetType().Name,
@@ -141,7 +153,7 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
                 {
                     snapshot.ModelId = Guid.Parse(property.CurrentValue?.ToString() ?? Guid.Empty.ToString());
                 }
-                
+
                 var propertyName = property.Metadata.Name;
                 switch (entry.State)
                 {
@@ -150,20 +162,30 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
                         snapshotValues[propertyName] = property.CurrentValue;
                         hasEditRequest = true;
                         break;
-                    case EntityState.Deleted:
-                        editRequest.Type = EditRequestType.Delete;
-                        snapshotValues[propertyName] = property.OriginalValue;
-                        hasEditRequest = true;
-                        break;
                     case EntityState.Modified:
                         editRequest.Type = EditRequestType.Update;
                         snapshotValues[propertyName] = property.OriginalValue;
                         hasEditRequest = true;
                         break;
+                    case EntityState.Deleted:
+                        editRequest.Type = EditRequestType.Delete;
+                        snapshotValues[propertyName] = property.OriginalValue;
+                        hasEditRequest = true;
+                        break;
                 }
-                
             }
 
+            if (editRequest.Type == EditRequestType.Delete)
+            {
+                // We need to keep the entity's parent last status,
+                // so we set Entity.Approved to true to prevent domain events from changing the status
+                // instead we set Entity.IsDeleted to true, so we can capture the edite request
+                // we need to keep the entity on the db, so we change the tracker to Modified
+                entry.Entity.Approved = true;
+                entry.Entity.IsDeleted = true;
+                entry.State = EntityState.Modified;
+            }
+            
             if (snapshotValues.Any())
             {
                 snapshot.OriginalValues = JsonConvert.SerializeObject(snapshotValues);

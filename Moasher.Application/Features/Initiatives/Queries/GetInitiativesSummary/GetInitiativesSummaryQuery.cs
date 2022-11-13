@@ -34,8 +34,8 @@ public class GetInitiativesSummaryQueryHandler : IRequestHandler<GetInitiativesS
     {
         var initiatives = await _context.Initiatives
             .WithinParameters(new GetInitiativesSummaryQueryParameter(request))
-            .Include(i => i.Projects).ThenInclude(p => p.Expenditures)
-            .Include(i => i.Contracts).ThenInclude(p => p.Expenditures)
+            .Include(i => i.Projects.Where(p => p.Approved)).ThenInclude(p => p.Expenditures.Where(e => e.Approved))
+            .Include(i => i.Contracts.Where(c => c.Approved)).ThenInclude(c => c.Expenditures.Where(e => e.Approved))
             .AsNoTracking()
             .AsSplitQuery()
             .ToListAsync(cancellationToken);

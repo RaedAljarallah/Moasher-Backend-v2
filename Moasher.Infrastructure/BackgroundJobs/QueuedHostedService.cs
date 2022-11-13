@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moasher.Application.Common.Interfaces;
 
-namespace Moasher.Infrastructure.BackgroundJobs.Common;
+namespace Moasher.Infrastructure.BackgroundJobs;
 
 public class QueuedHostedService : BackgroundService
 {

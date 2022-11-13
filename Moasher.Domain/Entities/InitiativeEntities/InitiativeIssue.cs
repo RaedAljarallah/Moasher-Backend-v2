@@ -11,7 +11,11 @@ public class InitiativeIssue : InitiativeRelatedDbEntity
     private EnumType _scopeEnum = default!;
     private EnumType _statusEnum = default!;
     private EnumType _impactEnum = default!;
+    
+    [Display(Name = "الوصف")]
     public string Description { get; set; } = default!;
+    
+    [JsonIgnore]
     public EnumValue Scope { get; private set; } = default!;
 
     [JsonIgnore]
@@ -24,7 +28,11 @@ public class InitiativeIssue : InitiativeRelatedDbEntity
             Scope = new EnumValue(value.Name, value.Style);
         }
     }
+    
+    [Display(Name = "النطاق")]
     public Guid? ScopeEnumId { get; set; }
+    
+    [JsonIgnore]
     public EnumValue Status { get; set; } = default!;
 
     [JsonIgnore]
@@ -37,8 +45,11 @@ public class InitiativeIssue : InitiativeRelatedDbEntity
             Status = new EnumValue(value.Name, value.Style);
         }
     }
+    
+    [Display(Name = "الحالة")]
     public Guid? StatusEnumId { get; set; }
 
+    [JsonIgnore]
     public EnumValue Impact { get; set; } = default!;
 
     [JsonIgnore]
@@ -52,6 +63,7 @@ public class InitiativeIssue : InitiativeRelatedDbEntity
         }
     }
 
+    [Display(Name = "الأثر")]
     public Guid? ImpactEnumId { get; set; }
     
     public string ImpactDescription { get; set; } = default!;

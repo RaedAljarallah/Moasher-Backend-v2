@@ -262,5 +262,7 @@ public struct ApiEndpoints
         private const string Base = "edit-requests";
         public const string All = Base;
         public const string Details = $"{Base}/{{id}}";
+        public const string Accept = $"{Base}/accept";
+        public const string Reject = $"{Base}/reject";
     }
 }

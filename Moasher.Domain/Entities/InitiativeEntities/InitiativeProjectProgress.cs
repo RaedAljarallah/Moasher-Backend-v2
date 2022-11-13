@@ -7,6 +7,8 @@ namespace Moasher.Domain.Entities.InitiativeEntities;
 public class InitiativeProjectProgress : ApprovableDbEntity
 {
     private EnumType _phaseEnum = default!;
+    
+    [JsonIgnore]
     public EnumValue Phase { get; private set; } = default!;
     
     [JsonIgnore]
