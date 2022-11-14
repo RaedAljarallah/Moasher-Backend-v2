@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Common.Abstracts;
+using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.EditRequests;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Enums;
@@ -24,7 +25,13 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
         _backgroundQueue = backgroundQueue;
         _currentUser = currentUser;
     }
-    
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.Entity<UserNotification>().HasQueryFilter(n => n.UserId == _currentUser.GetId());
+    }
+
     public IQueryable<T>? GetSet<T>(string tableName)
     {
         return (IQueryable<T>?) GetType().GetProperty(tableName)?.GetValue(this, null);

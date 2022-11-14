@@ -24,9 +24,20 @@ public class IdentityService : IIdentityService
         return _roleManager.RoleExistsAsync(roleName);
     }
 
-    public Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken = default)
+    public Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken = new())
     {
         return _userManager.GetUsersInRoleAsync(roleName);
+    }
+
+    public async Task<IList<User>> GetUsersInRolesAsync(IEnumerable<string> roles, CancellationToken cancellationToken = new CancellationToken())
+    {
+        var users = new List<User>();
+        foreach (var role in roles)
+        {
+            users.AddRange(await _userManager.GetUsersInRoleAsync(role));
+        }
+
+        return users.DistinctBy(u => u.Id).ToList();
     }
 
     public Task<bool> UserExistsAsync(string userEmail, CancellationToken cancellationToken)
@@ -51,12 +62,17 @@ public class IdentityService : IIdentityService
         return user;
     }
     
-    public async Task<User?> GetUserById(Guid id, CancellationToken cancellationToken = default)
+    public async Task<User?> GetUserById(Guid id, CancellationToken cancellationToken = new())
     {
         return await _userManager.FindByIdAsync(id.ToString());
     }
 
-    public async Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken = default)
+    public async Task<User?> GetUserByEmail(string email, CancellationToken cancellationToken = new())
+    {
+        return await _userManager.FindByEmailAsync(email);
+    }
+
+    public async Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken = new())
     {
         user.UserName = user.Email;
         var updateUserResult = await _userManager.UpdateAsync(user);
@@ -68,7 +84,7 @@ public class IdentityService : IIdentityService
         return user;
     }
 
-    public async Task DeleteUserAsync(User user, CancellationToken cancellationToken = default)
+    public async Task DeleteUserAsync(User user, CancellationToken cancellationToken = new())
     {
         var deleteUserResult = await _userManager.DeleteAsync(user);
         if (!deleteUserResult.Succeeded)
@@ -77,14 +93,14 @@ public class IdentityService : IIdentityService
         }
     }
 
-    public async Task<bool> UpdateUserSuspensionStatusAsync(User user, bool status, CancellationToken cancellationToken = default)
+    public async Task<bool> UpdateUserSuspensionStatusAsync(User user, bool status, CancellationToken cancellationToken = new())
     {
         user.Suspended = status;
         var updatesUser = await UpdateUserAsync(user, cancellationToken);
         return updatesUser.Suspended;
     }
 
-    public async Task<string> UpdateUserRoleAsync(User user, string newRole, CancellationToken cancellationToken = default)
+    public async Task<string> UpdateUserRoleAsync(User user, string newRole, CancellationToken cancellationToken = new())
     {
         var userCurrentRole = (await _userManager.GetRolesAsync(user)).First();
         if (!string.Equals(newRole, userCurrentRole, StringComparison.CurrentCultureIgnoreCase))
@@ -101,7 +117,7 @@ public class IdentityService : IIdentityService
         return _roleManager.NormalizeKey(newRole);
     }
 
-    public async Task<string> ResetUserPassword(User user, CancellationToken cancellationToken = default)
+    public async Task<string> ResetUserPassword(User user, CancellationToken cancellationToken = new())
     {
         var tempPassword = _userManager.PasswordHasher.HashPassword(user, _userManager.GeneratePassword());
         user.PasswordHash = tempPassword;
@@ -110,12 +126,12 @@ public class IdentityService : IIdentityService
         return tempPassword;
     }
 
-    public Task<string> GeneratePassword(CancellationToken cancellationToken = default)
+    public Task<string> GeneratePassword(CancellationToken cancellationToken = new())
     {
         return Task.Factory.StartNew(() => _userManager.GeneratePassword(), cancellationToken);
     }
 
-    public Task<string> GenerateActivationToken(User user, CancellationToken cancellationToken = default)
+    public Task<string> GenerateActivationToken(User user, CancellationToken cancellationToken = new())
     {
         return _userManager.GenerateUserTokenAsync(user, IdentityTokenProviders.Activation, IdentityTokenPurposes.Activation);
     }

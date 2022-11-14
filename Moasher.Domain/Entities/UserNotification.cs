@@ -2,7 +2,7 @@
 
 namespace Moasher.Domain.Entities;
 
-public class Notification : IDbEntity
+public class UserNotification : IDbEntity
 {
     public Guid Id { get; set; }
     public string Title { get; set; } = default!;

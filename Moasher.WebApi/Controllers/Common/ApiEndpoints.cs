@@ -238,6 +238,15 @@ public struct ApiEndpoints
         public const string ResetPassword = $"{Base}/{{id}}/reset-password";
         public const string VerifyActivationToken = $"{Base}/verify-activation-token";
     }
+
+    public struct Notifications
+    {
+        private const string Base = "notifications";
+        public const string All = Base;
+        public const string Details = $"{Base}/{{id}}";
+        public const string Delete = $"{Base}/{{id}}";
+        public const string Read = $"{Base}/{{id}}";
+    }
     
     public struct Roles
     {

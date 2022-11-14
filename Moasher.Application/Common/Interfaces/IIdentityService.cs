@@ -5,20 +5,21 @@ namespace Moasher.Application.Common.Interfaces;
 
 public interface IIdentityService
 {
-    public Task<bool> RoleExistsAsync(string roleName, CancellationToken cancellationToken = default);
-    public Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken = default);
-    
-    public Task<bool> UserExistsAsync(string userEmail, CancellationToken cancellationToken = default);
-    public Task<User> CreateUserAsync(User user, string password, string role, CancellationToken cancellationToken = default);
-    public Task<User?> GetUserById(Guid id, CancellationToken cancellationToken = default);
-    public Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken = default);
-    public Task DeleteUserAsync(User user, CancellationToken cancellationToken = default);
+    public Task<bool> RoleExistsAsync(string roleName, CancellationToken cancellationToken = new());
+    public Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken = new());
+    public Task<IList<User>> GetUsersInRolesAsync(IEnumerable<string> roles, CancellationToken cancellationToken = new());
+    public Task<bool> UserExistsAsync(string userEmail, CancellationToken cancellationToken = new());
+    public Task<User> CreateUserAsync(User user, string password, string role, CancellationToken cancellationToken = new());
+    public Task<User?> GetUserById(Guid id, CancellationToken cancellationToken = new());
+    public Task<User?> GetUserByEmail(string email, CancellationToken cancellationToken = new());
+    public Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken = new());
+    public Task DeleteUserAsync(User user, CancellationToken cancellationToken = new());
     public Task<bool> UpdateUserSuspensionStatusAsync(User user, bool status,
-        CancellationToken cancellationToken = default);
-    public Task<string> UpdateUserRoleAsync(User user, string newRole, CancellationToken cancellationToken = default);
-    public Task<string> ResetUserPassword(User user, CancellationToken cancellationToken = default);
-    public Task<string> GeneratePassword(CancellationToken cancellationToken = default);
-    public Task<string> GenerateActivationToken(User user, CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = new());
+    public Task<string> UpdateUserRoleAsync(User user, string newRole, CancellationToken cancellationToken = new());
+    public Task<string> ResetUserPassword(User user, CancellationToken cancellationToken = new());
+    public Task<string> GeneratePassword(CancellationToken cancellationToken = new());
+    public Task<string> GenerateActivationToken(User user, CancellationToken cancellationToken = new());
     public Task<bool> VerifyActivationToken(User user, string token);
     public IQueryable<Role> Roles { get; }
     public IQueryable<User> Users { get; }

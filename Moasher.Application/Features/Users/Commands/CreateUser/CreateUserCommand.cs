@@ -80,7 +80,6 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
             $"accounts/activation?token={changePasswordToken}&id={userId}");
         var emailTemplate = _emailTemplateService.GenerateEmailTemplate(EmailTemplates.UserCreation, emailModel);
         var mailRequest = new MailRequest(new List<string> {user.Email}, "تفعيل الحساب", emailTemplate);
-        _ = Task.Factory.StartNew(async () => await _mailService.SendAsync(mailRequest, cancellationToken),
-            cancellationToken);
+        await _mailService.SendAsync(mailRequest, cancellationToken);
     }
 }

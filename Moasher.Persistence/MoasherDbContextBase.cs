@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Moasher.Application.Common.Interfaces;
-using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.EditRequests;
 using Moasher.Domain.Entities.InitiativeEntities;
@@ -45,7 +43,7 @@ public abstract class MoasherDbContextBase : IdentityDbContext<User, Role, Guid>
     public DbSet<Search> SearchRecords => Set<Search>();
     public DbSet<InvalidToken> InvalidTokens => Set<InvalidToken>();
     public DbSet<EditRequest> EditRequests => Set<EditRequest>();
-
+    public DbSet<UserNotification> UserNotifications => Set<UserNotification>();
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

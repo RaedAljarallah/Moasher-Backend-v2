@@ -1,6 +1,6 @@
-﻿namespace Moasher.Application.Features.Notifications;
+﻿namespace Moasher.Application.Features.UserNotifications;
 
-public record NotificationDto
+public record UserNotificationDto
 {
     public Guid Id { get; set; }
     public string Title { get; set; } = default!;

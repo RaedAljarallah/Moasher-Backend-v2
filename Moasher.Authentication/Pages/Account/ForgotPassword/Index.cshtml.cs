@@ -76,7 +76,7 @@ public class Index : PageModel
         var emailModel = new ResetPasswordEmailModel(user.GetFullName(), $"accounts/reset-password?token={token}&id={userId}");
         var emailTemplate = _emailTemplateService.GenerateEmailTemplate(EmailTemplates.ResetPassword, emailModel);
         var mailRequest = new MailRequest(new List<string> {user.Email}, "إعادة تعيين كلمة المرور", emailTemplate);
-        _ = Task.Factory.StartNew(async () => await _mailService.SendAsync(mailRequest));
+        await _mailService.SendAsync(mailRequest);
 
         return RedirectToPage("./ForgotPasswordConfirmation");
     }

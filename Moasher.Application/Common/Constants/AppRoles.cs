@@ -39,6 +39,13 @@ public static class AppRoles
 
     public static string GetSuperAdminRole() => SuperAdmin;
 
+    public static IReadOnlyList<string> GetDataAssuranceRoles() => new ReadOnlyCollection<string>(new[]
+    {
+        SuperAdmin,
+        Admin,
+        DataAssurance
+    });
+
     public static bool IsSuperAdminRole(string role) => CompareRole(SuperAdmin, role);
     public static bool IsAdminRole(string role) => CompareRole(Admin, role);
     public static bool IsDataAssurance(string role) => CompareRole(DataAssurance, role);
