@@ -1,12 +1,12 @@
-﻿using Moasher.Domain.Common.Interfaces;
+﻿using Moasher.Domain.Common.Abstracts;
+using Moasher.Domain.Common.Interfaces;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Enums;
 
 namespace Moasher.Domain.Entities.EditRequests;
 
-public class EditRequest : IDbEntity
+public class EditRequest : DbEntity
 {
-    public Guid Id { get; set; }
     public string Code { get; set; } = default!;
     public EditRequestStatus Status { get; set; }
     public DateTimeOffset RequestedAt { get; set; }

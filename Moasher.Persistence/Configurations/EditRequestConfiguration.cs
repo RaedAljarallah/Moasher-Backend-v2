@@ -8,6 +8,8 @@ public class EditRequestConfiguration : IEntityTypeConfiguration<EditRequest>
 {
     public void Configure(EntityTypeBuilder<EditRequest> builder)
     {
+        builder.Ignore(e => e.DomainEvents);
+        
         builder.Property<int>("CodeInc")
             .HasDefaultValueSql("NEXT VALUE FOR dbo.ERCodeSequence");
         

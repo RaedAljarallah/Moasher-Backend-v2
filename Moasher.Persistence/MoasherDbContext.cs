@@ -6,6 +6,7 @@ using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities.EditRequests;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Enums;
+using Moasher.Domain.Events.EditRequests;
 using Moasher.Domain.Types;
 using Moasher.Persistence.Extensions;
 using Newtonsoft.Json;
@@ -213,6 +214,7 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
             editRequest.Status = EditRequestStatus.Pending;
             editRequest.RequestedAt = LocalDateTime.Now;
             editRequest.RequestedBy = _currentUser.GetEmail() ?? string.Empty;
+            editRequest.AddDomainEvent(new EditRequestCreatedEvent(editRequest));
             EditRequests.Add(editRequest);
         }
     }
