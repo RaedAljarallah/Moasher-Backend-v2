@@ -19,7 +19,7 @@ public record ContractDto : DtoBase
     public string EntityName { get; set; } = default!;
     public string InitiativeName { get; set; } = default!;
     public Guid InitiativeId { get; set; }
-    public Guid ProjectId { get; set; }
+    public Guid? ProjectId { get; set; }
     public decimal Remaining => GetRemaining();
 
     private decimal GetRemaining()

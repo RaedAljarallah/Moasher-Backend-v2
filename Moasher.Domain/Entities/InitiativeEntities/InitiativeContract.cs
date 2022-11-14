@@ -56,7 +56,7 @@ public class InitiativeContract : InitiativeRelatedDbEntity
     
     [Display(Name = "خطة الصرف متوازنة؟")]
     public bool BalancedExpenditurePlan { get; set; }
-    public InitiativeProject Project { get; set; } = default!;
+    public InitiativeProject? Project { get; set; }
 
     public ICollection<InitiativeExpenditure> Expenditures { get; set; }
         = new HashSet<InitiativeExpenditure>();

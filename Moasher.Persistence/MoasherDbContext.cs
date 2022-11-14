@@ -199,7 +199,6 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
                 // we need to keep the entity on the db, so we replace current values with the original values by reloading the entity
                 //var ggg = entry.Entity;
                 await entry.ReloadAsync(cancellationToken);
-                //await entry.Reference("ScopeEnum").LoadAsync(cancellationToken);
                 entry.Entity.Approved = true;
                 entry.Entity.HasUpdateRequest = true;
             }

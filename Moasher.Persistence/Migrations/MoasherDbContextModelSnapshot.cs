@@ -177,7 +177,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("KPIId");
 
-                    b.ToTable("Analytics");
+                    b.ToTable("Analytics", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.EditRequests.EditRequest", b =>
@@ -230,7 +230,7 @@ namespace Moasher.Persistence.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("EditRequests");
+                    b.ToTable("EditRequests", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.EditRequests.EditRequestSnapshot", b =>
@@ -263,7 +263,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("EditRequestId");
 
-                    b.ToTable("EditRequestSnapshot");
+                    b.ToTable("EditRequestSnapshot", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.Entity", b =>
@@ -300,7 +300,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Entities");
+                    b.ToTable("Entities", (string)null);
 
                     b.HasData(
                         new
@@ -361,7 +361,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EnumTypes");
+                    b.ToTable("EnumTypes", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.Initiative", b =>
@@ -553,7 +553,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("StatusEnumId");
 
-                    b.ToTable("Initiatives");
+                    b.ToTable("Initiatives", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeApprovedCost", b =>
@@ -611,7 +611,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("InitiativeId");
 
-                    b.ToTable("InitiativeApprovedCosts");
+                    b.ToTable("InitiativeApprovedCosts", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeBudget", b =>
@@ -673,7 +673,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("InitiativeId");
 
-                    b.ToTable("InitiativeBudgets");
+                    b.ToTable("InitiativeBudgets", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeContract", b =>
@@ -768,7 +768,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("StatusEnumId");
 
-                    b.ToTable("InitiativeContracts");
+                    b.ToTable("InitiativeContracts", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeDeliverable", b =>
@@ -829,7 +829,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("InitiativeId");
 
-                    b.ToTable("InitiativeDeliverables");
+                    b.ToTable("InitiativeDeliverables", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeExpenditure", b =>
@@ -888,7 +888,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("InitiativeExpenditures");
+                    b.ToTable("InitiativeExpenditures", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeExpenditureBaseline", b =>
@@ -943,7 +943,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("InitiativeExpendituresBaseline");
+                    b.ToTable("InitiativeExpendituresBaseline", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeImpact", b =>
@@ -995,7 +995,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("InitiativeId");
 
-                    b.ToTable("InitiativeImpacts");
+                    b.ToTable("InitiativeImpacts", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeIssue", b =>
@@ -1115,7 +1115,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("StatusEnumId");
 
-                    b.ToTable("InitiativeIssues");
+                    b.ToTable("InitiativeIssues", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeMilestone", b =>
@@ -1179,7 +1179,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("InitiativeId");
 
-                    b.ToTable("InitiativeMilestones");
+                    b.ToTable("InitiativeMilestones", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProject", b =>
@@ -1273,7 +1273,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("PhaseEnumId");
 
-                    b.ToTable("InitiativeProjects");
+                    b.ToTable("InitiativeProjects", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProjectBaseline", b =>
@@ -1321,7 +1321,7 @@ namespace Moasher.Persistence.Migrations
                     b.HasIndex("ProjectId")
                         .IsUnique();
 
-                    b.ToTable("InitiativeProjectsBaseline");
+                    b.ToTable("InitiativeProjectsBaseline", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeProjectProgress", b =>
@@ -1390,7 +1390,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("InitiativeProjectProgress");
+                    b.ToTable("InitiativeProjectProgress", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeRisk", b =>
@@ -1525,7 +1525,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("TypeEnumId");
 
-                    b.ToTable("InitiativeRisks");
+                    b.ToTable("InitiativeRisks", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InitiativeEntities.InitiativeTeam", b =>
@@ -1598,7 +1598,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("RoleEnumId");
 
-                    b.ToTable("InitiativeTeams");
+                    b.ToTable("InitiativeTeams", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.InvalidToken", b =>
@@ -1616,7 +1616,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InvalidTokens");
+                    b.ToTable("InvalidTokens", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.KPIEntities.KPI", b =>
@@ -1770,7 +1770,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("StatusEnumId");
 
-                    b.ToTable("KPIs");
+                    b.ToTable("KPIs", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.KPIEntities.KPIValue", b =>
@@ -1843,7 +1843,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasIndex("KPIId");
 
-                    b.ToTable("KPIValues");
+                    b.ToTable("KPIValues", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.Portfolio", b =>
@@ -1877,7 +1877,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Portfolios");
+                    b.ToTable("Portfolios", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.Program", b =>
@@ -1911,7 +1911,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Programs");
+                    b.ToTable("Programs", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.Role", b =>
@@ -2030,7 +2030,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SearchRecords");
+                    b.ToTable("SearchRecords", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.StrategicObjectiveEntities.StrategicObjective", b =>
@@ -2068,7 +2068,7 @@ namespace Moasher.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("StrategicObjectives");
+                    b.ToTable("StrategicObjectives", (string)null);
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.User", b =>

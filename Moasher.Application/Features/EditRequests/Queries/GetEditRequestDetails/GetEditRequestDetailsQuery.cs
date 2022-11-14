@@ -48,7 +48,7 @@ public class GetEditRequestDetailsQueryHandler : IRequestHandler<GetEditRequestD
         {
             throw new NotFoundException();
         }
-        
+
         var editScopes = editRequest.GetEditScopes();
         var originalValues = new List<EditRequestValue>();
         foreach (var scope in editScopes)
