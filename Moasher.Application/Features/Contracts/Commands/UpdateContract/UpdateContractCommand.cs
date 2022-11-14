@@ -112,7 +112,11 @@ public class UpdateContractCommandHandler : IRequestHandler<UpdateContractComman
                 .GroupBy(e => e.Year)
                 .OrderBy(e => e.Key)
                 .Select(expenditure => new
-                    {Year = expenditure.Key, ActualAmount = expenditure.Sum(e => e.ActualAmount ?? 0)})
+                {
+                    Year = expenditure.Key, 
+                    CurrentActualAmount = expenditure.Where(e => e.Id == Guid.Empty).Sum(e => e.ActualAmount ?? 0),
+                    OriginalActualAmount = expenditure.Where(e => e.Id != Guid.Empty).Sum(e => e.ActualAmount ?? 0)
+                })
                 .ToList();
             
             actualExpenditures.ForEach(expenditure =>
@@ -124,7 +128,9 @@ public class UpdateContractCommandHandler : IRequestHandler<UpdateContractComman
                 }
             });
 
-            var totalActualExpenditures = initiative.TotalExpenditure + actualExpenditures.Sum(e => e.ActualAmount);
+            var currentExpenditures = actualExpenditures.Sum(e => e.CurrentActualAmount);
+            var originalExpenditures = actualExpenditures.Sum(e => e.OriginalActualAmount);
+            var totalActualExpenditures = initiative.TotalExpenditure - originalExpenditures + currentExpenditures;
             if (totalActualExpenditures > (initiative.TotalBudget ?? 0))
             {
                 throw new ValidationException(nameof(InitiativeContract.Expenditures),

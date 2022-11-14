@@ -1,11 +1,13 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Moasher.Application.Common.Exceptions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Common.Abstracts;
 using Moasher.Domain.Entities.EditRequests;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Enums;
 using Moasher.Domain.Types;
+using Moasher.Persistence.Extensions;
 using Newtonsoft.Json;
 
 namespace Moasher.Persistence;
@@ -21,17 +23,7 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
         _backgroundQueue = backgroundQueue;
         _currentUser = currentUser;
     }
-
-    public Task<int> SaveChangesAsyncFromDomainEvent(CancellationToken cancellationToken = new())
-    {
-        return base.SaveChangesAsync(cancellationToken);
-    }
-
-    public Task<int> SaveChangesAsyncFromInternalProcess(CancellationToken cancellationToken = new())
-    {
-        return base.SaveChangesAsync(cancellationToken);
-    }
-
+    
     public IQueryable<T>? GetSet<T>(string tableName)
     {
         return (IQueryable<T>?) GetType().GetProperty(tableName)?.GetValue(this, null);
@@ -46,9 +38,19 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
     {
         Update(entity);
     }
-    
+    public Task<int> SaveChangesAsyncFromDomainEvent(CancellationToken cancellationToken = new())
+    {
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task<int> SaveChangesAsyncFromInternalProcess(CancellationToken cancellationToken = new())
+    {
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
+        PreventOperationIfHasEditRequest();
         HandelAuditableEntries();
         await HandelEditRequests(cancellationToken);
         var events = GetDomainEvents();
@@ -108,18 +110,15 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
 
     private async Task HandelEditRequests(CancellationToken cancellationToken = new())
     {
-        var approved = _currentUser.IsSuperAdmin() || _currentUser.IsAdmin();
+        if (_currentUser.IsSuperAdmin() || _currentUser.IsAdmin()) return;
+        
         var editRequest = new EditRequest();
         var events = new Dictionary<string, object>();
-        var hasEditRequest = false;
-        foreach (var entry in ChangeTracker.Entries<ApprovableDbEntity>().ToList())
+        foreach (var entry in ChangeTracker.Entries<ApprovableDbEntity>()
+                     .Where(c => c.State != EntityState.Unchanged)
+                     .Where(c => c.State != EntityState.Detached)
+                     .ToList())
         {
-            if (approved)
-            {
-                entry.Entity.Approved = true;
-                continue;
-            }
-
             if (entry.Entity.HasDomainEvents())
             {
                 editRequest.HasEvents = true;
@@ -160,27 +159,26 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        editRequest.Type = EditRequestType.Create;
                         snapshot.Type = EditRequestType.Create;
                         snapshotValues[propertyName] = property.CurrentValue;
-                        hasEditRequest = true;
                         break;
                     case EntityState.Modified:
-                        editRequest.Type = EditRequestType.Update;
                         snapshot.Type = EditRequestType.Update;
                         snapshotValues[propertyName] = property.CurrentValue;
-                        hasEditRequest = true;
                         break;
                     case EntityState.Deleted:
-                        editRequest.Type = EditRequestType.Delete;
                         snapshot.Type = EditRequestType.Delete;
                         snapshotValues[propertyName] = property.OriginalValue;
-                        hasEditRequest = true;
                         break;
                 }
             }
 
-            if (editRequest.Type == EditRequestType.Delete)
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.Approved = false;
+            }
+            
+            if (entry.State == EntityState.Deleted)
             {
                 // We need to keep the entity's parent last status,
                 // so we set Entity.Approved to true to prevent domain events from changing the status
@@ -191,18 +189,17 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
                 entry.State = EntityState.Modified;
             }
 
-            if (editRequest.Type == EditRequestType.Update)
+            if (entry.State == EntityState.Modified)
             {
                 // We need to keep the entity's parent last status,
                 // so we set Entity.Approved to true to prevent domain events from changing the status
                 // instead we set Entity.HasUpdateRequest to true, so we can capture the edite request
                 // we need to keep the entity on the db, so we replace current values with the original values by reloading the entity
-                //var ggg = entry.Entity;
                 await entry.ReloadAsync(cancellationToken);
                 entry.Entity.Approved = true;
                 entry.Entity.HasUpdateRequest = true;
             }
-
+            
             if (snapshotValues.Any())
             {
                 snapshot.OriginalValues = JsonConvert.SerializeObject(snapshotValues);
@@ -210,7 +207,7 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
             }
         }
 
-        if (hasEditRequest)
+        if (editRequest.Snapshots.Any())
         {
             editRequest.Events = JsonConvert.SerializeObject(events);
             editRequest.Status = EditRequestStatus.Pending;
@@ -225,6 +222,14 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
         foreach (var domainEvent in domainEvents)
         {
             await _backgroundQueue.QueueTask(ct => Task.Factory.StartNew(() => domainEvent as INotification, ct));
+        }
+    }
+
+    private void PreventOperationIfHasEditRequest()
+    {
+        if (ChangeTracker.Entries<ApprovableDbEntity>().ToList().Any(entry => entry.Entity.HasEditRequest()))
+        {
+            throw new ValidationException("لا يمكن تنفيذ العملية بسبب وجود طلب تعديل قائم");
         }
     }
 }

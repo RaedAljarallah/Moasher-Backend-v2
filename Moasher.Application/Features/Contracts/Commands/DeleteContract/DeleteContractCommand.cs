@@ -35,7 +35,10 @@ public class DeleteContractCommandHandler : IRequestHandler<DeleteContractComman
         
         _context.InitiativeExpenditures.RemoveRange(contract.Expenditures);
         _context.InitiativeExpendituresBaseline.RemoveRange(contract.ExpendituresBaseline);
-        _context.InitiativeProjects.Remove(contract.Project);
+        if (contract.Project is not null)
+        {
+            _context.InitiativeProjects.Remove(contract.Project);
+        }
         _context.InitiativeContracts.Remove(contract);
         contract.AddDomainEvent(new ContractDeletedEvent(contract));
         await _context.SaveChangesAsync(cancellationToken);

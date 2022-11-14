@@ -8,7 +8,6 @@ public class EditRequest : IDbEntity
 {
     public Guid Id { get; set; }
     public string Code { get; set; } = default!;
-    public EditRequestType Type { get; set; }
     public EditRequestStatus Status { get; set; }
     public DateTimeOffset RequestedAt { get; set; }
     public string RequestedBy { get; set; } = default!;

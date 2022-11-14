@@ -48,29 +48,35 @@ public class GetEditRequestDetailsQueryHandler : IRequestHandler<GetEditRequestD
         {
             throw new NotFoundException();
         }
-
+        
         var editScopes = editRequest.GetEditScopes();
         var originalValues = new List<EditRequestValue>();
         foreach (var scope in editScopes)
         {
-            var editRequestValue = new EditRequestValue
-                {ModelName = AttributeServices.GetDisplayName<EditRequest>(scope)};
+            
             var editSnapshots = editRequest.Snapshots
                 .Where(s => s.ModelName == scope)
                 .Where(s => s.OriginalValues is not null)
-                .Select(s => s.OriginalValues)
                 .ToList();
 
             foreach (var snapshot in editSnapshots)
             {
-                var value = JsonConvert.DeserializeObject<Dictionary<string, object>>(snapshot!);
+                var editRequestValue = new EditRequestValue
+                {
+                    ModelName = AttributeServices.GetDisplayName<EditRequest>(scope),
+                    Type = snapshot.Type
+                };
+                
+                var value = JsonConvert.DeserializeObject<Dictionary<string, object>>(snapshot.OriginalValues!);
                 if (value is not null)
                 {
-                    editRequestValue.Values.Add(ParseKeysToDisplayName(value, scope));
+                    editRequestValue.Values = ParseKeysToDisplayName(value, scope);
                 }
+                
+                originalValues.Add(editRequestValue);
             }
 
-            originalValues.Add(editRequestValue);
+            
         }
 
         return new EditRequestDetailsDto
@@ -84,6 +90,7 @@ public class GetEditRequestDetailsQueryHandler : IRequestHandler<GetEditRequestD
         string modelName)
     {
         return values
+            .OrderBy(v => v.Key)
             .Where(value => !_ignoredFields.Contains(value.Key))
             .Where(value => !value.Key.EndsWith("Id"))
             .Where(value => !value.Key.EndsWith("Style"))

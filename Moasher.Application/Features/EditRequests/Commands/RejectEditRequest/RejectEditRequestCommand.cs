@@ -58,21 +58,13 @@ public class RejectEditRequestCommandHandler : IRequestHandler<RejectEditRequest
                     }
                 }
 
-                if (entry.Type == EditRequestType.Delete)
+                if (entry.Type is EditRequestType.Delete or EditRequestType.Update)
                 {
                     var result = await set.FirstOrDefaultAsync(s => s.Id == entry.ModelId, cancellationToken);
                     if (result != null)
                     {
+                        result.Approved = true;
                         result.HasDeleteRequest = false;
-                        await _context.SaveChangesAsyncFromInternalProcess(cancellationToken);
-                    }
-                }
-
-                if (entry.Type == EditRequestType.Update)
-                {
-                    var result = await set.FirstOrDefaultAsync(s => s.Id == entry.ModelId, cancellationToken);
-                    if (result != null)
-                    {
                         result.HasUpdateRequest = false;
                         await _context.SaveChangesAsyncFromInternalProcess(cancellationToken);
                     }

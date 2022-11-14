@@ -1,5 +1,4 @@
 ﻿using Moasher.Application.Common.Abstracts;
-using Moasher.Application.Common.Extensions;
 using Moasher.Domain.Entities.EditRequests;
 using Moasher.Domain.Enums;
 
@@ -47,19 +46,19 @@ public class GetEditRequestsQueryParameter : IQueryParameterBuilder<EditRequest>
             if (string.Equals(_parameter.Type, EditRequestType.Create.ToString(),
                     StringComparison.CurrentCultureIgnoreCase))
             {
-                query = query.Where(e => e.Type == EditRequestType.Create);
+                query = query.Where(e => e.Snapshots.Select(s => s.Type).Contains(EditRequestType.Create));
             }
             
             if (string.Equals(_parameter.Type, EditRequestType.Update.ToString(),
                     StringComparison.CurrentCultureIgnoreCase))
             {
-                query = query.Where(e => e.Type == EditRequestType.Update);
+                query = query.Where(e => e.Snapshots.Select(s => s.Type).Contains(EditRequestType.Update));
             }
             
             if (string.Equals(_parameter.Type, EditRequestType.Delete.ToString(),
                     StringComparison.CurrentCultureIgnoreCase))
             {
-                query = query.Where(e => e.Type == EditRequestType.Delete);
+                query = query.Where(e => e.Snapshots.Select(s => s.Type).Contains(EditRequestType.Delete));
             }
         }
 
