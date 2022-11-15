@@ -90,7 +90,8 @@ public static class AppPermissions
         result.AddRange(GenerateFromResource(Resources.Projects, new[] {Actions.Create, Actions.Delete}));
         result.AddRange(GenerateFromResource(Resources.Contracts, new[] {Actions.Create, Actions.Delete}));
         result.AddRange(GenerateFromResource(Resources.KPIValues, new[] {Actions.Create, Actions.Delete}));
-
+        result.Add(new Permission(Actions.View, Resources.Programs));
+        result.Add(new Permission(Actions.View, Resources.StrategicObjectives));
         return result.ToArray();
     }
 

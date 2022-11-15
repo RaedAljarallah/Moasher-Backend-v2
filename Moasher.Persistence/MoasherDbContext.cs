@@ -12,89 +12,126 @@ using Moasher.Domain.Events.EditRequests;
 using Moasher.Domain.Types;
 using Moasher.Persistence.Extensions;
 using Newtonsoft.Json;
-using Z.EntityFramework.Plus;
 
 namespace Moasher.Persistence;
 
 public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
 {
     private readonly IBackgroundQueue _backgroundQueue;
-    private readonly ICurrentUser _currentUser;
+    private ICurrentUser CurrentUser { get; }
     public MoasherDbContext(DbContextOptions<MoasherDbContext> options, IBackgroundQueue backgroundQueue,
         ICurrentUser currentUser) : base(options)
     {
         _backgroundQueue = backgroundQueue;
-        _currentUser = currentUser;
+        CurrentUser = currentUser;
     }
-
-    // private void ApplyGlobalQueryFilters()
-    // {
-    //     if (CurrentUser.IsEntityUser())
-    //     {
-    //         this.Filter<Initiative>(q => q.Where(i => i.EntityId == CurrentUser.GetEntityId()));
-    //     }
-    //     
-    // }
-    public ICurrentUser CurrentUser => _currentUser;
     
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        //ApplyGlobalQueryFilters();
-        // builder.Entity<UserNotification>().HasQueryFilter(n => n.UserId == CurrentUser.GetId());
-        // builder.Entity<EditRequest>().HasQueryFilter(e => !CurrentUser.IsDataAssurance() && e.RequestedBy == CurrentUser.GetEmail());
+        
+        builder.Entity<UserNotification>().HasQueryFilter(n => n.UserId == CurrentUser.GetId());
+        builder.Entity<EditRequest>()
+            .HasQueryFilter(e => CurrentUser.IsDataAssurance() || e.RequestedBy == CurrentUser.GetEmail());
+        
+        builder.Entity<Entity>()
+            .HasQueryFilter(x => CurrentUser.CanViewAllResources() || x.Id == CurrentUser.GetEntityId());
+        
+        builder.Entity<Initiative>()
+            .HasQueryFilter(x => CurrentUser.CanViewAllResources() || (x.EntityId == CurrentUser.GetEntityId() && x.Visible));
+        
+        builder.Entity<InitiativeMilestone>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Initiative.EntityId == CurrentUser.GetEntityId() && x.Initiative.Visible));
+        
+        builder.Entity<InitiativeDeliverable>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Initiative.EntityId == CurrentUser.GetEntityId() && x.Initiative.Visible));
+        
+        builder.Entity<InitiativeImpact>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Initiative.EntityId == CurrentUser.GetEntityId() && x.Initiative.Visible));
+        
+        builder.Entity<InitiativeIssue>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Initiative.EntityId == CurrentUser.GetEntityId() && x.Initiative.Visible));
+        
+        builder.Entity<InitiativeRisk>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Initiative.EntityId == CurrentUser.GetEntityId() && x.Initiative.Visible));
+        
+        builder.Entity<InitiativeTeam>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Initiative.EntityId == CurrentUser.GetEntityId() && x.Initiative.Visible));
+        
+        builder.Entity<InitiativeApprovedCost>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Initiative.EntityId == CurrentUser.GetEntityId() && x.Initiative.Visible));
+        
+        builder.Entity<InitiativeBudget>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Initiative.EntityId == CurrentUser.GetEntityId() && x.Initiative.Visible));
+        
+        builder.Entity<InitiativeContract>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Initiative.EntityId == CurrentUser.GetEntityId() && x.Initiative.Visible));
+        
+        builder.Entity<InitiativeProject>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Initiative.EntityId == CurrentUser.GetEntityId() && x.Initiative.Visible));
+        
+        builder.Entity<InitiativeProjectBaseline>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Project.Initiative.EntityId == CurrentUser.GetEntityId() && x.Project.Initiative.Visible));
+        
+        builder.Entity<InitiativeProjectProgress>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Project.Initiative.EntityId == CurrentUser.GetEntityId() && x.Project.Initiative.Visible));
 
-
-        // builder.Entity<Entity>()
-        //     .HasQueryFilter(x => x.Id == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-
-        // builder.Entity<Initiative>()
-        //     .HasQueryFilter(x => x.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-
-
-        // builder.Entity<InitiativeApprovedCost>()
-        //     .HasQueryFilter(x => x.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        //
-        // builder.Entity<InitiativeBudget>()
-        //     .HasQueryFilter(x => x.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeContract>()
-        //     .HasQueryFilter(x => x.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeProject>()
-        //     .HasQueryFilter(x => x.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeProjectBaseline>()
-        //     .HasQueryFilter(x => x.Project.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeProjectProgress>()
-        //     .HasQueryFilter(x => x.Project.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeExpenditure>()
-        //     .HasQueryFilter(x => x.Project != null && x.Project.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeExpenditure>()
-        //     .HasQueryFilter(x => x.Contract != null && x.Contract.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeExpenditureBaseline>()
-        //     .HasQueryFilter(x => x.Project != null && x.Project.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeExpenditureBaseline>()
-        //     .HasQueryFilter(x => x.Contract != null && x.Contract.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeDeliverable>()
-        //     .HasQueryFilter(x => x.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeImpact>()
-        //     .HasQueryFilter(x => x.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeIssue>()
-        //     .HasQueryFilter(x => x.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeMilestone>()
-        //     .HasQueryFilter(x => x.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeRisk>()
-        //     .HasQueryFilter(x => x.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<InitiativeTeam>()
-        //     .HasQueryFilter(x => x.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<KPI>()
-        //     .HasQueryFilter(x => x.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<KPIValue>()
-        //     .HasQueryFilter(x => x.KPI.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<Analytic>()
-        //     .HasQueryFilter(x => x.Initiative != null && x.Initiative.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
-        // builder.Entity<Analytic>()
-        //     .HasQueryFilter(x => x.KPI != null && x.KPI.EntityId == CurrentUser.GetEntityId() || CurrentUser.CanViewAllResources());
+        builder.Entity<InitiativeExpenditure>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Project != null && x.Project.Initiative.EntityId == CurrentUser.GetEntityId() &&
+                 x.Project.Initiative.Visible) ||
+                (x.Contract != null && x.Contract.Initiative.EntityId == CurrentUser.GetEntityId() &&
+                 x.Contract.Initiative.Visible));
+        
+        builder.Entity<InitiativeExpenditureBaseline>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Project != null && x.Project.Initiative.EntityId == CurrentUser.GetEntityId() &&
+                 x.Project.Initiative.Visible) ||
+                (x.Contract != null && x.Contract.Initiative.EntityId == CurrentUser.GetEntityId() &&
+                 x.Contract.Initiative.Visible));
+        
+        builder.Entity<Analytic>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Initiative != null && x.Initiative.EntityId == CurrentUser.GetEntityId() && x.Initiative.Visible) ||
+                (x.KPI != null && x.KPI.EntityId == CurrentUser.GetEntityId() && x.KPI.Visible));
+        
+        builder.Entity<KPI>()
+            .HasQueryFilter(x => CurrentUser.CanViewAllResources() || (x.EntityId == CurrentUser.GetEntityId() && x.Visible));
+        
+        builder.Entity<KPIValue>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.KPI.EntityId == CurrentUser.GetEntityId() && x.KPI.Visible));
+        
     }
-
+    
     public IQueryable<T>? GetSet<T>(string tableName)
     {
         return (IQueryable<T>?) GetType().GetProperty(tableName)?.GetValue(this, null);
