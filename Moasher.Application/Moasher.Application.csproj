@@ -19,8 +19,4 @@
       <ProjectReference Include="..\Moasher.Domain\Moasher.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Features\EditRequests\Commands\DeleteEditRequest" />
-    </ItemGroup>
-
 </Project>

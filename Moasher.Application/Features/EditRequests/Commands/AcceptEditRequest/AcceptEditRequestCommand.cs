@@ -24,14 +24,18 @@ public class AcceptEditRequestCommandHandler : IRequestHandler<AcceptEditRequest
     private readonly IMapper _mapper;
     private readonly ICurrentUser _currentUser;
     private readonly IPublisher _publisher;
+    private readonly IUserNotification _userNotification;
+    private readonly IIdentityService _identityService;
 
     public AcceptEditRequestCommandHandler(IMoasherDbContext context, IMapper mapper, ICurrentUser currentUser,
-        IPublisher publisher)
+        IPublisher publisher, IUserNotification userNotification, IIdentityService identityService)
     {
         _context = context;
         _mapper = mapper;
         _currentUser = currentUser;
         _publisher = publisher;
+        _userNotification = userNotification;
+        _identityService = identityService;
     }
 
     public async Task<EditRequestDto> Handle(AcceptEditRequestCommand request, CancellationToken cancellationToken)
@@ -146,6 +150,23 @@ public class AcceptEditRequestCommandHandler : IRequestHandler<AcceptEditRequest
         editRequest.ActionAt = LocalDateTime.Now;
         editRequest.ActionBy = _currentUser.GetEmail();
         await _context.SaveChangesAsyncFromInternalProcess(cancellationToken);
-        return _mapper.Map<EditRequestDto>(editRequest);
+
+        var dto = _mapper.Map<EditRequestDto>(editRequest);
+        
+        await SendNotification(dto, cancellationToken);
+
+        return dto;
+    }
+
+    private async Task SendNotification(EditRequestDto editRequest, CancellationToken cancellationToken)
+    {
+        var recipient = await _identityService.GetUserByEmail(editRequest.RequestedBy, cancellationToken);
+        if (recipient is not null)
+        {
+            var body =
+                $"تم قبول الطلب رقم {editRequest.Code} لتعديل {string.Join(" - ", editRequest.Scopes)} بتاريخ {LocalDateTime.Now:yyyy-MM-dd}";
+            var userNotification = await _userNotification.CreateAsync("قبول تعديل", body, recipient, cancellationToken);
+            await _userNotification.NotifyAsync(userNotification, recipient, cancellationToken);
+        }
     }
 }

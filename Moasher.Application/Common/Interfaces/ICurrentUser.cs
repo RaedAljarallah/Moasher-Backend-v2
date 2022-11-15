@@ -7,6 +7,7 @@ public interface ICurrentUser
     public Guid? GetId();
     public string? GetEmail();
     public string? GetName();
+    public Guid? GetEntityId();
     public bool IsSuperAdmin();
     public bool IsAdmin();
     public bool IsDataAssurance();
@@ -15,5 +16,6 @@ public interface ICurrentUser
     public bool IsKPIsOperator();
     public bool IsEntityUser();
     public bool IsFullAccessViewer();
+    public bool CanViewAllResources();
     public bool HasPermission(Permission permission);
 }

@@ -1,6 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moasher.Application.Common.Constants;
+using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Entities;
+using Moasher.Domain.Entities.InitiativeEntities;
+using Moasher.Domain.Entities.KPIEntities;
+using Moasher.Domain.Types;
 
 namespace Moasher.Persistence.Extensions;
 
@@ -25,7 +29,7 @@ public static class ModelBuilderExtensions
             Code = "VRO",
             Name = "مكتب تحقيق الرؤية",
             IsOrganizer = true,
-            CreatedAt = DateTimeOffset.UtcNow.AddHours(3),
+            CreatedAt = LocalDateTime.Now,
             CreatedBy = "System"
         });
     }

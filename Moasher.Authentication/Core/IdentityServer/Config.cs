@@ -25,7 +25,7 @@ internal static class Config
             new ApiResource("web_app", "Web App")
             {
                 Scopes = {"access_as_user"},
-                UserClaims = {JwtClaimTypes.Role, JwtClaimTypes.Name, JwtClaimTypes.Email },
+                UserClaims = {JwtClaimTypes.Role, JwtClaimTypes.Name, JwtClaimTypes.Email, "entity_id" },
                 Description = "Web app using Moasher APIs"
             }
         };

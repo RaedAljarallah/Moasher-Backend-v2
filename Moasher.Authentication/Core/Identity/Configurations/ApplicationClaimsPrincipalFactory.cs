@@ -22,7 +22,8 @@ public class ApplicationClaimsPrincipalFactory : UserClaimsPrincipalFactory<User
         {
             new(JwtClaimTypes.Name, user.GetFullName()),
             new(JwtClaimTypes.Role, userRole),
-            new(JwtClaimTypes.Email, user.Email)
+            new(JwtClaimTypes.Email, user.Email),
+            new("entity_id", user.EntityId.ToString())
         };
         
         identity.AddClaims(claims);

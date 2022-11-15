@@ -14,6 +14,9 @@ public static class ClaimsPrincipalExtensions
     public static string? GetName(this ClaimsPrincipal principal) =>
         principal.GetValue(AppRegisteredClaimNames.Name);
 
+    public static Guid? GetEntityId(this ClaimsPrincipal principal) =>
+        principal.GetValue(AppRegisteredClaimNames.EntityId)?.ToGuid();
+    
     public static bool IsSuperAdmin(this ClaimsPrincipal principal) =>
         AppRoles.IsSuperAdminRole(principal.GetRole());
     public static bool IsAdmin(this ClaimsPrincipal principal) =>

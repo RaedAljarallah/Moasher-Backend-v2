@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moasher.Application.Common.Constants;
 using Moasher.Application.Features.EditRequests.Commands.AcceptEditRequest;
+using Moasher.Application.Features.EditRequests.Commands.DeleteEditRequest;
 using Moasher.Application.Features.EditRequests.Commands.RejectEditRequest;
 using Moasher.Application.Features.EditRequests.Queries.GetEditRequestDetails;
 using Moasher.Application.Features.EditRequests.Queries.GetEditRequests;
@@ -58,8 +59,19 @@ public class EditRequestsController : ApiControllerBase
     [NotFoundResponseType]
     [OkResponseType]
     [Produces("application/json")]
-    public async Task<IActionResult> Accept(RejectEditRequestCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Reject(RejectEditRequestCommand command, CancellationToken cancellationToken)
     {
         return Ok(await Sender.Send(command, cancellationToken));
+    }
+    
+    [MustHavePermission(Actions.Delete, Resources.EditRequests)]
+    [HttpDelete(ApiEndpoints.EditRequests.Delete)]
+    [NotFoundResponseType]
+    [ConflictResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        await Sender.Send(new DeleteEditRequestCommand { Id = id }, cancellationToken);
+        return NoContent();
     }
 }

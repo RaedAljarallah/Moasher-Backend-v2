@@ -273,5 +273,6 @@ public struct ApiEndpoints
         public const string Details = $"{Base}/{{id}}";
         public const string Accept = $"{Base}/accept";
         public const string Reject = $"{Base}/reject";
+        public const string Delete = $"{Base}/{{id}}";
     }
 }

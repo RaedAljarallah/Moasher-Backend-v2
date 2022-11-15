@@ -13,14 +13,24 @@ public class CurrentUserService : ICurrentUser, ICurrentUserInitializer
     public Guid? GetId() => IsAuthenticated() ? _user!.GetUserId() : Guid.Empty;
     public string? GetEmail() => IsAuthenticated() ? _user!.GetEmail() : string.Empty;
     public string? GetName() => IsAuthenticated() ? _user!.GetName() : string.Empty;
+    public Guid? GetEntityId() => IsAuthenticated() ? _user!.GetEntityId() : Guid.Empty;
     public bool IsSuperAdmin() => IsAuthenticated() && _user!.IsSuperAdmin();
     public bool IsAdmin() => IsAuthenticated() && _user!.IsAdmin();
-    public bool IsDataAssurance() => IsAuthenticated() && _user!.IsDataAssurance();
-    public bool IsFinancialOperator() => IsAuthenticated() && _user!.IsFinancialOperator();
-    public bool IsExecutionOperator() => IsAuthenticated() && _user!.IsExecutionOperator();
-    public bool IsKPIsOperator() => IsAuthenticated() && _user!.IsKPIsOperator();
-    public bool IsEntityUser() => IsAuthenticated() && _user!.IsEntityUser();
-    public bool IsFullAccessViewer() => IsAuthenticated() && _user!.IsFullAccessViewer();
+    public bool IsDataAssurance() => IsAuthenticated() && (HasAdministrationRole() || _user!.IsDataAssurance());
+    public bool IsFinancialOperator() => IsAuthenticated() && (HasAdministrationRole() || _user!.IsFinancialOperator());
+    public bool IsExecutionOperator() => IsAuthenticated() && (HasAdministrationRole() || _user!.IsExecutionOperator());
+    public bool IsKPIsOperator() => IsAuthenticated() && (HasAdministrationRole() || _user!.IsKPIsOperator());
+    public bool IsEntityUser() => IsAuthenticated() && (HasAdministrationRole() || _user!.IsEntityUser());
+    public bool IsFullAccessViewer() => IsAuthenticated() && (HasAdministrationRole() || _user!.IsFullAccessViewer());
+
+    public bool CanViewAllResources()
+    {
+        return IsAuthenticated() &&
+               (_user!.IsSuperAdmin() || _user!.IsAdmin() || _user!.IsDataAssurance() ||
+                _user!.IsFinancialOperator() || _user!.IsExecutionOperator() || _user!.IsKPIsOperator() ||
+                _user!.IsFullAccessViewer());
+    }
+
     public bool HasPermission(Permission permission) => IsAuthenticated() && GetPermissions().Contains(permission);
 
     public void SetCurrentUser(ClaimsPrincipal user)
@@ -48,4 +58,6 @@ public class CurrentUserService : ICurrentUser, ICurrentUserInitializer
 
         return Enumerable.Empty<Permission>();
     }
+
+    private bool HasAdministrationRole() => _user!.IsSuperAdmin() || _user!.IsAdmin();
 }

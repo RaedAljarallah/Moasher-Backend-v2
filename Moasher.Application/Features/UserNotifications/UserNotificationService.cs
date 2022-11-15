@@ -60,17 +60,24 @@ public class UserNotificationService : IUserNotification
 
     public Task NotifyAsync(UserNotification notification, User user, CancellationToken cancellationToken = new())
     {
-        return SendAsync(notification, new List<string> {user.Email}, cancellationToken);
+        return SendAsync(notification, new List<User> {user}, cancellationToken);
     }
 
     public Task NotifyAsync(UserNotification notification, IEnumerable<User> users, CancellationToken cancellationToken = new())
     {
-        var emails = users.Select(u => u.Email).ToList();
-        return SendAsync(notification, emails, cancellationToken);
+        return SendAsync(notification, users, cancellationToken);
     }
 
-    private Task SendAsync(UserNotification notification, List<string> emails, CancellationToken cancellationToken = new())
+    private Task SendAsync(UserNotification notification, IEnumerable<User> users, CancellationToken cancellationToken = new())
     {
+        var emails = users
+            .Where(u => u.ReceiveEmailNotification)
+            .Select(u => u.Email)
+            .ToList();
+        if (!emails.Any())
+        {
+            return Task.CompletedTask;
+        }
         var emailModel = new CreateUserNotificationEmailModel(notification.Title, notification.Body);
         var emailTemplate = _emailTemplateService.GenerateEmailTemplate(EmailTemplates.UserNotification, emailModel);
         var mailRequest = new MailRequest(emails, notification.Title, emailTemplate);

@@ -12,7 +12,7 @@ public class User : IdentityUser<Guid>, IDbEntity
     public Entity Entity { get; set; } = default!;
     public Guid EntityId { get; set; }
     public bool Suspended { get; set; }
-
+    public bool ReceiveEmailNotification { get; set; } = true;
     public bool IsActive() => EmailConfirmed && !MustChangePassword;
 
     public bool IsSuspended() => (LockoutEnd.HasValue && LockoutEnd.Value >= DateTimeOffset.UtcNow) || Suspended;

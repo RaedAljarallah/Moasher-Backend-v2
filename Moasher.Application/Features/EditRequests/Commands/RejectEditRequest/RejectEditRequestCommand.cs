@@ -15,7 +15,11 @@ public record RejectEditRequestCommand : IRequest<EditRequestDto>
     private string? _justification;
     public Guid Id { get; set; }
 
-    public string? Justification { get => _justification; set => _justification = value?.Trim(); }
+    public string? Justification
+    {
+        get => _justification;
+        set => _justification = value?.Trim();
+    }
 }
 
 public class RejectEditRequestCommandHandler : IRequestHandler<RejectEditRequestCommand, EditRequestDto>
@@ -23,13 +27,19 @@ public class RejectEditRequestCommandHandler : IRequestHandler<RejectEditRequest
     private readonly IMoasherDbContext _context;
     private readonly IMapper _mapper;
     private readonly ICurrentUser _currentUser;
+    private readonly IUserNotification _userNotification;
+    private readonly IIdentityService _identityService;
 
-    public RejectEditRequestCommandHandler(IMoasherDbContext context, IMapper mapper, ICurrentUser currentUser)
+    public RejectEditRequestCommandHandler(IMoasherDbContext context, IMapper mapper, ICurrentUser currentUser,
+        IUserNotification userNotification, IIdentityService identityService)
     {
         _context = context;
         _mapper = mapper;
         _currentUser = currentUser;
+        _userNotification = userNotification;
+        _identityService = identityService;
     }
+
     public async Task<EditRequestDto> Handle(RejectEditRequestCommand request, CancellationToken cancellationToken)
     {
         var editRequest = await _context.EditRequests
@@ -71,12 +81,35 @@ public class RejectEditRequestCommandHandler : IRequestHandler<RejectEditRequest
                 }
             }
         }
-        
+
         editRequest.Status = EditRequestStatus.Approved;
         editRequest.Justification = request.Justification;
         editRequest.ActionAt = LocalDateTime.Now;
         editRequest.ActionBy = _currentUser.GetEmail();
         await _context.SaveChangesAsyncFromInternalProcess(cancellationToken);
-        return _mapper.Map<EditRequestDto>(editRequest);
+
+        var dto = _mapper.Map<EditRequestDto>(editRequest);
+
+        await SendNotification(dto, cancellationToken);
+
+        return dto;
+    }
+
+    private async Task SendNotification(EditRequestDto editRequest, CancellationToken cancellationToken)
+    {
+        var recipient = await _identityService.GetUserByEmail(editRequest.RequestedBy, cancellationToken);
+        if (recipient is not null)
+        {
+            var justification = string.Empty;
+            if (editRequest.Justification is not null)
+            {
+                justification = $"بسبب {editRequest.Justification}";
+            }
+
+            var body =
+                $"تم رفض الطلب رقم {editRequest.Code} لتعديل {string.Join(" - ", editRequest.Scopes)} بتاريخ {LocalDateTime.Now:yyyy-MM-dd} {justification}";
+            var userNotification = await _userNotification.CreateAsync("رفض تعديل", body, recipient, cancellationToken);
+            await _userNotification.NotifyAsync(userNotification, recipient, cancellationToken);
+        }
     }
 }
