@@ -57,6 +57,10 @@ public class InitiativeProject : InitiativeRelatedDbEntity
         = new HashSet<InitiativeExpenditureBaseline>();
     public ICollection<InitiativeProjectProgress> Progress { get; set; }
         = new HashSet<InitiativeProjectProgress>();
+    
+    public ICollection<ContractMilestone> ContractMilestones { get; set; }
+        = new HashSet<ContractMilestone>();
+    
     [JsonIgnore]
     public InitiativeContract? Contract { get; set; }
     public Guid? ContractId { get; set; }

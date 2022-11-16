@@ -33,6 +33,8 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
         builder.Entity<UserNotification>().HasQueryFilter(n => n.UserId == CurrentUser.GetId());
         builder.Entity<EditRequest>()
             .HasQueryFilter(e => CurrentUser.IsDataAssurance() || e.RequestedBy == CurrentUser.GetEmail());
+        builder.Entity<EditRequestSnapshot>()
+            .HasQueryFilter(e => CurrentUser.IsDataAssurance() || e.EditRequest.RequestedBy == CurrentUser.GetEmail());
         
         builder.Entity<Entity>()
             .HasQueryFilter(x => CurrentUser.CanViewAllResources() || x.Id == CurrentUser.GetEntityId());
@@ -44,6 +46,11 @@ public class MoasherDbContext : MoasherDbContextBase, IMoasherDbContext
             .HasQueryFilter(x =>
                 CurrentUser.CanViewAllResources() ||
                 (x.Initiative.EntityId == CurrentUser.GetEntityId() && x.Initiative.Visible));
+
+        builder.Entity<ContractMilestone>()
+            .HasQueryFilter(x =>
+                CurrentUser.CanViewAllResources() ||
+                (x.Milestone.Initiative.EntityId == CurrentUser.GetEntityId() && x.Milestone.Initiative.Visible));
         
         builder.Entity<InitiativeDeliverable>()
             .HasQueryFilter(x =>

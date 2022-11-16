@@ -44,6 +44,7 @@ public abstract class MoasherDbContextBase : IdentityDbContext<User, Role, Guid>
     public DbSet<InvalidToken> InvalidTokens => Set<InvalidToken>();
     public DbSet<EditRequest> EditRequests => Set<EditRequest>();
     public DbSet<UserNotification> UserNotifications => Set<UserNotification>();
+    public DbSet<ContractMilestone> ContractMilestones => Set<ContractMilestone>();
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

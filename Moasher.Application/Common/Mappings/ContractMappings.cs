@@ -25,7 +25,8 @@ public class ContractMappings : Profile
             .ForMember(c => c.ExpendituresBaseline, opt => opt.Ignore());
 
         CreateMap<InitiativeContract, EditContractDto>()
-            .ForMember(c => c.Status, opt => opt.MapFrom(c => c.StatusEnum));
+            .ForMember(c => c.Status, opt => opt.MapFrom(c => c.StatusEnum))
+            .ForMember(c => c.Milestones, opt => opt.MapFrom(c => c.ContractMilestones.Select(cm => cm.Milestone)));
         
         CreateMap<UpdateContractCommand, InitiativeContract>()
             .ForMember(c => c.Initiative, opt => opt.Ignore())

@@ -24,6 +24,8 @@ public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand,
         var project = await _context.InitiativeProjects
             .Include(p => p.Expenditures)
             .Include(p => p.ExpendituresBaseline)
+            .Include(p => p.ContractMilestones)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 
         if (project is null)
@@ -33,6 +35,7 @@ public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand,
 
         _context.InitiativeExpenditures.RemoveRange(project.Expenditures);
         _context.InitiativeExpendituresBaseline.RemoveRange(project.ExpendituresBaseline);
+        _context.ContractMilestones.RemoveRange(project.ContractMilestones);
         _context.InitiativeProjects.Remove(project);
         await _context.SaveChangesAsync(cancellationToken);
         

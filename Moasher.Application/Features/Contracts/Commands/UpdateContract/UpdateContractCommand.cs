@@ -6,7 +6,6 @@ using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Features.Contracts.Commands.Common;
 using Moasher.Application.Features.Expenditures.Commands.CreateContractExpenditure;
-using Moasher.Domain.Common.Extensions;
 using Moasher.Domain.Entities.InitiativeEntities;
 using Moasher.Domain.Events.Contracts;
 using Moasher.Domain.Validators;
@@ -19,6 +18,8 @@ public record UpdateContractCommand : ContractCommandBase, IRequest<ContractDto>
 
     public IEnumerable<CreateContractExpenditureCommand> Expenditures { get; set; } =
         Enumerable.Empty<CreateContractExpenditureCommand>();
+    
+    public IEnumerable<Guid> MilestoneIds { get; set; } = Enumerable.Empty<Guid>();
 }
 
 public class UpdateContractCommandHandler : IRequestHandler<UpdateContractCommand, ContractDto>
@@ -39,6 +40,9 @@ public class UpdateContractCommandHandler : IRequestHandler<UpdateContractComman
             .Include(i => i.Budgets)
             .Include(i => i.Contracts)
             .ThenInclude(c => c.Expenditures)
+            .Include(c => c.Contracts)
+            .ThenInclude(c => c.ContractMilestones)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(i => i.Id == request.InitiativeId, cancellationToken);
 
         if (initiative is null)
@@ -138,6 +142,27 @@ public class UpdateContractCommandHandler : IRequestHandler<UpdateContractComman
             }
         }
 
+        if (IsDifferentMilestones(request, contract))
+        {
+            _context.ContractMilestones.RemoveRange(contract.ContractMilestones);
+            if (request.MilestoneIds.Any())
+            {
+                var milestones = await _context.InitiativeMilestones
+                    .Where(m => m.InitiativeId == initiative.Id)
+                    .Where(m => request.MilestoneIds.Contains(m.Id))
+                    .ToListAsync(cancellationToken);
+                
+                foreach (var milestone in milestones)
+                {
+                    contract.ContractMilestones.Add(new ContractMilestone
+                    {
+                        Milestone = milestone,
+                        Contract = contract
+                    });
+                }
+            }
+        }
+
         _mapper.Map(request, contract);
 
         // It's safe to make BalancedExpenditurePlan 'true'
@@ -180,6 +205,24 @@ public class UpdateContractCommandHandler : IRequestHandler<UpdateContractComman
         }
 
         if (!currentExpenditures.SequenceEqual(originalExpenditures))
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
+    private static bool IsDifferentMilestones(UpdateContractCommand request, InitiativeContract contract)
+    {
+        var currentMilestones = request.MilestoneIds.ToList();
+        var originalMilestones = contract.ContractMilestones.Select(cm => cm.MilestoneId).ToList();
+
+        if (currentMilestones.Count != originalMilestones.Count)
+        {
+            return true;
+        }
+
+        if (!currentMilestones.SequenceEqual(originalMilestones))
         {
             return true;
         }

@@ -7,7 +7,6 @@ using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Features.Expenditures.Commands.CreateProjectExpenditure;
 using Moasher.Application.Features.Projects.Commands.Common;
 using Moasher.Domain.Entities.InitiativeEntities;
-using Moasher.Domain.Events.Projects;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Projects.Commands.UpdateProject;
@@ -33,6 +32,11 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
             .AsNoTracking()
             .Include(i => i.Projects)
             .ThenInclude(p => p.Expenditures)
+            .Include(i => i.Projects)
+            .ThenInclude(p => p.ContractMilestones)
+            .Include(i => i.Projects)
+            .ThenInclude(p => p.Progress)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(i => i.Id == request.InitiativeId, cancellationToken);
         
         if (initiative is null)
@@ -64,7 +68,11 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
         
             project.PhaseEnum = phaseEnum;
             
-            project.AddDomainEvent(new ProjectPhaseCompletedEvent(project));
+            var activeProgressItem = project.Progress.FirstOrDefault(p => !p.Completed);
+            activeProgressItem?.Complete();
+            
+            var newProgressItem = InitiativeProjectProgress.CreateProjectProgressItem(project);
+            project.Progress.Add(newProgressItem);
         }
 
         if (IsDifferentExpenditures(request, project))
@@ -85,6 +93,27 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
         
                 var mappedExpenditure = _mapper.Map<InitiativeExpenditure>(expenditure);
                 project.Expenditures.Add(mappedExpenditure);
+            }
+        }
+
+        if (IsDifferentMilestones(request, project))
+        {
+            _context.ContractMilestones.RemoveRange(project.ContractMilestones);
+            if (request.MilestoneIds.Any())
+            {
+                var milestones = await _context.InitiativeMilestones
+                    .Where(m => m.InitiativeId == initiative.Id)
+                    .Where(m => request.MilestoneIds.Contains(m.Id))
+                    .ToListAsync(cancellationToken);
+
+                foreach (var milestone in milestones)
+                {
+                    project.ContractMilestones.Add(new ContractMilestone
+                    {
+                        Milestone = milestone,
+                        Project = project
+                    });
+                }
             }
         }
         
@@ -129,6 +158,24 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
             return true;
         }
         
+        return false;
+    }
+
+    private static bool IsDifferentMilestones(UpdateProjectCommand request, InitiativeProject project)
+    {
+        var currentMilestones = request.MilestoneIds.ToList();
+        var originalMilestones = project.ContractMilestones.Select(cm => cm.MilestoneId).ToList();
+
+        if (currentMilestones.Count != originalMilestones.Count)
+        {
+            return true;
+        }
+
+        if (!currentMilestones.SequenceEqual(originalMilestones))
+        {
+            return true;
+        }
+
         return false;
     }
 }

@@ -63,4 +63,7 @@ public class InitiativeContract : InitiativeRelatedDbEntity
 
     public ICollection<InitiativeExpenditureBaseline> ExpendituresBaseline { get; set; }
         = new HashSet<InitiativeExpenditureBaseline>();
+    
+    public ICollection<ContractMilestone> ContractMilestones { get; set; }
+        = new HashSet<ContractMilestone>();
 }

@@ -28,6 +28,8 @@ public class EditContractQueryHandler : IRequestHandler<EditContractQuery, EditC
             .AsNoTracking()
             .Include(c => c.StatusEnum)
             .Include(c => c.Expenditures)
+            .Include(c => c.ContractMilestones)
+            .ThenInclude(cm => cm.Milestone)
             .AsSplitQuery()
             .FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
         

@@ -43,7 +43,11 @@ public class CreateContractCommandHandler : IRequestHandler<CreateContractComman
             request.Amount, request.StartDate, request.EndDate));
 
         var project = await _context.InitiativeProjects
-            .AsNoTracking()
+            .Include(p => p.Expenditures)
+            .Include(p => p.ExpendituresBaseline)
+            .Include(p => p.Progress)
+            .Include(p => p.ContractMilestones)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(p => p.Id == request.ProjectId, cancellationToken);
         
         if (project is null)
@@ -63,8 +67,17 @@ public class CreateContractCommandHandler : IRequestHandler<CreateContractComman
         var contract = _mapper.Map<InitiativeContract>(request);
         contract.StatusEnum = statusEnum;
         contract.Initiative = initiative;
+        
         project.Contracting(contract.StartDate);
+        var totalExpenditureAmount = project.Expenditures.Sum(e => e.PlannedAmount);
+        project.Expenditures.ToList().ForEach(e => e.MoveToContract(contract));
+        project.ExpendituresBaseline.ToList().ForEach(b => b.MoveToContract(contract));
+        project.ContractMilestones.ToList().ForEach(cm => cm.MoveToContract(contract));
+        var projectActiveProgressItem = contract.Project?.Progress.FirstOrDefault(p => !p.Completed);
+        projectActiveProgressItem?.Complete();
+        
         contract.Project = project;
+        contract.BalancedExpenditurePlan = totalExpenditureAmount == contract.Amount;
         
         contract.AddDomainEvent(new ContractCreatedEvent(contract));
         initiative.Contracts.Add(contract);

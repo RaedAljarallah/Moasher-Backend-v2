@@ -36,6 +36,7 @@ public interface IMoasherDbContext
     public DbSet<InvalidToken> InvalidTokens { get; }
     public DbSet<EditRequest> EditRequests { get; }
     public DbSet<UserNotification> UserNotifications { get; }
+    public DbSet<ContractMilestone> ContractMilestones { get; }
     public IQueryable<T>? GetSet<T>(string tableName);
     public void RemoveEntity(object entity);
     public void UpdateEntity(object entity);

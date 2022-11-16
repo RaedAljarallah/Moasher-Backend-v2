@@ -6,10 +6,7 @@ using Moasher.Application.Common.Extensions;
 using Moasher.Application.Common.Interfaces;
 using Moasher.Application.Features.Expenditures.Commands.CreateProjectExpenditure;
 using Moasher.Application.Features.Projects.Commands.Common;
-using Moasher.Domain.Entities;
 using Moasher.Domain.Entities.InitiativeEntities;
-using Moasher.Domain.Events.Projects;
-using Moasher.Domain.Types;
 using Moasher.Domain.Validators;
 
 namespace Moasher.Application.Features.Projects.Commands.CreateProject;
@@ -34,6 +31,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
             .ThenInclude(p => p.Expenditures)
             .Include(i => i.Projects.Where(p => !p.Contracted))
             .ThenInclude(p => p.ExpendituresBaseline)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(i => i.Id == request.InitiativeId, cancellationToken);
 
         if (initiative is null)
@@ -73,6 +71,23 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         }
 
         var project = _mapper.Map<InitiativeProject>(request);
+        
+        var projectMilestones = new List<ContractMilestone>();
+        if (request.MilestoneIds.Any())
+        {
+            var milestones = await _context.InitiativeMilestones
+                .Where(m => m.InitiativeId == initiative.Id)
+                .Where(m => request.MilestoneIds.Contains(m.Id))
+                .ToListAsync(cancellationToken);
+            
+            projectMilestones.AddRange(milestones.Select(milestone => new ContractMilestone
+            {
+                Milestone = milestone, 
+                Project = project
+            }));
+        }
+
+        
         project.PhaseEnum = phaseEnum;
         project.Initiative = initiative;
         projectExpenditures.ForEach(e =>
@@ -83,7 +98,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         });
         project.Baseline = InitiativeProjectBaseline.Map(project);
         project.Progress.Add(InitiativeProjectProgress.CreateProjectProgressItem(project));
-        //project.AddDomainEvent(new ProjectCreatedEvent(project));
+        projectMilestones.ForEach(m => project.ContractMilestones.Add(m));
         initiative.Projects.Add(project);
 
         await _context.SaveChangesAsync(cancellationToken);

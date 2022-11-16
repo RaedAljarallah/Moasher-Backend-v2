@@ -26,6 +26,8 @@ public class DeleteContractCommandHandler : IRequestHandler<DeleteContractComman
             .Include(c => c.Project)
             .Include(c => c.Expenditures)
             .Include(c => c.ExpendituresBaseline)
+            .Include(c => c.ContractMilestones)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
 
         if (contract is null)
@@ -39,6 +41,7 @@ public class DeleteContractCommandHandler : IRequestHandler<DeleteContractComman
         {
             _context.InitiativeProjects.Remove(contract.Project);
         }
+        _context.ContractMilestones.RemoveRange(contract.ContractMilestones);
         _context.InitiativeContracts.Remove(contract);
         contract.AddDomainEvent(new ContractDeletedEvent(contract));
         await _context.SaveChangesAsync(cancellationToken);

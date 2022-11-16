@@ -22,7 +22,8 @@ public class ProjectMappings : Profile
             .ForMember(p => p.Expenditures, opt => opt.Ignore());
 
         CreateMap<InitiativeProject, EditProjectDto>()
-            .ForMember(p => p.Phase, opt => opt.MapFrom(p => p.PhaseEnum));
+            .ForMember(p => p.Phase, opt => opt.MapFrom(p => p.PhaseEnum))
+            .ForMember(p => p.Milestones, opt => opt.MapFrom(p => p.ContractMilestones.Select(cm => cm.Milestone)));
 
         CreateMap<UpdateProjectCommand, InitiativeProject>()
             .ForMember(p => p.Initiative, opt => opt.Ignore())

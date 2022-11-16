@@ -28,6 +28,8 @@ public class EditProjectQueryHandler : IRequestHandler<EditProjectQuery, EditPro
             .AsNoTracking()
             .Include(p => p.PhaseEnum)
             .Include(p => p.Expenditures)
+            .Include(p => p.ContractMilestones)
+            .ThenInclude(cm => cm.Milestone)
             .AsSplitQuery()
             .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 

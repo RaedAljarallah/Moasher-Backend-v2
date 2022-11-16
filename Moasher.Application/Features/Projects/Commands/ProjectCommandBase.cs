@@ -16,4 +16,6 @@ public abstract record ProjectCommandBase
     public Guid PhaseEnumId { get; set; }
     public IEnumerable<CreateProjectExpenditureCommand> Expenditures { get; set; } =
         Enumerable.Empty<CreateProjectExpenditureCommand>();
+
+    public IEnumerable<Guid> MilestoneIds { get; set; } = Enumerable.Empty<Guid>();
 }

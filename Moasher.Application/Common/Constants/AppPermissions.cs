@@ -85,10 +85,10 @@ public static class AppPermissions
             .ToList();
         result.AddRange(GenerateFromResource(Resources.Milestones, new[] {Actions.Create, Actions.Delete}));
         result.AddRange(GenerateFromResource(Resources.Deliverables, new[] {Actions.Create, Actions.Delete}));
-        result.AddRange(GenerateFromResource(Resources.Issues, new[] {Actions.Create, Actions.Delete}));
-        result.AddRange(GenerateFromResource(Resources.Risks, new[] {Actions.Create, Actions.Delete}));
-        result.AddRange(GenerateFromResource(Resources.Projects, new[] {Actions.Create, Actions.Delete}));
-        result.AddRange(GenerateFromResource(Resources.Contracts, new[] {Actions.Create, Actions.Delete}));
+        result.AddRange(GenerateFromResource(Resources.Issues, new[] {Actions.Update, Actions.Delete}));
+        result.AddRange(GenerateFromResource(Resources.Risks, new[] {Actions.Update, Actions.Delete}));
+        result.AddRange(GenerateFromResource(Resources.Projects, new[] {Actions.Delete}));
+        result.AddRange(GenerateFromResource(Resources.Contracts, new[] {Actions.Delete}));
         result.AddRange(GenerateFromResource(Resources.KPIValues, new[] {Actions.Create, Actions.Delete}));
         result.Add(new Permission(Actions.View, Resources.Programs));
         result.Add(new Permission(Actions.View, Resources.StrategicObjectives));

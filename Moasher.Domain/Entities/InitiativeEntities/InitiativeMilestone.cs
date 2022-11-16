@@ -23,6 +23,6 @@ public class InitiativeMilestone : InitiativeRelatedDbEntity, ISchedulable
     [Display(Name = "الوثيقة الداعمة")]
     public string? SupportingDocument { get; set; }
     
-    // public ICollection<ContractMilestone> ContractMilestones { get; set; }
-    //     = new HashSet<ContractMilestone>();
+    public ICollection<ContractMilestone> ContractMilestones { get; set; }
+        = new HashSet<ContractMilestone>();
 }
