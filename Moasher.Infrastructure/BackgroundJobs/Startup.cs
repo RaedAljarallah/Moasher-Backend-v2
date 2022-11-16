@@ -14,7 +14,8 @@ internal static class Startup
     internal static void AddBackgroundJobs(this IServiceCollection services, IConfiguration config)
     {
         var options = config.GetSection("BackgroundJobs").Get<BackgroundJobsOptions>();
-        services.AddHostedService<QueuedHostedService>();
         services.AddSingleton<IBackgroundQueue>(_ => new BackgroundQueue(options.QueueCapacity));
+        services.AddHostedService<QueuedHostedService>();
+        //services.AddHostedService<StatusUpdateHostedService>();
     }
 }
