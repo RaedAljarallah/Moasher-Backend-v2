@@ -16,6 +16,7 @@ internal static class Startup
         var options = config.GetSection("BackgroundJobs").Get<BackgroundJobsOptions>();
         services.AddSingleton<IBackgroundQueue>(_ => new BackgroundQueue(options.QueueCapacity));
         services.AddHostedService<QueuedHostedService>();
-        //services.AddHostedService<StatusUpdateHostedService>();
+        services.AddHostedService<StatusUpdateHostedService>();
+        services.AddHostedService<InvalidTokenCleanupHostedService>();
     }
 }
