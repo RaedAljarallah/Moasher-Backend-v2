@@ -2,9 +2,9 @@
 using Moasher.Application.Common.Interfaces;
 using Moasher.Domain.Entities;
 
-namespace Moasher.Application.Features.InvalidTokens.Commands.CreateInvalidToken;
+namespace Moasher.Application.Features.Users.Commands.LogoutUser;
 
-public record CreateInvalidTokenCommand : IRequest<Unit>
+public record LogoutUserCommand : IRequest<Unit>
 {
     private string _jti = default!;
 
@@ -13,16 +13,16 @@ public record CreateInvalidTokenCommand : IRequest<Unit>
     public long Expiration { get; set; }
 }
 
-public class CreateInvalidTokenCommandHandler : IRequestHandler<CreateInvalidTokenCommand, Unit>
+public class LogoutUserCommandHandler : IRequestHandler<LogoutUserCommand, Unit>
 {
     private readonly IMoasherDbContext _context;
 
-    public CreateInvalidTokenCommandHandler(IMoasherDbContext context)
+    public LogoutUserCommandHandler(IMoasherDbContext context)
     {
         _context = context;
     }
     
-    public async Task<Unit> Handle(CreateInvalidTokenCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(LogoutUserCommand request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.Jti))
         {

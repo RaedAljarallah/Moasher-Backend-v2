@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moasher.Application.Features.Users.Commands.CreateUser;
 using Moasher.Application.Features.Users.Commands.DeleteUser;
+using Moasher.Application.Features.Users.Commands.LogoutUser;
 using Moasher.Application.Features.Users.Commands.ResetUserPassword;
 using Moasher.Application.Features.Users.Commands.UpdateUser;
 using Moasher.Application.Features.Users.Commands.UpdateUserSuspensionStatus;
@@ -124,5 +125,14 @@ public class UsersController : ApiControllerBase
     {
         await Sender.Send(new DeleteUserCommand { Id = id }, cancellationToken);
         return NoContent();
+    }
+    
+    [HttpPost(ApiEndpoints.Users.Logout)]
+    [UnauthorizedResponseType]
+    [OkResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> Create(LogoutUserCommand command, CancellationToken cancellationToken)
+    {
+        return Ok(await Sender.Send(command, cancellationToken));
     }
 }
