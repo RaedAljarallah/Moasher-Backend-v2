@@ -19,12 +19,17 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
         {
             return await next();
         }
+        catch (TaskCanceledException)
+        {
+            var requestName = typeof(TRequest).Name;
+            _logger.LogError("Task Was Canceled By User for Request {Name}", requestName);
+            throw;
+        }
         catch (Exception ex)
         {
             var requestName = typeof(TRequest).Name;
-
-            _logger.LogError(ex, "Application Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
-
+            _logger.LogError(ex, "Application Request: Unhandled Exception for Request {Name} {@Request}", requestName,
+                request);
             throw;
         }
     }

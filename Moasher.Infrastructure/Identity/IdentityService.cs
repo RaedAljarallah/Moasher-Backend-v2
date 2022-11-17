@@ -119,10 +119,14 @@ public class IdentityService : IIdentityService
 
     public async Task<string> ResetUserPassword(User user, CancellationToken cancellationToken = new())
     {
-        var tempPassword = _userManager.PasswordHasher.HashPassword(user, _userManager.GeneratePassword());
-        user.PasswordHash = tempPassword;
+        var tempPassword = _userManager.GeneratePassword();
+        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, tempPassword);
         user.MustChangePassword = true;
-        await UpdateUserAsync(user, cancellationToken);
+        var updateUserResult = await _userManager.UpdateSecurityStampAsync(user);
+        if (!updateUserResult.Succeeded)
+        {
+            ThrowValidationError(updateUserResult.Errors);
+        }
         return tempPassword;
     }
 

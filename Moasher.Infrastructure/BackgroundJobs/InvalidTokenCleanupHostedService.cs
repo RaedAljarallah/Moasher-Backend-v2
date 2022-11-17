@@ -29,7 +29,7 @@ public class InvalidTokenCleanupHostedService : BackgroundService
         {
             try
             {
-                await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
+                await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
                 _logger.LogInformation($"{nameof(InvalidTokenCleanupHostedService)} is starting");
                 using var scope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<IMoasherDbContext>();

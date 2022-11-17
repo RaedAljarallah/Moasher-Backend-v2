@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.IdentityModel.Tokens;
 using Moasher.Authentication.Core.Common.Attributes;
 using Moasher.Authentication.Core.Common.Extensions;
 using Moasher.Authentication.Core.Identity.Entities;
@@ -83,12 +84,17 @@ public class Index : PageModel
                     ModelState.AddModelError(string.Empty, LoginOptions.LockoutErrorMessage);
                     return Page();
                 }
+
+                if (!user.EmailConfirmed)
+                {
+                    ModelState.AddModelError(string.Empty, LoginOptions.InvalidCredentialsErrorMessage);
+                    return Page();
+                }
                 
                 if (user.MustChangePassword)
                 {
-                    var token = await _userManager.GeneratePasswordChangingToken(user);
-                    token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-                    var userId = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Id.ToString()));
+                    var token = Base64UrlEncoder.Encode(await _userManager.GeneratePasswordChangingToken(user));
+                    var userId = Base64UrlEncoder.Encode(user.Id.ToString());
                     return RedirectToPage("../ChangePassword/Index", new {token, userId, Input.ReturnUrl});
                 }
             }
