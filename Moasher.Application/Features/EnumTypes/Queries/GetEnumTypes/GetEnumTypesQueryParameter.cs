@@ -21,14 +21,10 @@ public class GetEnumTypesQueryParameter : IQueryParameterBuilder<EnumType>
         {
             query = query.Like(_parameter.SearchQuery, "Name");
         }
-        if (!string.IsNullOrWhiteSpace(_parameter.Name))
-        {
-            query = query.Like(_parameter.Name, "Name");
-        }
-
+        
         if (!string.IsNullOrWhiteSpace(_parameter.Category))
         {
-            query = query.Where(e => e.Category == _parameter.Category);
+            query = query.Where(e => e.Category.ToUpper() == _parameter.Category.ToUpper());
         }
         
         if (_parameter.Id.HasValue)

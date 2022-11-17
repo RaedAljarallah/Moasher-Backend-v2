@@ -11,14 +11,6 @@ namespace Moasher.Application.Features.KPIs.Queries.GetKPIs;
 
 public record GetKPIsQuery : QueryParameterBase, IRequest<PaginatedList<KPIDto>>
 {
-    public string? Name { get; set; }
-    public string? Code { get; set; }
-    public string? EntityName { get; set; }
-    public string? L1Name { get; set; }
-    public string? L2Name { get; set; }
-    public string? L3Name { get; set; }
-    public string? L4Name { get; set; }
-    public string? Status { get; set; }
     public Guid? EntityId { get; set; }
     public Guid? ProgramId { get; set; }
     public Guid? StatusId { get; set; }

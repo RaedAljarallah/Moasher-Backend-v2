@@ -11,7 +11,6 @@ namespace Moasher.Application.Features.Deliverables.Queries.GetDeliverables;
 
 public record GetDeliverablesQuery : SchedulableQueryParametersDto, IRequest<PaginatedList<DeliverableDto>>
 {
-    public string? Name { get; set; }
     public Guid? InitiativeId { get; set; }
     public Guid? EntityId { get; set; }
     public Guid? L1Id { get; set; }

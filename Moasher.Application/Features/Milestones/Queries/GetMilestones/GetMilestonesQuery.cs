@@ -11,7 +11,6 @@ namespace Moasher.Application.Features.Milestones.Queries.GetMilestones;
 
 public record GetMilestonesQuery : SchedulableQueryParametersDto, IRequest<PaginatedList<MilestoneDto>>
 {
-    public string? Name { get; set; }
     public Guid? InitiativeId { get; set; }
     public Guid? EntityId { get; set; }
     public Guid? ProgramId { get; set; }

@@ -13,10 +13,23 @@ namespace Moasher.Application.Features.StrategicObjectives.Queries.GetStrategicO
 
 public record GetStrategicObjectivesQuery : QueryParameterBase, IRequest<object>
 {
-    public string? Name { get; set; }
-    public string? Code { get; set; }
+    private string? _descendantOf;
+    private string? _code;
+
+    public string? Code
+    {
+        get => _code;
+        set => _code = value?.Trim();
+    }
+
     public short Level { get; set; } = 1;
-    public string? DescendantOf { get; set; }
+
+    public string? DescendantOf
+    {
+        get => _descendantOf;
+        set => _descendantOf = value?.Trim();
+    }
+
     public Guid? ParentId { get; set; }
     public Guid? EntityId { get; set; }
     public Guid? ProgramId { get; set; }

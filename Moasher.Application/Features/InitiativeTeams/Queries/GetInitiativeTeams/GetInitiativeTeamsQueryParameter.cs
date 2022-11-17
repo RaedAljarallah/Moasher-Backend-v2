@@ -19,29 +19,9 @@ public class GetInitiativeTeamsQueryParameter : IQueryParameterBuilder<Initiativ
         query = query.OrderBy(_parameter.OrderBy);
         if (!string.IsNullOrWhiteSpace(_parameter.SearchQuery))
         {
-            query = query.Like(_parameter.SearchQuery, "Name", "Email", "Phone", "Role_Name");
+            query = query.Like(_parameter.SearchQuery, "Name", "Email", "Phone", "RoleName");
         }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.Name))
-        {
-            query = query.Like(_parameter.Name, "Name");
-        }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.Email))
-        {
-            query = query.Like(_parameter.Email, "Email");
-        }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.Phone))
-        {
-            query = query.Like(_parameter.Phone, "Phone");
-        }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.Role))
-        {
-            query = query.Like(_parameter.Role, "Role_Name");
-        }
-        
+
         if (_parameter.Id.HasValue)
         {
             query = query.Where(t => t.Id == _parameter.Id);

@@ -21,15 +21,6 @@ public class GetPortfoliosQueryParameter : IQueryParameterBuilder<Portfolio>
         {
             query = query.Like(_parameter.SearchQuery, "Name", "Code");
         }
-        if (!string.IsNullOrWhiteSpace(_parameter.Name))
-        {
-            query = query.Like(_parameter.Name, "Name");
-        }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.Code))
-        {
-            query = query.Like(_parameter.Code, "Code");
-        }
 
         return query;
     }

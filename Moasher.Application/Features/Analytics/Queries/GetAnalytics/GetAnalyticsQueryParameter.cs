@@ -20,26 +20,6 @@ public class GetAnalyticsQueryParameter : IQueryParameterBuilder<Analytic>
             query = query.Like(_parameter.SearchQuery, "Description", "AnalyzedBy", "InitiativeName", "KPIName");
         }
 
-        if (!string.IsNullOrWhiteSpace(_parameter.Description))
-        {
-            query = query.Like(_parameter.Description, "Description");
-        }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.AnalyzedBy))
-        {
-            query = query.Like(_parameter.AnalyzedBy, "AnalyzedBy");
-        }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.InitiativeName))
-        {
-            query = query.Like(_parameter.InitiativeName, "InitiativeName");
-        }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.KPIName))
-        {
-            query = query.Like(_parameter.KPIName, "KPIName");
-        }
-
         if (_parameter.Id.HasValue)
         {
             query = query.Where(a => a.Id == _parameter.Id);

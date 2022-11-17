@@ -22,17 +22,7 @@ public class GetEntitiesQueryParameter : IQueryParameterBuilder<Entity>
         {
             query = query.Like(_parameter.SearchQuery, "Name", "Code");
         }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.Name))
-        {
-            query = query.Like(_parameter.Name, "Name");
-        }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.Code))
-        {
-            query = query.Like(_parameter.Code, "Code");
-        }
-
+        
         if (_parameter.Id.HasValue)
         {
             query = query.Where(e => e.Id == _parameter.Id);

@@ -20,52 +20,12 @@ public class GetKPIsQueryParameter : IQueryParameterBuilder<KPI>
         if (!string.IsNullOrWhiteSpace(_parameter.SearchQuery))
         {
             query = query.Like(_parameter.SearchQuery,
-                "Name", "Code", "EntityName", "Status_Name",
+                "Name", "Code", "EntityName", "StatusName",
                 "LevelOneStrategicObjectiveName", "LevelTwoStrategicObjectiveName",
                 "LevelThreeStrategicObjectiveName", "LevelFourStrategicObjectiveName",
                 "OwnerName", "OwnerEmail");
         }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.Name))
-        {
-            query = query.Like(_parameter.Name, "Name");
-        }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.Code))
-        {
-            query = query.Like(_parameter.Code, "Code");
-        }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.EntityName))
-        {
-            query = query.Like(_parameter.EntityName, "EntityName");
-        }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.Status))
-        {
-            query = query.Like(_parameter.Status, "Status_Name");
-        }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.L1Name))
-        {
-            query = query.Like(_parameter.L1Name, "LevelOneStrategicObjectiveName");
-        }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.L2Name))
-        {
-            query = query.Like(_parameter.L2Name, "LevelTwoStrategicObjectiveName");
-        }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.L3Name))
-        {
-            query = query.Like(_parameter.L3Name, "LevelThreeStrategicObjectiveName");
-        }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.L4Name))
-        {
-            query = query.Like(_parameter.L4Name, "LevelFourStrategicObjectiveName");
-        }
-        
+
         if (_parameter.Id.HasValue)
         {
             query = query.Where(i => i.Id == _parameter.Id);

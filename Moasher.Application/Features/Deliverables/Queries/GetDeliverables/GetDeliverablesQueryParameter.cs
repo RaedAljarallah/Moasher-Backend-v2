@@ -20,11 +20,7 @@ public class GetDeliverablesQueryParameter : IQueryParameterBuilder<InitiativeDe
         {
             query = query.Like(_parameter.SearchQuery, "Name");
         }
-        if (!string.IsNullOrWhiteSpace(_parameter.Name))
-        {
-            query = query.Like(_parameter.Name, "Name");
-        }
-        
+
         if (_parameter.Id.HasValue)
         {
             query = query.Where(m => m.Id == _parameter.Id);

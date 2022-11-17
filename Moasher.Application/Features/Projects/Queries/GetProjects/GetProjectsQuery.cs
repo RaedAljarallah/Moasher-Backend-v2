@@ -11,7 +11,7 @@ namespace Moasher.Application.Features.Projects.Queries.GetProjects;
 
 public record GetProjectsQuery : QueryParameterBase, IRequest<PaginatedList<ProjectDto>>
 {
-    public string? Name { get; set; }
+    private string? _status;
     public DateTimeOffset? PlannedBiddingFrom { get; set; }
     public DateTimeOffset? PlannedBiddingTo { get; set; }
     public DateTimeOffset? ActualBiddingFrom { get; set; }
@@ -19,7 +19,12 @@ public record GetProjectsQuery : QueryParameterBase, IRequest<PaginatedList<Proj
     public DateTimeOffset? PlannedContractingFrom { get; set; }
     public DateTimeOffset? PlannedContractingTo { get; set; }
     public Guid? PhaseId { get; set; }
-    public string? Status { get; set; }
+
+    public string? Status
+    {
+        get => _status;
+        set => _status = value?.Trim();
+    }
 }
 
 public class GetProjectQueryHandler : IRequestHandler<GetProjectsQuery, PaginatedList<ProjectDto>>

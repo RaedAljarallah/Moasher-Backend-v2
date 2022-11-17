@@ -11,14 +11,6 @@ namespace Moasher.Application.Features.Issues.Queries.GetIssues;
 
 public record GetIssuesQuery : QueryParameterBase, IRequest<PaginatedList<IssueDto>>
 {
-    public string? Description { get; set; }
-    public string? Scope { get; set; }
-    public string? Status { get; set; }
-    public string? Impact { get; set; }
-    public string? Source { get; set; }
-    public string? Reason { get; set; }
-    public string? RaisedBy { get; set; }
-    public string? InitiativeName { get; set; }
     public DateTimeOffset? RaisedFrom { get; set; }
     public DateTimeOffset? RaisedTo { get; set; }
     public DateTimeOffset? ClosedFrom { get; set; }

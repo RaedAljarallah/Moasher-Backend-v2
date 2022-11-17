@@ -11,14 +11,18 @@ namespace Moasher.Application.Features.Contracts.Queries.GetContracts;
 
 public record GetContractsQuery : QueryParameterBase, IRequest<PaginatedList<ContractDto>>
 {
-    public string? Name { get; set; }
-    public string? RefNumber { get; set; }
-    public string? Supplier { get; set; }
+    private string? _expenditurePlanStatus;
     public DateTimeOffset? StartFrom { get; set; }
     public DateTimeOffset? StartTo { get; set; }
     public DateTimeOffset? EndFrom { get; set; }
     public DateTimeOffset? EndTo { get; set; }
-    public string? ExpenditurePlanStatus { get; set; }
+
+    public string? ExpenditurePlanStatus
+    {
+        get => _expenditurePlanStatus;
+        set => _expenditurePlanStatus = value?.Trim();
+    }
+
     public Guid? StatusId { get; set; }
 }
 

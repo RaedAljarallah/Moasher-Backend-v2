@@ -11,18 +11,6 @@ namespace Moasher.Application.Features.Initiatives.Queries.GetInitiatives;
 
 public record GetInitiativesQuery : QueryParameterBase, IRequest<PaginatedList<InitiativeDto>>
 {
-    public string? Name { get; set; }
-    public string? UnifiedCode { get; set; }
-    public string? CodeByProgram { get; set; }
-    public string? EntityName { get; set; }
-    public string? PortfolioName { get; set; }
-    public string? ProgramName { get; set; }
-    public string? Status { get; set; }
-    public string? FundStatus { get; set; }
-    public string? L1Name { get; set; }
-    public string? L2Name { get; set; }
-    public string? L3Name { get; set; }
-    public string? L4Name { get; set; }
     public Guid? EntityId { get; set; }
     public Guid? PortfolioId { get; set; }
     public Guid? ProgramId { get; set; }

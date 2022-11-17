@@ -11,15 +11,6 @@ namespace Moasher.Application.Features.Risks.Queries.GetRisks;
 
 public record GetRisksQuery : QueryParameterBase, IRequest<PaginatedList<RiskDto>>
 {
-    public string? Description { get; set; }
-    public string? Type { get; set; }
-    public string? Priority { get; set; }
-    public string? Probability { get; set; }
-    public string? Impact { get; set; }
-    public string? Scope { get; set; }
-    public string? Owner { get; set; }
-    public string? RaisedBy { get; set; }
-    public string? InitiativeName { get; set; }
     public DateTimeOffset? RaisedFrom { get; set; }
     public DateTimeOffset? RaisedTo { get; set; }
     public Guid? TypeId { get; set; }

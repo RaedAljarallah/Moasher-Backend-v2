@@ -10,11 +10,7 @@ using Moasher.Application.Common.Types;
 
 namespace Moasher.Application.Features.Portfolios.Queries.GetPortfolios;
 
-public record GetPortfoliosQuery : QueryParameterBase, IRequest<PaginatedList<PortfolioDto>>
-{
-    public string? Name { get; set; }
-    public string? Code { get; set; }
-}
+public record GetPortfoliosQuery : QueryParameterBase, IRequest<PaginatedList<PortfolioDto>>;
 
 public class GetPortfoliosQueryHandler : IRequestHandler<GetPortfoliosQuery, PaginatedList<PortfolioDto>>
 {

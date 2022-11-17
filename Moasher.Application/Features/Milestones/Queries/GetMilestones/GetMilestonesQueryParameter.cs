@@ -20,11 +20,7 @@ public class GetMilestonesQueryParameter : IQueryParameterBuilder<InitiativeMile
         {
             query = query.Like(_parameter.SearchQuery, "Name");
         }
-        if (!string.IsNullOrWhiteSpace(_parameter.Name))
-        {
-            query = query.Like(_parameter.Name, "Name");
-        }
-        
+
         if (_parameter.Id.HasValue)
         {
             query = query.Where(m => m.Id == _parameter.Id);
@@ -48,12 +44,12 @@ public class GetMilestonesQueryParameter : IQueryParameterBuilder<InitiativeMile
         {
             query = query.Where(m => m.Initiative.PortfolioId == _parameter.PortfolioId);
         }
-        // TODO: Uncomment
-        // if (_parameter.ContractId.HasValue)
-        // {
-        //     query = query.Where(m =>
-        //         m.ContractMilestones.Where(cm => cm.ContractId == _parameter.ContractId).Select(cm => cm.MilestoneId).Contains(m.Id));
-        // }
+
+        if (_parameter.ContractId.HasValue)
+        {
+            query = query.Where(m =>
+                m.ContractMilestones.Where(cm => cm.ContractId == _parameter.ContractId).Select(cm => cm.MilestoneId).Contains(m.Id));
+        }
 
         if (_parameter.L1Id.HasValue)
         {

@@ -11,8 +11,20 @@ namespace Moasher.Application.Features.EditRequests.Queries.GetEditRequests;
 
 public record GetEditRequestsQuery : QueryParameterBase, IRequest<PaginatedList<EditRequestDto>>
 {
-    public string? Status { get; set; }
-    public string? Type { get; set; }
+    private string? _status;
+    private string? _type;
+
+    public string? Status
+    {
+        get => _status;
+        set => _status = value?.Trim();
+    }
+
+    public string? Type
+    {
+        get => _type;
+        set => _type = value?.Trim();
+    }
 }
 
 public class GetEditRequestsQueryHandler : IRequestHandler<GetEditRequestsQuery, PaginatedList<EditRequestDto>>

@@ -21,12 +21,7 @@ public class GetProjectsQueryParameter : IQueryParameterBuilder<InitiativeProjec
         {
             query = query.Like(_parameter.SearchQuery, "Name");
         }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.Name))
-        {
-            query = query.Like(_parameter.Name, "Name");
-        }
-
+        
         if (_parameter.PlannedBiddingFrom.HasValue)
         {
             query = query.Where(p => p.PlannedBiddingDate >= _parameter.PlannedBiddingFrom.Value);

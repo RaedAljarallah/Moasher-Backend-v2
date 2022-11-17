@@ -13,12 +13,8 @@ namespace Moasher.Application.Features.Analytics.Queries.GetAnalytics;
 
 public record GetAnalyticsQuery : QueryParameterBase, IRequest<PaginatedList<AnalyticDto>>
 {
-    public string? Description { get; set; }
     public DateTimeOffset? AnalyzedFrom { get; set; }
     public DateTimeOffset? AnalyzedTo { get; set; }
-    public string? AnalyzedBy { get; set; }
-    public string? InitiativeName { get; set; }
-    public string? KPIName { get; set; }
     public Guid? InitiativeId { get; set; }
     public Guid? KPIId { get; set; }
     public Guid? EntityId { get; set; }

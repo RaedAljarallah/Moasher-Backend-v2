@@ -11,8 +11,6 @@ namespace Moasher.Application.Features.Programs.Queries.GetPrograms;
 
 public record GetProgramsQuery :  QueryParameterBase, IRequest<PaginatedList<ProgramDto>>
 {
-    public string? Name { get; set; }
-    public string? Code { get; set; }
     public bool WithInitiatives { get; set; }
     public bool WithKPIs { get; set; }
     public Guid? PortfolioId { get; set; }

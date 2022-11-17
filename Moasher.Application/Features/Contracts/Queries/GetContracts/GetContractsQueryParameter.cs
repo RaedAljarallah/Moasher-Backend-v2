@@ -20,21 +20,6 @@ public class GetContractsQueryParameter : IQueryParameterBuilder<InitiativeContr
             query = query.Like(_parameter.SearchQuery, "Name", "RefNumber", "Supplier");
         }
         
-        if (!string.IsNullOrWhiteSpace(_parameter.Name))
-        {
-            query = query.Like(_parameter.Name, "Name");
-        }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.RefNumber))
-        {
-            query = query.Like(_parameter.RefNumber, "RefNumber");
-        }
-        
-        if (!string.IsNullOrWhiteSpace(_parameter.Supplier))
-        {
-            query = query.Like(_parameter.Supplier, "Supplier");
-        }
-
         if (_parameter.StartFrom.HasValue)
         {
             query = query.Where(c => c.StartDate >= _parameter.StartFrom.Value);

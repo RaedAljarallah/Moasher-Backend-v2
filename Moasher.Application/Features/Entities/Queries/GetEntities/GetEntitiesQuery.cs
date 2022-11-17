@@ -11,8 +11,6 @@ namespace Moasher.Application.Features.Entities.Queries.GetEntities;
 
 public record GetEntitiesQuery : QueryParameterBase, IRequest<PaginatedList<EntityDto>>
 {
-    public string? Name { get; set; }
-    public string? Code { get; set; }
     public Guid? ProgramId { get; set; }
     public Guid? L1Id { get; set; }
     public Guid? L2Id { get; set; }

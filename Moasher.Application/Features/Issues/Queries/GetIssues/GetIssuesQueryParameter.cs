@@ -17,48 +17,8 @@ public class GetIssuesQueryParameter : IQueryParameterBuilder<InitiativeIssue>
     {
         if (!string.IsNullOrWhiteSpace(_parameter.SearchQuery))
         {
-            query = query.Like(_parameter.SearchQuery, "Description", "Scope_Name", "Status_Name", "Impact_Name",
+            query = query.Like(_parameter.SearchQuery, "Description", "ScopeName", "StatusName", "ImpactName",
                 "Source", "Reason", "RaisedBy", "InitiativeName");
-        }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.Description))
-        {
-            query = query.Like(_parameter.Description, "Description");
-        }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.Scope))
-        {
-            query = query.Like(_parameter.Scope, "Scope_Name");
-        }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.Status))
-        {
-            query = query.Like(_parameter.Status, "Status_Name");
-        }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.Impact))
-        {
-            query = query.Like(_parameter.Impact, "Impact_Name");
-        }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.Source))
-        {
-            query = query.Like(_parameter.Source, "Source");
-        }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.Reason))
-        {
-            query = query.Like(_parameter.Reason, "Reason");
-        }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.RaisedBy))
-        {
-            query = query.Like(_parameter.RaisedBy, "RaisedBy");
-        }
-
-        if (!string.IsNullOrWhiteSpace(_parameter.InitiativeName))
-        {
-            query = query.Like(_parameter.InitiativeName, "InitiativeName");
         }
 
         if (_parameter.Id.HasValue)

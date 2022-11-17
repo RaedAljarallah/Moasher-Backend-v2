@@ -11,10 +11,6 @@ namespace Moasher.Application.Features.InitiativeTeams.Queries.GetInitiativeTeam
 
 public record GetInitiativeTeamsQuery : QueryParameterBase, IRequest<PaginatedList<InitiativeTeamDto>>
 {
-    public string? Name { get; set; }
-    public string? Email { get; set; }
-    public string? Phone { get; set; }
-    public string? Role { get; set; }
     public Guid? RoleId { get; set; }
     public Guid? InitiativeId { get; set; }
 }

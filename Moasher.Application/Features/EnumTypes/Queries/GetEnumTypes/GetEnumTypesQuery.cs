@@ -12,8 +12,14 @@ namespace Moasher.Application.Features.EnumTypes.Queries.GetEnumTypes;
 
 public record GetEnumTypesQuery : QueryParameterBase, IRequest<PaginatedList<EnumTypeDto>>
 {
-    public string? Category { get; set; }
-    public string? Name { get; set; }
+    private string? _category;
+
+    public string? Category
+    {
+        get => _category;
+        set => _category = value?.Trim();
+    }
+    
 }
 
 public class GetEnumTypesQueryHandler : IRequestHandler<GetEnumTypesQuery, PaginatedList<EnumTypeDto>>

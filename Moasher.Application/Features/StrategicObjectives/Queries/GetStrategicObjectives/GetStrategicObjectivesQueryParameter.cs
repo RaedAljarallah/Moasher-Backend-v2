@@ -22,10 +22,6 @@ public class GetStrategicObjectivesQueryParameter : IQueryParameterBuilder<Strat
         {
             query = query.Like(_parameter.SearchQuery, "Name", "Code");
         }
-        if (!string.IsNullOrWhiteSpace(_parameter.Name))
-        {
-            query = query.Like(_parameter.Name, "Name");
-        }
 
         if (!string.IsNullOrWhiteSpace(_parameter.Code))
         {
