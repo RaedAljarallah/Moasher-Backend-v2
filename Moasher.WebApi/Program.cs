@@ -2,6 +2,7 @@ using Moasher.Application;
 using Moasher.Infrastructure;
 using Moasher.Persistence;
 using Moasher.WebApi;
+using Moasher.WebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddWebApi(builder.Configuration, builder.Environment);
@@ -19,6 +20,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("CorsPolicy");
+app.UseSecurityHeaders();
 app.UseHttpsRedirection();
 app.UseInfrastructure();
 

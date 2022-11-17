@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moasher.Application.Common.Types;
+using Moasher.WebApi.Attributes;
 
 namespace Moasher.WebApi.Controllers.Common;
 
