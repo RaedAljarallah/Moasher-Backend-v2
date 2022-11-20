@@ -10,4 +10,5 @@ public record EditUserDto : UserCommandBase
     public EntityDto Entity { get; set; } = default!;
     public string LocalizedRole => AppRoles.GetLocalizedName(Role);
     public bool Suspended { get; set; }
+    public bool ReceiveEmailNotification { get; set; }
 }

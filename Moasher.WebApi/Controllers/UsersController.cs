@@ -4,6 +4,7 @@ using Moasher.Application.Features.Users.Commands.CreateUser;
 using Moasher.Application.Features.Users.Commands.DeleteUser;
 using Moasher.Application.Features.Users.Commands.LogoutUser;
 using Moasher.Application.Features.Users.Commands.ResetUserPassword;
+using Moasher.Application.Features.Users.Commands.UpdateEmailNotificationStatus;
 using Moasher.Application.Features.Users.Commands.UpdateUser;
 using Moasher.Application.Features.Users.Commands.UpdateUserSuspensionStatus;
 using Moasher.Application.Features.Users.Queries.EditUser;
@@ -89,6 +90,23 @@ public class UsersController : ApiControllerBase
     [OkResponseType]
     [Produces("application/json")]
     public async Task<IActionResult> UpdateSuspension(Guid id, UpdateUserSuspensionStatusCommand command, CancellationToken cancellationToken)
+    {
+        if (!id.Equals(command.Id))
+        {
+            return BadRequest();
+        }
+        
+        return Ok(await Sender.Send(command, cancellationToken));
+    }
+    
+    [Authorize(Policy = "SuperAdminAccess")]
+    [HttpPut(ApiEndpoints.Users.UpdateEmailNotificationStatus)]
+    [BadRequestResponseType]
+    [UnauthorizedResponseType]
+    [NotFoundResponseType]
+    [OkResponseType]
+    [Produces("application/json")]
+    public async Task<IActionResult> UpdateEmailNotification(Guid id, UpdateEmailNotificationStatusCommand command, CancellationToken cancellationToken)
     {
         if (!id.Equals(command.Id))
         {

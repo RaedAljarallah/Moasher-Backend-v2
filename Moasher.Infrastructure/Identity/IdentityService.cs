@@ -96,8 +96,16 @@ public class IdentityService : IIdentityService
     public async Task<bool> UpdateUserSuspensionStatusAsync(User user, bool status, CancellationToken cancellationToken = new())
     {
         user.Suspended = status;
-        var updatesUser = await UpdateUserAsync(user, cancellationToken);
-        return updatesUser.Suspended;
+        var updatedUser = await UpdateUserAsync(user, cancellationToken);
+        return updatedUser.Suspended;
+    }
+
+    public async Task<bool> UpdateEmailNotificationStatusAsync(User user, bool status,
+        CancellationToken cancellationToken = new CancellationToken())
+    {
+        user.ReceiveEmailNotification = status;
+        var updatedUser = await UpdateUserAsync(user, cancellationToken);
+        return updatedUser.ReceiveEmailNotification;
     }
 
     public async Task<string> UpdateUserRoleAsync(User user, string newRole, CancellationToken cancellationToken = new())

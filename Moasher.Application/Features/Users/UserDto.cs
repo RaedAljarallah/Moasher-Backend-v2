@@ -12,6 +12,7 @@ public record UserDto
     public string Email { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;
     public string EntityName { get; set; } = default!;
+    public bool ReceiveEmailNotification { get; set; }
     public bool IsActive { get; set; }
     public bool IsSuspended { get; set; }
     public Guid EntityId { get; set; }

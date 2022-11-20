@@ -235,6 +235,7 @@ public struct ApiEndpoints
         public const string Delete = $"{Base}/{{id}}";
         public const string Edit = $"{Base}/{{id}}/edit";
         public const string UpdateSuspensionStatus = $"{Base}/{{id}}/update-suspension-status";
+        public const string UpdateEmailNotificationStatus = $"{Base}/{{id}}/update-email-notification-status";
         public const string ResetPassword = $"{Base}/{{id}}/reset-password";
         public const string VerifyActivationToken = $"{Base}/verify-activation-token";
         public const string Logout = $"{Base}/logout";

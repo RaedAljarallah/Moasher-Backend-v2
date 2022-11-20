@@ -16,6 +16,8 @@ public interface IIdentityService
     public Task DeleteUserAsync(User user, CancellationToken cancellationToken = new());
     public Task<bool> UpdateUserSuspensionStatusAsync(User user, bool status,
         CancellationToken cancellationToken = new());
+    public Task<bool> UpdateEmailNotificationStatusAsync(User user, bool status,
+        CancellationToken cancellationToken = new());
     public Task<string> UpdateUserRoleAsync(User user, string newRole, CancellationToken cancellationToken = new());
     public Task<string> ResetUserPassword(User user, CancellationToken cancellationToken = new());
     public Task<string> GeneratePassword(CancellationToken cancellationToken = new());
