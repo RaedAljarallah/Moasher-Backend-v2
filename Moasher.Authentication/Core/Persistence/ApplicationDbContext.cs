@@ -11,7 +11,9 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
     {
         
     }
-
+    
+    public DbSet<InvalidToken> InvalidTokens => Set<InvalidToken>();
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -23,5 +25,6 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
         builder.Entity<Role>().ToTable("Roles", t => t.ExcludeFromMigrations());
         builder.Entity<IdentityRoleClaim<Guid>>().ToTable("RoleClaims", t => t.ExcludeFromMigrations());
         builder.Entity<IdentityUserRole<Guid>>().ToTable("UserRoles", t => t.ExcludeFromMigrations());
+        builder.Entity<InvalidToken>().ToTable("InvalidTokens", t => t.ExcludeFromMigrations());
     }
 }

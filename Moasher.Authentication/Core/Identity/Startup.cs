@@ -2,6 +2,7 @@
 using Moasher.Authentication.Core.Identity.Configurations;
 using Moasher.Authentication.Core.Identity.Constants;
 using Moasher.Authentication.Core.Identity.Entities;
+using Moasher.Authentication.Core.Identity.Services;
 using Moasher.Authentication.Core.Persistence;
 
 namespace Moasher.Authentication.Core.Identity;
@@ -43,5 +44,7 @@ internal static class Startup
         .AddErrorDescriber<LocalizedIdentityErrorDescriber>()
         .AddClaimsPrincipalFactory<ApplicationClaimsPrincipalFactory>()
         .AddEntityFrameworkStores<ApplicationDbContext>();
+
+        services.AddScoped<IInvalidToken, InvalidTokenService>();
     }
 }

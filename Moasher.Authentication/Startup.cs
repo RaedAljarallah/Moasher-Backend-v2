@@ -1,4 +1,5 @@
-﻿using Moasher.Authentication.Core.IdentityServer;
+﻿using Moasher.Authentication.Core.BackgroundJobs;
+using Moasher.Authentication.Core.IdentityServer;
 using Moasher.Authentication.Core.Persistence;
 using Moasher.Authentication.Core.Identity;
 using Moasher.Authentication.Core.Mailing;
@@ -14,6 +15,7 @@ internal static class Startup
         builder.Services.AddIdentity(builder.Configuration);
         builder.Services.AddIdentityServer(builder.Configuration, builder.Environment);
         builder.Services.AddMailing(builder.Configuration);
+        builder.Services.AddHostedService<InvalidTokenCleanupHostedService>();
         return builder.Build();
     }
 

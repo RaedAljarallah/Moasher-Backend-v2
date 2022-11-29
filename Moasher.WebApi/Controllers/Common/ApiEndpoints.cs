@@ -238,7 +238,6 @@ public struct ApiEndpoints
         public const string UpdateEmailNotificationStatus = $"{Base}/{{id}}/update-email-notification-status";
         public const string ResetPassword = $"{Base}/{{id}}/reset-password";
         public const string VerifyActivationToken = $"{Base}/verify-activation-token";
-        public const string Logout = $"{Base}/logout";
     }
 
     public struct Notifications

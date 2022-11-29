@@ -17,6 +17,5 @@ internal static class Startup
         services.AddSingleton<IBackgroundQueue>(_ => new BackgroundQueue(options.QueueCapacity));
         services.AddHostedService<QueuedHostedService>();
         services.AddHostedService<StatusUpdateHostedService>();
-        services.AddHostedService<InvalidTokenCleanupHostedService>();
     }
 }

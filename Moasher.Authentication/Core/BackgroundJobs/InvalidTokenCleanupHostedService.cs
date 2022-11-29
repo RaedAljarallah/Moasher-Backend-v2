@@ -1,10 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Moasher.Application.Common.Interfaces;
+﻿using Moasher.Authentication.Core.Identity.Services;
 
-namespace Moasher.Infrastructure.BackgroundJobs;
+namespace Moasher.Authentication.Core.BackgroundJobs;
 
 public class InvalidTokenCleanupHostedService : BackgroundService
 {
@@ -29,27 +25,22 @@ public class InvalidTokenCleanupHostedService : BackgroundService
         {
             try
             {
-                await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
                 _logger.LogInformation($"{nameof(InvalidTokenCleanupHostedService)} is starting");
                 using var scope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<IMoasherDbContext>();
+                var invalidTokenService = scope.ServiceProvider.GetRequiredService<IInvalidToken>();
                 
                 var found = int.MaxValue;
                 while (found >= 100)
                 {
-                    var expiredTokens = await context.InvalidTokens
-                        .Where(t => t.Expiration < DateTime.UtcNow)
-                        .OrderBy(t => t.Jti)
-                        .Take(100)
-                        .ToListAsync(stoppingToken);
+                    var expiredTokens = await invalidTokenService.GetExpiredTokens(100, stoppingToken);
 
                     found = expiredTokens.Count;
 
                     if (found > 0)
                     {
                         _logger.LogInformation("Removing {Found} invalid tokens", found);
-                        context.InvalidTokens.RemoveRange(expiredTokens);
-                        await context.SaveChangesAsyncFromInternalProcess(stoppingToken);
+                        await invalidTokenService.RemoveExpiredTokens(expiredTokens, stoppingToken);
                     }
                 }
                 

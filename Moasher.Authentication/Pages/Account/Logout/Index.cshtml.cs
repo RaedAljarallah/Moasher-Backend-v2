@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moasher.Authentication.Core.Common.Attributes;
 using Moasher.Authentication.Core.Common.Extensions;
 using Moasher.Authentication.Core.Identity.Entities;
+using Moasher.Authentication.Core.Identity.Services;
 
 namespace Moasher.Authentication.Pages.Account.Logout;
 
@@ -21,18 +22,21 @@ public class Index : PageModel
     private readonly SignInManager<User> _signInManager;
     private readonly IIdentityServerInteractionService _interaction;
     private readonly IEventService _events;
-    [BindProperty] public string? LogoutId { get; set; }
+    private readonly IInvalidToken _invalidToken;
+    [BindProperty] public InputModel Input { get; set; } = new();
 
-    public Index(SignInManager<User> signInManager, IIdentityServerInteractionService interaction, IEventService events)
+    public Index(SignInManager<User> signInManager, IIdentityServerInteractionService interaction, IEventService events,
+        IInvalidToken invalidToken)
     {
         _signInManager = signInManager;
         _interaction = interaction;
         _events = events;
+        _invalidToken = invalidToken;
     }
 
-    public async Task<IActionResult> OnGet(string logoutId)
+    public async Task<IActionResult> OnGetAsync(string logoutId)
     {
-        LogoutId = logoutId;
+        Input.LogoutId = logoutId;
         var showLogoutPrompt = LogoutOptions.ShowLogoutPrompt;
         if (User.Identity?.IsAuthenticated != true)
         {
@@ -41,22 +45,36 @@ public class Index : PageModel
         }
         else
         {
-            var context = await _interaction.GetLogoutContextAsync(LogoutId);
+            var context = await _interaction.GetLogoutContextAsync(Input.LogoutId);
+
+            // capture the invalid token information 
+
+            var tokenId = context.Parameters.Get("jti");
+            var expiration = context.Parameters.Get("exp");
+            if (tokenId is not null && expiration is not null)
+            {
+                if (long.TryParse(expiration, out var exp))
+                {
+                    Input.Jti = tokenId;
+                    Input.Exp = exp;
+                }
+            }
+
             if (context?.ShowSignoutPrompt == false)
             {
                 // it's safe to automatically sign-out
                 showLogoutPrompt = false;
             }
         }
-        
-        
+
+
         if (showLogoutPrompt == false)
         {
             // if the request for logout was properly authenticated from IdentityServer, then
             // we don't need to show the prompt and can just log the user out directly.
             return await OnPostAsync();
         }
-        
+
         return Page();
     }
 
@@ -64,10 +82,15 @@ public class Index : PageModel
     {
         if (User.Identity?.IsAuthenticated == true)
         {
+            if (Input.Jti is not null && Input.Exp.HasValue)
+            {
+                await _invalidToken.CreateAsync(Input.Jti, Input.Exp.Value);
+            }
+            
             // if there's no current logout context, we need to create one
             // this captures necessary info from the current logged in user
             // this can still return null if there is no context needed
-            LogoutId ??= await _interaction.CreateLogoutContextAsync();
+            Input.LogoutId ??= await _interaction.CreateLogoutContextAsync();
 
             // delete local authentication cookie
             await _signInManager.SignOutAsync();
@@ -87,7 +110,7 @@ public class Index : PageModel
                     // build a return URL so the upstream provider will redirect back
                     // to us after the user has logged out. this allows us to then
                     // complete our single sign-out processing.
-                    var url = Url.Page("/Account/Logout/LoggedOut", new {logoutId = LogoutId});
+                    var url = Url.Page("/Account/Logout/LoggedOut", new {logoutId = Input.LogoutId});
 
                     // this triggers a redirect to the external provider for sign-out
                     return SignOut(new AuthenticationProperties {RedirectUri = url}, idp);
@@ -95,6 +118,6 @@ public class Index : PageModel
             }
         }
 
-        return RedirectToPage("/Account/Logout/LoggedOut", new {logoutId = LogoutId});
+        return RedirectToPage("/Account/Logout/LoggedOut", new {logoutId = Input.LogoutId});
     }
 }
