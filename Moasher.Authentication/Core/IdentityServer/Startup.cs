@@ -27,7 +27,6 @@ internal static class Startup
             })
             .AddAspNetIdentity<User>();
 
-        identityServerBuilder.AddIdentityServerInPersistence(config);
         if (env.IsDevelopment())
         {
             identityServerBuilder

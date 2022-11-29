@@ -16,7 +16,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.OAuthClientId("a5567c59-7974-4110-a15e-f7f1449be62f");
+        options.OAuthAppName("Moasher API - Swagger");
+        options.OAuthUsePkce();
+    });
 }
 
 app.UseCors("CorsPolicy");

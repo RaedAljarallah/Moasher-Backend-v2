@@ -59,6 +59,24 @@ internal static class Config
                     "access_as_user"
                 },
                 AccessTokenLifetime = 900
+            },
+            new Client
+            {
+                ClientName = "Swagger UI for moasher api",
+                ClientId = "a5567c59-7974-4110-a15e-f7f1449be62f",
+                AllowedGrantTypes = GrantTypes.Code,
+                RequireClientSecret = false,
+                RequirePkce = true,
+                RequireConsent = false,
+                AllowedCorsOrigins = {"https://localhost:7241"},
+                RedirectUris = {"https://localhost:7241/swagger/oauth2-redirect.html"},
+                AllowedScopes =
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    "access_as_user"
+                },
+                AccessTokenLifetime = 900
             }
         };
 }
