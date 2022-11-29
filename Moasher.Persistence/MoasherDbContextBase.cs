@@ -58,7 +58,6 @@ public abstract class MoasherDbContextBase : IdentityDbContext<User, Role, Guid>
         builder.HasSequence<int>("ERCodeSequence", schema: "dbo").StartsAt(1).IncrementsBy(1);
         builder.ApplyConfigurationsFromAssembly(typeof(MoasherDbContext).Assembly);
 
-        builder.SeedRoles();
-        builder.SeedOrganizerEntity();
+        builder.SeedInitialData();
     }
 }

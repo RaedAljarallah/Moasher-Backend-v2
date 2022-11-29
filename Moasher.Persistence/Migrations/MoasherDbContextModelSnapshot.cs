@@ -106,6 +106,13 @@ namespace Moasher.Persistence.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("696eaaa5-530a-4b41-90b5-276df94ad086"),
+                            RoleId = new Guid("0a756d7e-586b-4793-9211-11f9203e0727")
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -302,9 +309,9 @@ namespace Moasher.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("71480c3a-2516-42e3-8766-fc96ecc93042"),
+                            Id = new Guid("9faac513-cf0d-4c30-8310-be92508416ab"),
                             Code = "VRO",
-                            CreatedAt = new DateTimeOffset(new DateTime(2022, 11, 16, 8, 37, 12, 811, DateTimeKind.Unspecified).AddTicks(435), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreatedAt = new DateTimeOffset(new DateTime(2022, 11, 29, 11, 50, 35, 464, DateTimeKind.Unspecified).AddTicks(6454), new TimeSpan(0, 0, 0, 0, 0)),
                             CreatedBy = "System",
                             IsOrganizer = true,
                             Name = "مكتب تحقيق الرؤية"
@@ -2005,67 +2012,67 @@ namespace Moasher.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ba3c87a3-7618-41f2-88b3-a023d42268a4"),
-                            ConcurrencyStamp = "c21a758a-9b44-4f61-a492-92158e4fe416",
-                            LocalizedName = "مدير النظام",
-                            Name = "SuperAdmin",
-                            NormalizedName = "SUPERADMIN"
-                        },
-                        new
-                        {
-                            Id = new Guid("ee56d557-c272-4945-b897-cc3b1af06b32"),
-                            ConcurrencyStamp = "b0e3346f-cf50-4057-8997-686269ff626a",
+                            Id = new Guid("520a4376-a452-4c32-a908-ba429f3a7311"),
+                            ConcurrencyStamp = "c07b42e8-1770-45f0-af64-c3683cc6a87d",
                             LocalizedName = "مشرف",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("494a4074-f2ec-4767-8292-ac308defeb35"),
-                            ConcurrencyStamp = "c11277f5-d924-47f5-928f-9e05b139bd7c",
+                            Id = new Guid("6937839e-c1ce-43b7-afc1-a9899fc8f561"),
+                            ConcurrencyStamp = "254f0afa-2389-4687-8aa7-a7544054092a",
                             LocalizedName = "مدقق بيانات",
                             Name = "DataAssurance",
                             NormalizedName = "DATAASSURANCE"
                         },
                         new
                         {
-                            Id = new Guid("e927ca46-70df-43c1-8e54-dd4225da90c7"),
-                            ConcurrencyStamp = "881140cc-1029-4f0b-a4a2-aa71e980d5af",
+                            Id = new Guid("dc8085f0-1a02-48a7-a99f-f11fde69f6a1"),
+                            ConcurrencyStamp = "505a5ad3-773e-40c8-8e2e-fa52db132eba",
                             LocalizedName = "مسؤول مالي",
                             Name = "FinancialOperator",
                             NormalizedName = "FINANCIALOPERATOR"
                         },
                         new
                         {
-                            Id = new Guid("dd97a07f-58b2-4858-bf92-739165a627c3"),
-                            ConcurrencyStamp = "b9ad6090-2ee0-4698-bd86-d1a84e4ec527",
+                            Id = new Guid("15aa2eeb-d5af-4f47-a584-1e6d2f62d48f"),
+                            ConcurrencyStamp = "78434753-19ef-4252-8411-f227bfe6917e",
                             LocalizedName = "مسؤول تنفيذ",
                             Name = "ExecutionOperator",
                             NormalizedName = "EXECUTIONOPERATOR"
                         },
                         new
                         {
-                            Id = new Guid("fb1436bd-a470-4912-95f3-c41a165dd082"),
-                            ConcurrencyStamp = "974d1c03-bb95-4d74-812b-a69bac3cdc09",
+                            Id = new Guid("f35ed777-29cf-41c6-8e99-76ba01178380"),
+                            ConcurrencyStamp = "2f95dd2c-6928-409c-8ace-4269285eade0",
                             LocalizedName = "مسؤول مؤشرات أداء",
                             Name = "KPIsOperator",
                             NormalizedName = "KPISOPERATOR"
                         },
                         new
                         {
-                            Id = new Guid("6ed813a6-ce58-4040-bfcf-43837714ff52"),
-                            ConcurrencyStamp = "38e865cb-f9dd-43f8-a26f-8e9d215a0eb3",
+                            Id = new Guid("dbbaa46a-d86a-4592-991d-dd0a1eee71f7"),
+                            ConcurrencyStamp = "5811ca9d-e8ab-415a-8ce7-91102e52748a",
                             LocalizedName = "مستخدم جهة",
                             Name = "EntityUser",
                             NormalizedName = "ENTITYUSER"
                         },
                         new
                         {
-                            Id = new Guid("79b0c3b7-0c64-4279-95fa-b4dfc050d59f"),
-                            ConcurrencyStamp = "a11a273a-253d-4dbe-be20-a45d4fab9685",
+                            Id = new Guid("b5cc4db1-fef0-4a53-b977-4c0d080b5493"),
+                            ConcurrencyStamp = "63d385ed-7ffa-4dad-84e7-01be2d79982e",
                             LocalizedName = "مستعرض جميع البيانات",
                             Name = "FullAccessViewer",
                             NormalizedName = "FULLACCESSVIEWER"
+                        },
+                        new
+                        {
+                            Id = new Guid("0a756d7e-586b-4793-9211-11f9203e0727"),
+                            ConcurrencyStamp = "a1713fc2-a2d2-44d1-a629-ce50a8222eee",
+                            LocalizedName = "مدير النظام",
+                            Name = "SuperAdmin",
+                            NormalizedName = "SUPERADMIN"
                         });
                 });
 
@@ -2218,6 +2225,32 @@ namespace Moasher.Persistence.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("Users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("696eaaa5-530a-4b41-90b5-276df94ad086"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "e2912eea-0b2b-4dd8-84f4-91c258fcb70a",
+                            Email = "SuperAdmin@Moasher.com",
+                            EmailConfirmed = true,
+                            EntityId = new Guid("9faac513-cf0d-4c30-8310-be92508416ab"),
+                            FirstName = "Super",
+                            LastName = "Admin",
+                            LockoutEnabled = true,
+                            MustChangePassword = true,
+                            NormalizedEmail = "SUPERADMIN@MOASHER.COM",
+                            NormalizedUserName = "SUPERADMIN@MOASHER.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAECyJ4TjFh9229Xsi1x5eagDHPRzVduoEwh2ZgzsOfB3unBz/i5WnDxiSDiLJqJ2VaQ==",
+                            PhoneNumber = "0555555555",
+                            PhoneNumberConfirmed = false,
+                            ReceiveEmailNotification = true,
+                            Role = "SUPERADMIN",
+                            SecurityStamp = "69f7341a-3857-46d7-bbdf-05bbd74fd28c",
+                            Suspended = false,
+                            TwoFactorEnabled = false,
+                            UserName = "SuperAdmin@Moasher.com"
+                        });
                 });
 
             modelBuilder.Entity("Moasher.Domain.Entities.UserNotification", b =>

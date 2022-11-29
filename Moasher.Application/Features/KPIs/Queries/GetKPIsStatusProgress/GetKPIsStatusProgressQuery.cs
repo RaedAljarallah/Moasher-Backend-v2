@@ -34,7 +34,7 @@ public class
         var kpis = await _context.KPIs
             .WithinParameters(new GetKPIsStatusProgressQueryParameter(request))
             .AsNoTracking()
-            .Include(k => k.Values)
+            .Include(k => k.Values.Where(v => v.Approved))
             .AsSplitQuery()
             .ToListAsync(cancellationToken);
 

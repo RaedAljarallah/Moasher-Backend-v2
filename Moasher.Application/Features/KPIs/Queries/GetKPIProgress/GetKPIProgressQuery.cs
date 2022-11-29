@@ -28,7 +28,7 @@ public class GetKPIProgressQueryHandler : IRequestHandler<GetKPIProgressQuery, I
     {
         var kpi = await _context.KPIs
             .AsNoTracking()
-            .Include(k => k.Values)
+            .Include(k => k.Values.Where(v => v.Approved))
             .AsSplitQuery()
             .FirstOrDefaultAsync(k => k.Id == request.Id, cancellationToken);
 

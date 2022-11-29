@@ -20,7 +20,6 @@ public static class Startup
             });
         });
         services.AddScoped<IMoasherDbContext>(sp => sp.GetRequiredService<MoasherDbContext>());
-        //services.AddScoped<MoasherDbContextInitializer>();
 
         var identityBuilder = new IdentityBuilder(typeof(User), typeof(Role), services);
         identityBuilder.AddEntityFrameworkStores<MoasherDbContext>();
