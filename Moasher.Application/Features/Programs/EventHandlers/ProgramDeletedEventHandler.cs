@@ -18,7 +18,9 @@ public class ProgramDeletedEventHandler : INotificationHandler<ProgramDeletedEve
     {
         var programId = notification.Program.Id;
         var searchRecord =
-            await _context.SearchRecords.FirstOrDefaultAsync(s => s.RelativeId == programId, cancellationToken);
+            await _context.SearchRecords
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(s => s.RelativeId == programId, cancellationToken);
         if (searchRecord is not null)
         {
             _context.SearchRecords.Remove(searchRecord);

@@ -21,12 +21,14 @@ public class KPIStatusUpdateEventHandler : INotificationHandler<KPIStatusUpdateE
         var kpiId = notification.Kpi.Id;
         
         var kpi = await _context.KPIs
+            .IgnoreQueryFilters()
             .Include(k => k.Values)
             .FirstOrDefaultAsync(k => k.Id == kpiId, cancellationToken);
 
         if (kpi is not null)
         {
             var statusEnums = await _context.EnumTypes
+                .IgnoreQueryFilters()
                 .Where(e => e.Category == EnumTypeCategory.KPIStatus.ToString())
                 .ToListAsync(cancellationToken);
             

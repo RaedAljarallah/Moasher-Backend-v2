@@ -18,7 +18,9 @@ public class KPIDeletedEventHandler : INotificationHandler<KPIDeletedEvent>
     {
         var kpiId = notification.Kpi.Id;
         var searchRecord =
-            await _context.SearchRecords.FirstOrDefaultAsync(s => s.RelativeId == kpiId, cancellationToken);
+            await _context.SearchRecords
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(s => s.RelativeId == kpiId, cancellationToken);
         if (searchRecord is not null)
         {
             _context.SearchRecords.Remove(searchRecord);

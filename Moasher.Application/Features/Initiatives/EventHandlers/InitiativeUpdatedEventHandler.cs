@@ -19,6 +19,7 @@ public class InitiativeUpdatedEventHandler : INotificationHandler<InitiativeUpda
         var initiativeId = notification.Initiative.Id;
         
         var initiative = await _context.Initiatives
+            .IgnoreQueryFilters()
             .Include(i => i.ApprovedCosts)
             .Include(i => i.Budgets)
             .Include(i => i.Contracts)
@@ -49,7 +50,9 @@ public class InitiativeUpdatedEventHandler : INotificationHandler<InitiativeUpda
             
             _context.Initiatives.Update(initiative);
             
-            var searchRecord = await _context.SearchRecords.FirstOrDefaultAsync(s => s.RelativeId == initiativeId, cancellationToken);
+            var searchRecord = await _context.SearchRecords
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(s => s.RelativeId == initiativeId, cancellationToken);
             if (searchRecord is not null)
             {
                 searchRecord.Title = initiative.Name;

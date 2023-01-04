@@ -20,6 +20,7 @@ public class KPIValueUpdatedEventHandler : INotificationHandler<KPIValueUpdatedE
     {
         var kpiId = notification.Value.KPIId;
         var kpi = await _context.KPIs.Include(k => k.Values)
+            .IgnoreQueryFilters()
             .FirstOrDefaultAsync(k => k.Id == kpiId, cancellationToken);
 
         if (kpi is not null)
@@ -28,6 +29,7 @@ public class KPIValueUpdatedEventHandler : INotificationHandler<KPIValueUpdatedE
             if (kpi.CalculateStatus)
             {
                 var status = await _context.EnumTypes
+                    .IgnoreQueryFilters()
                     .Where(e => e.Category.ToLower() == EnumTypeCategory.KPIStatus.ToString().ToLower())
                     .ToListAsync(cancellationToken);
                 

@@ -19,10 +19,12 @@ public class LevelTwoStrategicObjectiveUpdatedEventHandler : INotificationHandle
         var strategicObjective = notification.StrategicObjective;
 
         var initiatives = await _context.Initiatives
+            .IgnoreQueryFilters()
             .Where(i => i.LevelTwoStrategicObjectiveId == strategicObjective.Id)
             .ToListAsync(cancellationToken);
 
         var kpis = await _context.KPIs
+            .IgnoreQueryFilters()
             .Where(k => k.LevelTwoStrategicObjectiveId == strategicObjective.Id)
             .ToListAsync(cancellationToken);
 

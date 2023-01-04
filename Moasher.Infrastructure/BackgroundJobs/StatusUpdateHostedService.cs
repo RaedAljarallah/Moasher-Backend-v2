@@ -61,6 +61,7 @@ public class StatusUpdateHostedService : BackgroundService
                 {
                     var statusEnums = await context.EnumTypes
                         .Where(e => e.Category == EnumTypeCategory.InitiativeStatus.ToString())
+                        .IgnoreQueryFilters()
                         .ToListAsync(stoppingToken);
 
                     foreach (var initiative in initiatives)
@@ -73,6 +74,7 @@ public class StatusUpdateHostedService : BackgroundService
                 {
                     var statusEnums = await context.EnumTypes
                         .Where(e => e.Category == EnumTypeCategory.KPIStatus.ToString())
+                        .IgnoreQueryFilters()
                         .ToListAsync(stoppingToken);
 
                     foreach (var kpi in kpis)

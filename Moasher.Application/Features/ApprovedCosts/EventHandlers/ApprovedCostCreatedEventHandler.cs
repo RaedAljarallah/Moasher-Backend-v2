@@ -19,6 +19,7 @@ public class ApprovedCostCreatedEventHandler : INotificationHandler<ApprovedCost
     {
         var initiativeId = notification.ApprovedCost.InitiativeId;
         var initiative = await _context.Initiatives.Include(i => i.ApprovedCosts)
+            .IgnoreQueryFilters()
             .FirstOrDefaultAsync(i => i.Id == initiativeId, cancellationToken);
         if (initiative is not null)
         {

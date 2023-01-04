@@ -19,6 +19,7 @@ public class ContractUpdatedEventHandler : INotificationHandler<ContractUpdatedE
     {
         var initiativeId = notification.Contract.InitiativeId;
         var initiative = await _context.Initiatives
+            .IgnoreQueryFilters()
             .Include(i => i.Contracts)
             .ThenInclude(c => c.Expenditures)
             .AsSplitQuery()

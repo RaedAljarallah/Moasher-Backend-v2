@@ -18,6 +18,7 @@ public class EntityUpdatedEventHandler : INotificationHandler<EntityUpdatedEvent
     {
         var entityId = notification.Entity.Id;
         var entity = await _context.Entities
+            .IgnoreQueryFilters()
             .Include(e => e.Initiatives).ThenInclude(i => i.ApprovedCosts)
             .Include(e => e.Initiatives).ThenInclude(i => i.Budgets)
             .Include(e => e.Initiatives).ThenInclude(i => i.Contracts)
@@ -56,7 +57,9 @@ public class EntityUpdatedEventHandler : INotificationHandler<EntityUpdatedEvent
             _context.Initiatives.UpdateRange(entity.Initiatives);
             _context.KPIs.UpdateRange(entity.KPIs);
 
-            var searchRecord = await _context.SearchRecords.FirstOrDefaultAsync(s => s.RelativeId == entityId, cancellationToken);
+            var searchRecord = await _context.SearchRecords
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(s => s.RelativeId == entityId, cancellationToken);
             if (searchRecord is not null)
             {
                 searchRecord.Title = entity.Name;

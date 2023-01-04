@@ -21,12 +21,14 @@ public class InitiativeStatusUpdateEventHandler : INotificationHandler<Initiativ
         var initiativeId = notification.Initiative.Id;
 
         var initiative = await _context.Initiatives
+            .IgnoreQueryFilters()
             .Include(i => i.Milestones)
             .FirstOrDefaultAsync(i => i.Id == initiativeId, cancellationToken);
 
         if (initiative is not null)
         {
             var statusEnums = await _context.EnumTypes
+                .IgnoreQueryFilters()
                 .Where(e => e.Category == EnumTypeCategory.InitiativeStatus.ToString())
                 .ToListAsync(cancellationToken);
 

@@ -19,6 +19,7 @@ public class LevelThreeStrategicObjectiveUpdatedEventHandler : INotificationHand
         var strategicObjectiveId = notification.StrategicObjective.Id;
         
         var strategicObjective = await _context.StrategicObjectives
+            .IgnoreQueryFilters()
             .Include(o => o.Initiatives)
             .Include(o => o.KPIs)
             .FirstOrDefaultAsync(o => o.Id == strategicObjectiveId, cancellationToken);

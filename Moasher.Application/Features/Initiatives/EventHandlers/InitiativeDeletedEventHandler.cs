@@ -18,7 +18,9 @@ public class InitiativeDeletedEventHandler : INotificationHandler<InitiativeDele
     {
         var initiativeId = notification.Initiative.Id;
         var searchRecord =
-            await _context.SearchRecords.FirstOrDefaultAsync(s => s.RelativeId == initiativeId, cancellationToken);
+            await _context.SearchRecords
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(s => s.RelativeId == initiativeId, cancellationToken);
         if (searchRecord is not null)
         {
             _context.SearchRecords.Remove(searchRecord);

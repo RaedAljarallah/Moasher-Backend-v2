@@ -19,6 +19,7 @@ public class KPIUpdatedEventHandler : INotificationHandler<KPIUpdatedEvent>
         var kpiId = notification.Kpi.Id;
         
         var kpi = await _context.KPIs
+            .IgnoreQueryFilters()
             .Include(k => k.Values)
             .Include(k => k.Analytics)
             .AsSplitQuery()
@@ -32,7 +33,9 @@ public class KPIUpdatedEventHandler : INotificationHandler<KPIUpdatedEvent>
             _context.KPIValues.UpdateRange(kpi.Values);
             _context.Analytics.UpdateRange(kpi.Analytics);
             
-            var searchRecord = await _context.SearchRecords.FirstOrDefaultAsync(s => s.RelativeId == kpiId, cancellationToken);
+            var searchRecord = await _context.SearchRecords
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(s => s.RelativeId == kpiId, cancellationToken);
             if (searchRecord is not null)
             {
                 searchRecord.Title = kpi.Name;

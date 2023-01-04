@@ -19,6 +19,7 @@ public class PortfolioUpdatedEventHandler : INotificationHandler<PortfolioUpdate
         var portfolioId = notification.Portfolio.Id;
         
         var portfolio = await _context.Portfolios
+            .IgnoreQueryFilters()
             .Include(p => p.Initiatives)
             .FirstOrDefaultAsync(p => p.Id == portfolioId, cancellationToken);
 

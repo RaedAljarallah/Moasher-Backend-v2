@@ -25,7 +25,7 @@ public class InvalidTokenCleanupHostedService : BackgroundService
         {
             try
             {
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
                 _logger.LogInformation($"{nameof(InvalidTokenCleanupHostedService)} is starting");
                 using var scope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
                 var invalidTokenService = scope.ServiceProvider.GetRequiredService<IInvalidToken>();

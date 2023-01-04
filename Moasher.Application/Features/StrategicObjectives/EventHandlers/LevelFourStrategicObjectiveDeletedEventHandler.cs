@@ -19,10 +19,12 @@ public class LevelFourStrategicObjectiveDeletedEventHandler : INotificationHandl
         var strategicObjectiveId = notification.StrategicObjective.Id;
 
         var initiatives = await _context.Initiatives
+            .IgnoreQueryFilters()
             .Where(i => i.LevelFourStrategicObjectiveId == strategicObjectiveId)
             .ToListAsync(cancellationToken);
 
         var kpis = await _context.KPIs
+            .IgnoreQueryFilters()
             .Where(k => k.LevelFourStrategicObjectiveId == strategicObjectiveId)
             .ToListAsync(cancellationToken);
 

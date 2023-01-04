@@ -18,6 +18,7 @@ public class ProgramUpdatedEventHandler : INotificationHandler<ProgramUpdatedEve
     {
         var programId = notification.Program.Id;
         var program = await _context.Programs
+            .IgnoreQueryFilters()
             .Include(p => p.Initiatives)
             .FirstOrDefaultAsync(p => p.Id == programId, cancellationToken);
 
@@ -30,7 +31,9 @@ public class ProgramUpdatedEventHandler : INotificationHandler<ProgramUpdatedEve
             
             _context.Initiatives.UpdateRange(program.Initiatives);
             
-            var searchRecord = await _context.SearchRecords.FirstOrDefaultAsync(s => s.RelativeId == programId, cancellationToken);
+            var searchRecord = await _context.SearchRecords
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(s => s.RelativeId == programId, cancellationToken);
             if (searchRecord is not null)
             {
                 searchRecord.Title = program.Name;

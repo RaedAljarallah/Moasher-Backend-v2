@@ -19,6 +19,7 @@ public class BudgetUpdatedEventHandler : INotificationHandler<BudgetUpdatedEvent
     {
         var initiativeId = notification.Budget.InitiativeId;
         var initiative = await _context.Initiatives.Include(i => i.Budgets)
+            .IgnoreQueryFilters()
             .FirstOrDefaultAsync(i => i.Id == initiativeId, cancellationToken);
         if (initiative is not null)
         {

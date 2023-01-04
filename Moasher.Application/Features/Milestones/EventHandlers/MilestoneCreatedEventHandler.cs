@@ -21,7 +21,9 @@ public class MilestoneCreatedEventHandler : INotificationHandler<MilestoneCreate
         var initiativeId = notification.Milestone.InitiativeId;
 
         var initiative = await _context.Initiatives.Include(i => i.Milestones)
+            .IgnoreQueryFilters()
             .FirstOrDefaultAsync(i => i.Id == initiativeId, cancellationToken);
+        
         if (initiative is not null)
         {
             initiative.SetProgress();
@@ -29,6 +31,7 @@ public class MilestoneCreatedEventHandler : INotificationHandler<MilestoneCreate
             {
                 var status = await _context.EnumTypes
                     .Where(e => e.Category.ToLower() == EnumTypeCategory.InitiativeStatus.ToString().ToLower())
+                    .IgnoreQueryFilters()
                     .ToListAsync(cancellationToken);
 
                 initiative.SetStatus(status);
